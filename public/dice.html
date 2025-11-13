@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运骰子 - 天创游戏平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 50%, #0f0f0f 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 恐怖背景 - 同步主页 */
+        .horror-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(75, 0, 130, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 0, 0, 0.2) 0%, transparent 50%);
+            animation: horrorPulse 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes horrorPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* 闪电效果 */
+        .lightning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0);
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .lightning.flash {
+            animation: lightningFlash 0.3s ease-out;
+        }
+        
+        @keyframes lightningFlash {
+            0% { background: rgba(255, 255, 255, 0); }
+            50% { background: rgba(255, 255, 255, 0.8); }
+            100% { background: rgba(255, 255, 255, 0); }
+        }
+        
+        /* 动态背景粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        .particle.interactive {
+            width: 6px;
+            height: 6px;
+            opacity: 0.8;
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 娱乐性背景元素 */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .bg-element {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: bgFloat 25s linear infinite;
+        }
+        
+        @keyframes bgFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .header {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: var(--shadow);
+            animation: avatarGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes avatarGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 112, 67, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 112, 67, 0.8);
+            }
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(255, 112, 67, 0.3);
+        }
+        
+        .user-dropdown {
+            position: relative;
+        }
+        
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-dropdown.active .user-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+        
+        /* 主容器 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* 游戏容器 */
+        .game-container {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .game-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            animation: titleGlow 3s ease-in-out infinite;
+            text-shadow: 0 3px 6px rgba(255, 0, 0, 0.5);
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 0 3px 6px rgba(255, 0, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 3px 15px rgba(255, 0, 0, 0.8);
+            }
+        }
+        
+        /* 游戏区域 */
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        /* 骰子区域 - 优化UI */
+        .dice-section {
+            text-align: center;
+            position: relative;
+        }
+        
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            perspective: 1000px;
+        }
+        
+        .dice {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(230, 126, 34, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+        
+        .dice::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4, #FF1493);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .dice:hover::before {
+            opacity: 0.6;
+        }
+        
+        .dice.rolling {
+            animation: rollDice 1.5s ease-in-out;
+        }
+        
+        @keyframes rollDice {
+            0% { 
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); 
+            }
+            25% { 
+                transform: rotateX(180deg) rotateY(90deg) rotateZ(90deg); 
+            }
+            50% { 
+                transform: rotateX(360deg) rotateY(180deg) rotateZ(180deg); 
+            }
+            75% { 
+                transform: rotateX(540deg) rotateY(270deg) rotateZ(270deg); 
+            }
+            100% { 
+                transform: rotateX(720deg) rotateY(360deg) rotateZ(360deg); 
+            }
+        }
+        
+        .dice-result {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e67e22;
+            margin: 1.5rem 0;
+            text-shadow: 0 2px 4px rgba(230, 126, 34, 0.3);
+            animation: resultPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes resultPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                filter: drop-shadow(0 2px 4px rgba(230, 126, 34, 0.3));
+            }
+            50% { 
+                transform: scale(1.05); 
+                filter: drop-shadow(0 4px 8px rgba(230, 126, 34, 0.5));
+            }
+        }
+        
+        /* 投注区域 - 优化UI */
+        .bet-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bet-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .bet-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .bet-info {
+            background: rgba(255, 112, 67, 0.1);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .bet-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .bet-description {
+            color: #ddd;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .key-chance {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            animation: keyGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes keyGlow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+        }
+        
+        .roll-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roll-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .roll-btn:hover::before {
+            left: 100%;
+        }
+        
+        .roll-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .roll-btn:disabled {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 宝箱区域 - 优化UI */
+        .treasure-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .treasure-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            opacity: 0.05;
+            z-index: -1;
+            animation: treasureGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes treasureGlow {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.1; }
+        }
+        
+        .treasure-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .treasure-box-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .treasure-box {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: treasureFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes treasureFloat {
+            0%, 100% { 
+                transform: translateY(0px) scale(1); 
+            }
+            50% { 
+                transform: translateY(-10px) scale(1.05); 
+            }
+        }
+        
+        .treasure-box::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4, #FF1493);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .treasure-box:hover::before {
+            opacity: 0.8;
+        }
+        
+        .treasure-box:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 25px 50px rgba(255, 215, 0, 0.5);
+        }
+        
+        .treasure-box.opening {
+            animation: boxOpen 2s ease-in-out forwards;
+        }
+        
+        @keyframes boxOpen {
+            0% { 
+                transform: scale(1) rotate(0deg); 
+            }
+            25% { 
+                transform: scale(1.1) rotate(5deg); 
+            }
+            50% { 
+                transform: scale(1.2) rotate(-5deg); 
+            }
+            75% { 
+                transform: scale(1.1) rotate(5deg); 
+            }
+            100% { 
+                transform: scale(0) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+        
+        .key-count {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 15px;
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .open-treasure-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .open-treasure-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+        
+        .open-treasure-btn:disabled {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 历史区域 - 优化UI */
+        .history-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        
+        .history-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .history-dice {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e67e22;
+        }
+        
+        .history-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .history-amount {
+            font-weight: bold;
+            color: white;
+        }
+        
+        .history-multiplier {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .history-result {
+            font-weight: bold;
+        }
+        
+        .history-result.win {
+            color: #28a745;
+        }
+        
+        .history-result.lose {
+            color: #dc3545;
+        }
+        
+        .history-key {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* 统计区域 - 优化UI */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ddd;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .stat-value.positive {
+            color: #28a745;
+        }
+        
+        .stat-value.negative {
+            color: #dc3545;
+        }
+        
+        /* 消息提示 - 优化UI */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow);
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .message.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .message.error {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .message.info {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+        
+        .message.treasure {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 宝箱奖励模态框 - 优化UI */
+        .treasure-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .treasure-modal.active {
+            display: flex;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .treasure-modal-content {
+            background: linear-gradient(135deg, #FFF0F5, #FFE4E1);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            position: relative;
+            animation: modalSlideUp 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideUp {
+            from { 
+                transform: translateY(50px); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1; 
+            }
+        }
+        
+        .treasure-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: treasureBounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes treasureBounce {
+            0%, 20%, 50%, 80%, 100% { 
+                transform: translateY(0); 
+            }
+            40% { 
+                transform: translateY(-10px); 
+            }
+            60% { 
+                transform: translateY(-5px); 
+            }
+        }
+        
+        .treasure-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+        }
+        
+        .treasure-reward {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .treasure-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+        
+        .treasure-close-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .treasure-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .dice-container {
+                gap: 1rem;
+            }
+            
+            .dice {
+                width: 100px;
+                height: 100px;
+                font-size: 3rem;
+            }
+            
+            .treasure-box-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .treasure-box {
+                width: 120px;
+                height: 120px;
+                font-size: 3rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 恐怖背景 - 同步主页 -->
+    <div class="horror-bg"></div>
+    <div class="lightning" id="lightning"></div>
+    
+    <!-- 动态背景粒子 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 娱乐性背景元素 -->
+    <div class="bg-elements" id="bgElements"></div>
+    
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-details">
+                <div class="user-name" id="userName">加载中...</div>
+                <div class="user-points">💰 <span id="userPoints">0</span></div>
+            </div>
+        </div>
+        <a href="games.html" class="back-btn">🏠 返回游戏中心</a>
+    </div>
+    
+    <!-- 主容器 -->
+    <div class="main-container">
+        <div class="game-container">
+            <h1 class="game-title">🎲 幸运骰子</h1>
+            
+            <div class="game-area">
+                <!-- 骰子区域 -->
+                <div class="dice-section">
+                    <div class="dice-container">
+                        <div class="dice" id="dice1">🎲</div>
+                        <div class="dice" id="dice2">🎲</div>
+                        <div class="dice" id="dice3">🎲</div>
+                    </div>
+                    <div class="dice-result" id="diceResult">准备开始</div>
+                </div>
+                
+                <!-- 投注区域 -->
+                <div class="bet-section">
+                    <div class="bet-title">💰 投注信息</div>
+                    <div class="bet-info">
+                        <div class="bet-amount">5 积分/次</div>
+                        <div class="bet-description">每次投注固定5积分，5%概率获得金钥匙！</div>
+                        <div class="key-chance">🔑 金钥匙概率: 5%</div>
+                    </div>
+                    <button class="roll-btn" id="rollBtn" onclick="rollDice()">🎲 摇骰子 (5积分)</button>
+                </div>
+            </div>
+            
+            <!-- 宝箱区域 -->
+            <div class="treasure-section">
+                <div class="treasure-title">🎁 宝箱系统</div>
+                <div class="treasure-box-container">
+                    <div class="treasure-box" id="treasureBox" onclick="openTreasureBox()">🎁</div>
+                </div>
+                <div class="key-count">🔑 金钥匙: <span id="keyCount">0</span> 把</div>
+                <button class="open-treasure-btn" id="openTreasureBtn" onclick="openTreasureBox()">🎁 打开宝箱 (消耗1把钥匙)</button>
+            </div>
+            
+            <!-- 历史记录 -->
+            <div class="history-section">
+                <div class="history-title">📊 游戏记录</div>
+                <div class="history-list" id="historyList">
+                    <div class="history-item">
+                        <div class="history-dice">🎲🎲🎲</div>
+                        <div class="history-details">
+                            <span class="history-amount">投注: 5</span>
+                            <span class="history-multiplier">倍率: 1.6x</span>
+                            <span class="history-result win">赢得: 8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 统计数据 -->
+            <div class="stats-section">
+                <div class="stats-title">📈 游戏统计</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">总投注</div>
+                        <div class="stat-value" id="totalBet">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">总赢得</div>
+                        <div class="stat-value positive" id="totalWin">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">金钥匙</div>
+                        <div class="stat-value" id="totalKeys">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">胜率</div>
+                        <div class="stat-value" id="winRate">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 宝箱奖励模态框 -->
+    <div class="treasure-modal" id="treasureModal">
+        <div class="treasure-modal-content">
+            <div class="treasure-icon">🎁</div>
+            <h2 class="treasure-title">恭喜获得宝箱奖励！</h2>
+            <div class="treasure-reward" id="treasureReward">获得 100 积分</div>
+            <div class="treasure-description" id="treasureDescription">宝箱中藏着丰富的奖励，继续努力获得更多钥匙吧！</div>
+            <button class="treasure-close-btn" onclick="closeTreasureModal()">确定</button>
+        </div>
+    </div>
+
+    <!-- 引入积分系统 -->
+    <script src="points-system.js"></script>
+    
+    <script>
+        // 幸运骰子游戏系统 - 完整用户系统和积分系统接入
+        const DiceGame = {
+            // 游戏状态
+            gameState: {
+                currentBet: 5,
+                isRolling: false,
+                history: [],
+                goldKeys: 0,
+                stats: {
+                    totalBet: 0,
+                    totalWin: 0,
+                    totalGames: 0,
+                    totalWins: 0,
+                    totalKeys: 0
+                }
+            },
+            
+            // 宝箱奖励配置
+            treasureRewards: [
+                { min: 50, max: 100, description: '获得少量积分奖励' },
+                { min: 100, max: 200, description: '获得中等积分奖励' },
+                { min: 200, max: 500, description: '获得大量积分奖励' },
+                { min: 500, max: 1000, description: '获得巨额积分奖励' },
+                { min: 1000, max: 2000, description: '获得超级积分奖励' }
+            ],
+            
+            // 初始化
+            init() {
+                console.log('=== 幸运骰子游戏初始化 ===');
+                
+                // 检查登录状态
+                if (!this.checkLogin()) {
+                    return;
+                }
+                
+                // 初始化背景
+                this.initBackground();
+                
+                // 初始化用户系统
+                this.initUserSystem();
+                
+                // 初始化积分系统
+                this.initPointsSystem();
+                
+                // 加载游戏数据
+                this.loadGameData();
+                
+                // 更新UI
+                this.updateUI();
+                
+                // 添加随机闪电效果
+                this.initLightning();
+                
+                console.log('幸运骰子游戏初始化完成');
+            },
+            
+            // 初始化用户系统
+            initUserSystem() {
+                console.log('初始化用户系统...');
+                
+                // 初始化用户下拉菜单
+                const userInfo = document.getElementById('userInfo');
+                const dropdown = userInfo.querySelector('.user-dropdown-menu');
+                
+                if (userInfo && dropdown) {
+                    userInfo.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        userInfo.classList.toggle('active');
+                    });
+                    
+                    // 点击其他地方关闭下拉菜单
+                    document.addEventListener('click', () => {
+                        userInfo.classList.remove('active');
+                    });
+                }
+                
+                // 更新用户信息
+                this.updateUserInfo();
+                
+                // 定期更新用户信息
+                setInterval(() => {
+                    this.updateUserInfo();
+                }, 5000);
+            },
+            
+            // 初始化积分系统
+            initPointsSystem() {
+                console.log('初始化积分系统...');
+                
+                if (window.pointsSystem) {
+                    // 订阅积分变动事件
+                    window.pointsSystem.subscribe((data) => {
+                        console.log('积分系统订阅事件:', data);
+                        this.updatePointsDisplay(data.newPoints);
+                    });
+                    
+                    // 监听积分更新事件
+                    window.addEventListener('pointsUpdated', (e) => {
+                        console.log('积分更新事件:', e.detail);
+                        this.updatePointsDisplay(e.detail.newPoints);
+                    });
+                    
+                    // 初始更新积分显示
+                    const currentPoints = window.pointsSystem.getPoints();
+                    this.updatePointsDisplay(currentPoints);
+                } else {
+                    console.error('积分系统未找到');
+                }
+            },
+            
+            // 更新积分显示
+            updatePointsDisplay(points) {
+                const userPoints = document.getElementById('userPoints');
+                if (userPoints) {
+                    userPoints.textContent = points;
+                    console.log('积分显示已更新:', points);
+                }
+            },
+            
+            // 更新用户信息
+            updateUserInfo() {
+                console.log('更新用户信息...');
+                
+                // 获取当前用户
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const userName = document.getElementById('userName');
+                const userPoints = document.getElementById('userPoints');
+                
+                if (userName) {
+                    userName.textContent = currentUser.name || '未知用户';
+                    console.log('用户名已更新:', currentUser.name);
+                }
+                
+                // 积分显示由积分系统处理
+                if (window.pointsSystem) {
+                    const points = window.pointsSystem.getPoints();
+                    this.updatePointsDisplay(points);
+                } else {
+                    // 备用方案
+                    if (userPoints) {
+                        userPoints.textContent = currentUser.points || 0;
+                        console.log('备用积分显示已更新:', currentUser.points);
+                    }
+                }
+            },
+            
+            // 检查登录状态
+            checkLogin() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const currentUser = localStorage.getItem('currentUser');
+                
+                console.log('检查登录状态:', { isLoggedIn, currentUser });
+                
+                if (!isLoggedIn || !currentUser) {
+                    console.log('用户未登录，跳转到登录页面');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                // 验证用户数据格式
+                try {
+                    const user = JSON.parse(currentUser);
+                    if (!user || !user.name) {
+                        console.log('用户数据格式错误，跳转到登录页面');
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('用户数据解析失败:', error);
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                return true;
+            },
+            
+            // 初始化背景
+            initBackground() {
+                // 粒子效果
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = 30;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 10 + 's';
+                    particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+                
+                // 交互粒子
+                for (let i = 0; i < 10; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle interactive';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+                
+                // 娱乐性背景元素
+                const bgElements = document.getElementById('bgElements');
+                const elements = ['🎲', '🎯', '🎁', '💰', '🔑', '⭐', '🎊', '🎈', '🎮'];
+                
+                for (let i = 0; i < 20; i++) {
+                    const element = document.createElement('div');
+                    element.className = 'bg-element';
+                    element.textContent = elements[i % elements.length];
+                    element.style.left = Math.random() * 100 + '%';
+                    element.style.animationDelay = Math.random() * 5 + 's';
+                    element.style.animationDuration = (20 + Math.random() * 10) + 's';
+                    bgElements.appendChild(element);
+                }
+            },
+            
+            // 初始化闪电效果
+            initLightning() {
+                setInterval(() => {
+                    if (Math.random() < 0.1) {
+                        const lightning = document.getElementById('lightning');
+                        lightning.classList.add('flash');
+                        setTimeout(() => {
+                            lightning.classList.remove('flash');
+                        }, 300);
+                    }
+                }, 5000);
+            },
+            
+            // 加载游戏数据
+            loadGameData() {
+                const savedData = localStorage.getItem('diceGameData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    this.gameState.history = data.history || [];
+                    this.gameState.goldKeys = data.goldKeys || 0;
+                    this.gameState.stats = data.stats || this.gameState.stats;
+                }
+            },
+            
+            // 保存游戏数据
+            saveGameData() {
+                const data = {
+                    history: this.gameState.history,
+                    goldKeys: this.gameState.goldKeys,
+                    stats: this.gameState.stats
+                };
+                localStorage.setItem('diceGameData', JSON.stringify(data));
+            },
+            
+            // 更新UI
+            updateUI() {
+                // 更新钥匙数量
+                document.getElementById('keyCount').textContent = this.gameState.goldKeys;
+                
+                // 更新宝箱按钮状态
+                const openBtn = document.getElementById('openTreasureBtn');
+                if (this.gameState.goldKeys > 0) {
+                    openBtn.disabled = false;
+                    openBtn.textContent = `🎁 打开宝箱 (消耗1把钥匙)`;
+                } else {
+                    openBtn.disabled = true;
+                    openBtn.textContent = '🎁 打开宝箱 (需要钥匙)';
+                }
+                
+                // 更新统计
+                this.updateStats();
+            },
+            
+            // 摇骰子 - 优化版
+            async rollDice() {
+                console.log('=== 开始摇骰子 ===');
+                
+                if (this.gameState.isRolling) {
+                    console.log('游戏正在摇骰中，忽略操作');
+                    return;
+                }
+                
+                // 检查积分系统
+                if (!window.pointsSystem) {
+                    this.showMessage('积分系统未初始化', 'error');
+                    return;
+                }
+                
+                // 检查积分是否足够
+                if (!window.pointsSystem.hasEnoughPoints(this.gameState.currentBet)) {
+                    this.showMessage('积分不足！', 'error');
+                    return;
+                }
+                
+                console.log('开始摇骰子，投注金额:', this.gameState.currentBet);
+                
+                this.gameState.isRolling = true;
+                const rollBtn = document.getElementById('rollBtn');
+                rollBtn.disabled = true;
+                rollBtn.textContent = '摇骰中...';
+                
+                try {
+                    // 使用积分系统扣除积分
+                    const deductResult = await window.pointsSystem.updatePoints(
+                        -this.gameState.currentBet, 
+                        '幸运骰子投注',
+                        { 
+                            betAmount: this.gameState.currentBet,
+                            gameAction: 'roll_dice'
+                        }
+                    );
+                    
+                    if (!deductResult.success) {
+                        console.error('积分扣除失败:', deductResult.error);
+                        this.showMessage(deductResult.error || '积分扣除失败', 'error');
+                        
+                        // 重置状态
+                        this.gameState.isRolling = false;
+                        rollBtn.disabled = false;
+                        rollBtn.textContent = '🎲 摇骰子 (5积分)';
+                        return;
+                    }
+                    
+                    console.log('积分扣除成功:', deductResult);
+                    
+                    // 添加滚动动画
+                    const dice1 = document.getElementById('dice1');
+                    const dice2 = document.getElementById('dice2');
+                    const dice3 = document.getElementById('dice3');
+                    
+                    // 添加3D旋转动画
+                    dice1.style.animation = 'none';
+                    dice2.style.animation = 'none';
+                    dice3.style.animation = 'none';
+                    
+                    // 强制重绘
+                    dice1.offsetHeight;
+                    dice2.offsetHeight;
+                    dice3.offsetHeight;
+                    
+                    // 设置动画
+                    dice1.style.animation = 'rollDice 1.5s ease-in-out';
+                    dice2.style.animation = 'rollDice 1.5s ease-in-out 0.2s';
+                    dice3.style.animation = 'rollDice 1.5s ease-in-out 0.4s';
+                    
+                    // 生成骰子结果
+                    setTimeout(() => {
+                        const results = this.generateDiceResults();
+                        
+                        // 显示结果
+                        dice1.textContent = this.getDiceFace(results[0]);
+                        dice2.textContent = this.getDiceFace(results[1]);
+                        dice3.textContent = this.getDiceFace(results[2]);
+                        
+                        const sum = results[0] + results[1] + results[2];
+                        document.getElementById('diceResult').textContent = `点数: ${sum}`;
+                        
+                        // 移除动画
+                        dice1.style.animation = '';
+                        dice2.style.animation = '';
+                        dice3.style.animation = '';
+                        
+                        // 计算结果
+                        this.calculateResult(sum);
+                        
+                        // 重置状态
+                        this.gameState.isRolling = false;
+                        rollBtn.disabled = false;
+                        rollBtn.textContent = '🎲 摇骰子 (5积分)';
+                    }, 1500);
+                    
+                } catch (error) {
+                    console.error('摇骰子过程中发生错误:', error);
+                    this.showMessage('摇骰子失败，请重试', 'error');
+                    
+                    // 重置状态
+                    this.gameState.isRolling = false;
+                    rollBtn.disabled = false;
+                    rollBtn.textContent = '🎲 摇骰子 (5积分)';
+                }
+            },
+            
+            // 生成骰子结果
+            generateDiceResults() {
+                const results = [];
+                for (let i = 0; i < 3; i++) {
+                    // 生成1-6的随机数
+                    const result = Math.floor(Math.random() * 6) + 1;
+                    results.push(result);
+                }
+                return results;
+            },
+            
+            // 获取骰子面
+            getDiceFace(value) {
+                const faces = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+                return faces[value];
+            },
+            
+            // 计算结果 - 集成积分系统
+            async calculateResult(sum) {
+                console.log('=== 计算摇骰子结果 ===');
+                console.log('骰子点数:', sum);
+                
+                let winAmount = 0;
+                let isWin = false;
+                let gotKey = false;
+                
+                // 基础获胜条件：点数为5的倍数
+                if (sum % 5 === 0) {
+                    winAmount = this.gameState.currentBet * 1.6; // 固定倍率1.6倍
+                    isWin = true;
+                }
+                
+                // 5%概率获得金钥匙
+                if (Math.random() < 0.05) {
+                    this.gameState.goldKeys++;
+                    gotKey = true;
+                    this.showMessage('🔑 恭喜！获得一把金钥匙！', 'treasure');
+                }
+                
+                try {
+                    if (isWin) {
+                        // 使用积分系统增加积分
+                        const addResult = await window.pointsSystem.updatePoints(
+                            winAmount, 
+                            '幸运骰子获胜',
+                            { 
+                                diceSum: sum,
+                                betAmount: this.gameState.currentBet,
+                                multiplier: 1.6,
+                                winAmount: winAmount,
+                                gotKey: gotKey
+                            }
+                        );
+                        
+                        if (!addResult.success) {
+                            console.error('积分增加失败:', addResult.error);
+                            this.showMessage('积分增加失败', 'error');
+                        } else {
+                            console.log('积分增加成功:', addResult);
+                            
+                            if (gotKey) {
+                                this.showMessage(`🎉 恭喜！赢得 ${winAmount} 积分 + 1把金钥匙！`, 'success');
+                            } else {
+                                this.showMessage(`🎉 恭喜！您赢得了 ${winAmount} 积分！`, 'success');
+                            }
+                        }
+                    } else {
+                        this.showMessage(`😔 很遗憾！您失去了 ${this.gameState.currentBet} 积分`, 'error');
+                    }
+                    
+                    // 添加到历史记录
+                    this.addToHistory(sum, this.gameState.currentBet, 1.6, isWin, winAmount, gotKey);
+                    
+                    // 更新统计
+                    this.updateStats();
+                    this.saveGameData();
+                    this.updateUI();
+                    
+                } catch (error) {
+                    console.error('计算结果过程中发生错误:', error);
+                    this.showMessage('结算失败，请重试', 'error');
+                }
+            },
+            
+            // 添加到历史记录
+            addToHistory(diceSum, betAmount, multiplier, isWin, winAmount, gotKey) {
+                const historyItem = {
+                    timestamp: new Date().toISOString(),
+                    dice: [diceSum],
+                    betAmount: betAmount,
+                    multiplier: multiplier,
+                    isWin: isWin,
+                    winAmount: winAmount,
+                    gotKey: gotKey,
+                    result: isWin ? 'win' : 'lose'
+                };
+                
+                this.gameState.history.unshift(historyItem);
+                
+                // 只保留最近50条记录
+                if (this.gameState.history.length > 50) {
+                    this.gameState.history = this.gameState.history.slice(0, 50);
+                }
+                
+                this.renderHistory();
+            },
+            
+            // 渲染历史记录
+            renderHistory() {
+                const historyList = document.getElementById('historyList');
+                
+                if (this.gameState.history.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="history-item">
+                            <div class="history-dice">暂无记录</div>
+                            <div class="history-details">
+                                <span class="history-amount">开始游戏查看历史</span>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                historyList.innerHTML = this.gameState.history.map(item => {
+                    const diceFaces = item.dice.map(d => this.getDiceFace(d)).join('');
+                    const resultClass = item.isWin ? 'win' : 'lose';
+                    const resultText = item.isWin ? `赢得: ${item.winAmount}` : `失去:${item.betAmount}`;
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-dice">${diceFaces}</div>
+                            <div class="history-details">
+                                <span class="history-amount">投注: ${item.betAmount}</span>
+                                <span class="history-multiplier">倍率: ${item.multiplier}x</span>
+                                ${item.gotKey ? '<span class="history-key">🔑</span>' : ''}
+                                <span class="history-result ${resultClass}">${resultText}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+            
+            // 打开宝箱 - 集成积分系统
+            async openTreasureBox() {
+                console.log('=== 打开宝箱 ===');
+                
+                if (this.gameState.goldKeys <= 0) {
+                    this.showMessage('金钥匙不足！', 'error');
+                    return;
+                }
+                
+                const treasureBox = document.getElementById('treasureBox');
+                treasureBox.classList.add('opening');
+                
+                setTimeout(() => {
+                    // 随机选择奖励
+                    const reward = this.treasureRewards[Math.floor(Math.random() * this.treasureRewards.length)];
+                    const rewardAmount = Math.floor(Math.random() * (reward.max - reward.min + 1)) + reward.min;
+                    
+                    console.log('宝箱奖励:', { reward, rewardAmount });
+                    
+                    try {
+                        // 使用积分系统增加积分
+                        const addResult = await window.pointsSystem.updatePoints(
+                            rewardAmount, 
+                            '幸运骰子宝箱奖励',
+                            { 
+                                rewardType: 'treasure_box',
+                                rewardAmount: rewardAmount,
+                                rewardDescription: reward.description
+                            }
+                        );
+                        
+                        if (!addResult.success) {
+                            console.error('积分增加失败:', addResult.error);
+                            this.showMessage('积分增加失败', 'error');
+                        } else {
+                            console.log('积分增加成功:', addResult);
+                            
+                            // 显示奖励模态框
+                            this.showTreasureModal(rewardAmount, reward.description);
+                        }
+                    } catch (error) {
+                        console.error('打开宝箱过程中发生错误:', error);
+                        this.showMessage('打开宝箱失败', 'error');
+                    }
+                    
+                    // 消耗钥匙
+                    this.gameState.goldKeys--;
+                    
+                    // 更新UI
+                    this.updateUI();
+                    this.saveGameData();
+                    
+                    treasureBox.classList.remove('opening');
+                }, 2000);
+            },
+            
+            // 显示宝箱奖励模态框
+            showTreasureModal(amount, description) {
+                const modal = document.getElementById('treasureModal');
+                const rewardElement = document.getElementById('treasureReward');
+                const descElement = document.getElementById('treasureDescription');
+                
+                rewardElement.textContent = `获得 ${amount} 积分`;
+                descElement.textContent = description;
+                
+                modal.classList.add('active');
+                
+                // 自动关闭
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                }, 5000);
+            },
+            
+            // 关闭宝箱模态框
+            closeTreasureModal() {
+                document.getElementById('treasureModal').classList.remove('active');
+            },
+            
+            // 更新统计
+            updateStats() {
+                let totalBet = 0;
+                let totalWin = 0;
+                let totalGames = 0;
+                let totalWins = 0;
+                
+                this.gameState.history.forEach(item => {
+                    totalBet += item.betAmount;
+                    totalGames++;
+                    if (item.isWin) {
+                        totalWin += item.winAmount;
+                        totalWins++;
+                    }
+                });
+                
+                this.gameState.stats = {
+                    totalBet: totalBet,
+                    totalWin: totalWin,
+                    totalGames: totalGames,
+                    totalWins: totalWins,
+                    totalKeys: this.gameState.goldKeys
+                };
+                
+                const netProfit = totalWin - totalBet;
+                const winRate = totalGames > 0 ? (totalWins / totalGames * 100).toFixed(1) : 0;
+                
+                document.getElementById('totalBet').textContent = totalBet;
+                document.getElementById('totalWin').textContent = totalWin;
+                document.getElementById('totalKeys').textContent = this.gameState.goldKeys;
+                document.getElementById('winRate').textContent = winRate + '%';
+            },
+            
+            // 显示消息
+            showMessage(text, type) {
+                const existingMessage = document.querySelector('.message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                const message = document.createElement('div');
+                message.className = `message ${type}`;
+                message.textContent = text;
+                document.body.appendChild(message);
+                
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            }
+        };
+        
+        // 页面加载时初始化
+        window.onload = function() {
+            console.log('页面加载完成，开始初始化幸运骰子游戏');
+            DiceGame.init();
+        };
+    </script>
+</body>
+</html>
