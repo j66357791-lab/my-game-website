@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天创商城 - 天创时代</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 保持原有CSS样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* 动态背景粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        .particle.interactive {
+            width: 6px;
+            height: 6px;
+            opacity: 0.8;
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: logoRotate 10s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 112, 67, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 112, 67, 0.8));
+            }
+        }
+        
+        @keyframes logoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .settings-btn {
+            background: rgba(255, 112, 67, 0.1);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .settings-btn:hover {
+            background: rgba(255, 112, 67, 0.2);
+            transform: rotate(30deg);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 112, 67, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-info:hover {
+            background: rgba(255, 112, 67, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.95rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-info.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        /* 主内容 */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 商城布局 */
+        .mall-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 200px);
+        }
+        
+        /* 侧边栏 */
+        .mall-sidebar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .menu-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 112, 67, 0.2);
+            border-color: rgba(255, 112, 67, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .menu-item.active {
+            background: var(--gradient);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .menu-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .menu-text {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* 主内容区 */
+        .mall-main {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .main-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 商品网格 */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-light);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        
+        .product-stock {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .product-btn {
+            flex: 1;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .product-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .product-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .product-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 购物车 */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 2px solid var(--primary);
+            z-index: 1000;
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            background: rgba(255, 112, 67, 0.2);
+            padding: 1.5rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .cart-close {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cart-close:hover {
+            background: rgba(255, 112, 67, 0.2);
+            color: white;
+        }
+        
+        .cart-content {
+            padding: 1.5rem;
+        }
+        
+        .cart-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cart-item-price {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .quantity-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .quantity-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .quantity-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            text-align: center;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+        
+        .cart-item-remove {
+            background: rgba(231, 76, 60, 0.2);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .cart-item-remove:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+        
+        .cart-footer {
+            background: rgba(255, 112, 67, 0.2);
+            padding: 1.5rem;
+            border-top: 2px solid rgba(255, 112, 67, 0.3);
+            margin-top: auto;
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .cart-checkout {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            text-align: center;
+        }
+        
+        .cart-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: var(--transition);
+            max-width: 350px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #27AE60;
+        }
+        
+        .notification.error {
+            border-left-color: #E74C3C;
+        }
+        
+        .notification.info {
+            border-left-color: #3498DB;
+        }
+        
+        .notification-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-message {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .mall-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .mall-sidebar {
+                display: none;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .main-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .main-actions {
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .cart-sidebar.active {
+                right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景粒子 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🛒</div>
+                <div class="logo-text">天创商城</div>
+            </div>
+            
+            <div class="nav-right">
+                <div class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </div>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">用户</div>
+                        <div class="user-points">💰 <span id="userPoints">0</span></div>
+                    </div>
+                    
+                    <div class="user-dropdown">
+                        <a href="index.html" class="user-dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>返回首页</span>
+                        </a>
+                        <a href="user-center.html" class="user-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>个人资料</span>
+                        </a>
+                        <a href="achievements.html" class="user-dropdown-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>成就</span>
+                        </a>
+                        <a href="inventory.html" class="user-dropdown-item">
+                            <i class="fas fa-box"></i>
+                            <span>物品栏</span>
+                        </a>
+                        <a href="bag.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>我的背包</span>
+                        </a>
+                        <a href="mall.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>天创商城</span>
+                        </a>
+                        <a href="market.html" class="user-dropdown-item">
+                            <i class="fas fa-store"></i>
+                            <span>交易市场</span>
+                        </a>
+                        <a href="dice.html" class="user-dropdown-item">
+                            <i class="fas fa-dice"></i>
+                            <span>幸运骰子</span>
+                        </a>
+                        <a href="doll.html" class="user-dropdown-item">
+                            <i class="fas fa-doll"></i>
+                            <span>娃娃系统</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <a href="#" class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 页面标题 -->
+        <section class="page-header">
+            <h1 class="page-title">天创商城</h1>
+            <p class="page-subtitle">精选商品，积分兑换</p>
+        </section>
+        
+        <!-- 商城布局 -->
+        <div class="mall-layout">
+            <!-- 侧边栏 -->
+            <aside class="mall-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-title">商品分类</div>
+                    <div class="sidebar-subtitle">快速导航</div>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-category="all" onclick="filterByCategory('all')">
+                        <div class="menu-icon">📦</div>
+                        <div class="menu-text">全部商品</div>
+                    </a>
+                    
+                    <a href="#" class="menu-item" data-category="virtual" onclick="filterByCategory('virtual')">
+                        <div class="menu-icon">📱</div>
+                        <div class="menu-text">虚拟商品</div>
+                    </a>
+                    
+                    <a href="#" class="menu-item" data-category="physical" onclick="filterByCategory('physical')">
+                        <div class="menu-icon">📦</div>
+                        <div class="menu-text">实体商品</div>
+                    </a>
+                    
+                    <a href="#" class="menu-item" data-category="service" onclick="filterByCategory('service')">
+                        <div class="menu-icon">💼</div>
+                        <div class="menu-text">服务</div>
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- 主内容区 -->
+            <div class="mall-main">
+                <div class="main-header">
+                    <div class="main-title">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>商品列表</span>
+                    </div>
+                    <div class="main-actions">
+                        <button class="action-btn" onclick="refreshProducts()">
+                            <i class="fas fa-sync"></i>
+                            <span>刷新商品</span>
+                        </button>
+                        <button class="action-btn secondary" onclick="toggleCart()">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>购物车 (<span id="cartCount">0</span>)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="products-grid" id="productsGrid">
+                    <!-- 商品卡片将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 购物车侧边栏 -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <div class="cart-title">购物车</div>
+            <button class="cart-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="cart-content" id="cartContent">
+            <!-- 购物车内容将在这里动态生成 -->
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>总计：</span>
+                <span>💰 <span id="cartTotal">0</span></span>
+            </div>
+            <button class="cart-checkout" onclick="checkout()">
+                结算
+            </button>
+        </div>
+    </div>
+
+    <!-- 修复后的脚本引用 -->
+    <script src="/js/api-config.js"></script>
+    <script src="/js/api-service.js"></script>
+    <script src="/js/data-adapter.js"></script>
+    <script src="/js/points-system.js"></script>
+    <script src="/js/user-system.js"></script>
+    <script src="/js/common.js"></script>
+    
+    <script>
+        // 天创商城系统 - 完全修复版
+        const MallSystem = {
+            // 当前状态
+            currentCategory: 'all',
+            products: [],
+            cart: [],
+            currentUser: null,
+            isInitialized: false,
+            
+            // 初始化
+            init() {
+                console.log('=== 天创商城系统初始化 ===');
+                
+                // 检查登录状态
+                if (!this.checkLoginStatus()) {
+                    return;
+                }
+                
+                // 初始化粒子效果
+                this.initParticles();
+                
+                // 初始化事件监听
+                this.initEventListeners();
+                
+                // 等待其他系统加载完成
+                this.waitForSystems(() => {
+                    // 加载商品数据
+                    this.loadProducts();
+                    
+                    // 加载购物车
+                    this.loadCart();
+                    
+                    // 更新UI
+                    this.updateUI();
+                    
+                    // 初始化积分系统
+                    this.initPointsSystem();
+                    
+                    this.isInitialized = true;
+                    console.log('天创商城系统初始化完成');
+                });
+            },
+            
+            // 等待其他系统加载完成
+            waitForSystems(callback) {
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                const checkSystems = () => {
+                    attempts++;
+                    
+                    if (window.pointsSystem && window.pointsSystem.isInitialized && 
+                        window.userSystem && window.userSystem.isLoggedIn) {
+                        console.log('商城系统：所有系统已加载完成');
+                        callback();
+                    } else if (attempts < maxAttempts) {
+                        console.log(`商城系统：等待系统加载... (${attempts}/${maxAttempts})`);
+                        setTimeout(checkSystems, 100);
+                    } else {
+                        console.error('商城系统：系统加载超时');
+                        callback();
+                    }
+                };
+                
+                checkSystems();
+            },
+            
+            // 检查登录状态
+            checkLoginStatus() {
+                try {
+                    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (!isLoggedIn || !currentUser) {
+                        console.log('商城系统：用户未登录，跳转到登录页面');
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                    
+                    this.currentUser = JSON.parse(currentUser);
+                    
+                    // 更新用户信息显示
+                    this.updateUserInfo(this.currentUser);
+                    
+                    return true;
+                } catch (error) {
+                    console.error('商城系统：检查登录状态失败', error);
+                    return false;
+                }
+            },
+            
+            // 更新用户信息显示
+            updateUserInfo(user) {
+                try {
+                    const userName = document.getElementById('userName');
+                    const userPoints = document.getElementById('userPoints');
+                    
+                    if (userName) {
+                        userName.textContent = user.name || '用户';
+                    }
+                    
+                    if (userPoints) {
+                        // 使用积分系统获取积分
+                        const points = window.pointsSystem ? 
+                            window.pointsSystem.getPoints() : 
+                            (user.points || 0);
+                        userPoints.textContent = points;
+                    }
+                } catch (error) {
+                    console.error('商城系统：更新用户信息失败', error);
+                }
+            },
+            
+            // 初始化粒子效果
+            initParticles() {
+                try {
+                    const particlesContainer = document.getElementById('particles');
+                    const particleCount = 25;
+                    
+                    for (let i = 0; i < particleCount; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 10 + 's';
+                        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+                    
+                    // 添加交互粒子
+                    for (let i = 0; i < 5; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle interactive';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 5 + 's';
+                        particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+                } catch (error) {
+                    console.error('商城系统：初始化粒子效果失败', error);
+                }
+            },
+            
+            // 初始化事件监听
+            initEventListeners() {
+                try {
+                    // 用户下拉菜单
+                    const userInfo = document.getElementById('userInfo');
+                    if (userInfo) {
+                        userInfo.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            userInfo.classList.toggle('active');
+                        });
+                        
+                        document.addEventListener('click', () => {
+                            userInfo.classList.remove('active');
+                        });
+                    }
+                    
+                    // 退出登录
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.logout();
+                        });
+                    }
+                    
+                    // 设置按钮
+                    const settingsBtn = document.getElementById('settingsBtn');
+                    if (settingsBtn) {
+                        settingsBtn.addEventListener('click', () => {
+                            this.showNotification('info', '设置', '设置功能开发中...');
+                        });
+                    }
+                    
+                    // 侧边栏菜单项
+                    const menuItems = document.querySelectorAll('.menu-item');
+                    menuItems.forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const category = item.dataset.category;
+                            if (category) {
+                                this.filterByCategory(category);
+                                // 更新活动状态
+                                menuItems.forEach(mi => mi.classList.remove('active'));
+                                item.classList.add('active');
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.error('商城系统：初始化事件监听失败', error);
+                }
+            },
+            
+            // 初始化积分系统
+            initPointsSystem() {
+                console.log('商城系统：初始化积分系统');
+                
+                if (window.pointsSystem) {
+                    // 订阅积分变动事件
+                    window.pointsSystem.subscribe((data) => {
+                        console.log('商城系统：积分系统订阅事件', data);
+                        this.updatePointsDisplay(data.newPoints);
+                    });
+                    
+                    // 监听积分更新事件
+                    window.addEventListener('pointsUpdated', (e) => {
+                        console.log('商城系统：积分更新事件', e.detail);
+                        this.updatePointsDisplay(e.detail.newPoints);
+                    });
+                    
+                    // 监听积分显示更新事件
+                    window.addEventListener('pointsDisplayUpdated', (e) => {
+                        console.log('商城系统：积分显示更新事件', e.detail);
+                        this.updatePointsDisplay(e.detail.points);
+                    });
+                    
+                    // 初始更新积分显示
+                    const currentPoints = window.pointsSystem.getPoints();
+                    this.updatePointsDisplay(currentPoints);
+                    
+                    console.log('商城系统：积分系统初始化完成，当前积分', currentPoints);
+                } else {
+                    console.error('商城系统：积分系统未找到');
+                }
+            },
+            
+            // 加载商品数据
+            loadProducts() {
+                try {
+                    // 从localStorage加载商品数据
+                    const savedProducts = localStorage.getItem('mallProducts');
+                    if (savedProducts) {
+                        this.products = JSON.parse(savedProducts);
+                    } else {
+                        // 如果没有商品数据，创建默认商品
+                        this.products = this.createDefaultProducts();
+                        localStorage.setItem('mallProducts', JSON.stringify(this.products));
+                    }
+                    
+                    // 显示商品
+                    this.displayProducts();
+                    
+                    console.log('商品数据加载完成:', this.products.length, '个商品');
+                } catch (error) {
+                    console.error('加载商品数据失败:', error);
+                }
+            },
+            
+            // 创建默认商品
+            createDefaultProducts() {
+                return [
+                    {
+                        id: 'product_1',
+                        name: 'VIP会员',
+                        description: '享受VIP特权，获得专属标识和特殊功能',
+                        category: 'virtual',
+                        price: 1000,
+                        stock: 999,
+                        icon: '👑',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'product_2',
+                        name: '积分翻倍卡',
+                        description: '使用后获得双倍积分奖励',
+                        category: 'virtual',
+                        price: 500,
+                        stock: 100,
+                        icon: '💎',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'product_3',
+                        name: '幸运骰子券',
+                        description: '免费参与幸运骰子游戏',
+                        category: 'virtual',
+                        price: 200,
+                        stock: 200,
+                        icon: '🎲',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'product_4',
+                        name: '定制头像框',
+                        description: '个性化你的头像，彰显独特风格',
+                        category: 'virtual',
+                        price: 300,
+                        stock: 50,
+                        icon: '🖼️',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'product_5',
+                        name: '限量版手办',
+                        description: '精美收藏品，限量发售',
+                        category: 'physical',
+                        price: 2000,
+                        stock: 10,
+                        icon: '🎁',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'product_6',
+                        name: '专属客服',
+                        description: '7x24小时专属客服服务',
+                        category: 'service',
+                        price: 1500,
+                        stock: 20,
+                        icon: '🎧',
+                        status: 'active',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+            },
+            
+            // 显示商品
+            displayProducts() {
+                try {
+                    const productsGrid = document.getElementById('productsGrid');
+                    if (!productsGrid) return;
+                    
+                    // 过滤商品
+                    let filteredProducts = this.products;
+                    if (this.currentCategory !== 'all') {
+                        filteredProducts = this.products.filter(product => product.category === this.currentCategory);
+                    }
+                    
+                    if (filteredProducts.length === 0) {
+                        productsGrid.innerHTML = `
+                            <div style="text-align: center; padding: 3rem; color: var(--text-light);">
+                                <i class="fas fa-box" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p style="font-size: 1.2rem;">暂无商品</p>
+                                <p style="font-size: 0.9rem; opacity: 0.7;">该分类下暂时没有商品</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    productsGrid.innerHTML = filteredProducts.map(product => {
+                        return `
+                            <div class="product-card" onclick="viewProduct('${product.id}')">
+                                <div class="product-image">
+                                    ${product.icon || '📦'}
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-name">${product.name}</div>
+                                    <div class="product-description">${product.description}</div>
+                                    <div class="product-meta">
+                                        <div class="product-price">💰 ${product.price}</div>
+                                        <div class="product-stock">库存: ${product.stock}</div>
+                                    </div>
+                                    <div class="product-actions">
+                                        <button class="product-btn" onclick="event.stopPropagation(); addToCart('${product.id}')">
+                                            <i class="fas fa-cart-plus"></i>
+                                            <span>加入购物车</span>
+                                        </button>
+                                        <button class="product-btn secondary" onclick="event.stopPropagation(); viewProduct('${product.id}')">
+                                            <i class="fas fa-eye"></i>
+                                            <span>查看详情</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } catch (error) {
+                    console.error('显示商品失败:', error);
+                }
+            },
+            
+            // 按分类过滤商品
+            filterByCategory(category) {
+                this.currentCategory = category;
+                this.displayProducts();
+            },
+            
+            // 加载购物车
+            loadCart() {
+                try {
+                    const savedCart = localStorage.getItem('mallCart');
+                    if (savedCart) {
+                        this.cart = JSON.parse(savedCart);
+                    } else {
+                        this.cart = [];
+                    }
+                    
+                    this.updateCartUI();
+                } catch (error) {
+                    console.error('加载购物车失败:', error);
+                }
+            },
+            
+            // 保存购物车
+            saveCart() {
+                try {
+                    localStorage.setItem('mallCart', JSON.stringify(this.cart));
+                    this.updateCartUI();
+                } catch (error) {
+                    console.error('保存购物车失败:', error);
+                }
+            },
+            
+            // 更新购物车UI
+            updateCartUI() {
+                try {
+                    const cartCount = document.getElementById('cartCount');
+                    const cartTotal = document.getElementById('cartTotal');
+                    const cartContent = document.getElementById('cartContent');
+                    
+                    if (cartCount) {
+                        cartCount.textContent = this.cart.length;
+                    }
+                    
+                    if (cartTotal) {
+                        const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                        cartTotal.textContent = total;
+                    }
+                    
+                    if (cartContent) {
+                        if (this.cart.length === 0) {
+                            cartContent.innerHTML = `
+                                <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                                    <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                    <p>购物车是空的</p>
+                                    <p style="font-size: 0.9rem; opacity: 0.7;">快去添加商品吧！</p>
+                                </div>
+                            `;
+                        } else {
+                            cartContent.innerHTML = this.cart.map(item => `
+                                <div class="cart-item">
+                                    <div class="cart-item-image">
+                                        ${item.icon || '📦'}
+                                    </div>
+                                    <div class="cart-item-info">
+                                        <div class="cart-item-name">${item.name}</div>
+                                        <div class="cart-item-price">💰 ${item.price}</div>
+                                        <div class="cart-item-quantity">
+                                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', ${item.quantity - 1})">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="${item.stock}" onchange="updateQuantity('${item.id}', this.value)">
+                                            <button class="quantity-btn" onclick="updateQuantity('${item.id}', ${item.quantity + 1})">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } catch (error) {
+                    console.error('更新购物车UI失败:', error);
+                }
+            },
+            
+            // 添加到购物车
+            addToCart(productId) {
+                try {
+                    const product = this.products.find(p => p.id === productId);
+                    if (!product) {
+                        this.showNotification('error', '错误', '商品不存在');
+                        return;
+                    }
+                    
+                    if (product.stock <= 0) {
+                        this.showNotification('error', '库存不足', '该商品库存不足');
+                        return;
+                    }
+                    
+                    // 检查是否已在购物车中
+                    const existingItem = this.cart.find(item => item.id === productId);
+                    if (existingItem) {
+                        if (existingItem.quantity >= product.stock) {
+                            this.showNotification('warning', '库存限制', '已达到最大库存数量');
+                            return;
+                        }
+                        existingItem.quantity += 1;
+                    } else {
+                        this.cart.push({
+                            ...product,
+                            quantity: 1
+                        });
+                    }
+                    
+                    this.saveCart();
+                    this.showNotification('success', '添加成功', `${product.name} 已添加到购物车`);
+                } catch (error) {
+                    console.error('添加到购物车失败:', error);
+                }
+            },
+            
+            // 更新数量
+            updateQuantity(productId, quantity) {
+                try {
+                    const product = this.products.find(p => p.id === productId);
+                    if (!product) return;
+                    
+                    if (quantity < 1) quantity = 1;
+                    if (quantity > product.stock) quantity = product.stock;
+                    
+                    const cartItem = this.cart.find(item => item.id === productId);
+                    if (cartItem) {
+                        cartItem.quantity = quantity;
+                        this.saveCart();
+                    }
+                } catch (error) {
+                    console.error('更新数量失败:', error);
+                }
+            },
+            
+            // 从购物车移除
+            removeFromCart(productId) {
+                try {
+                    this.cart = this.cart.filter(item => item.id !== productId);
+                    this.saveCart();
+                } catch (error) {
+                    console.error('从购物车移除失败:', error);
+                }
+            },
+            
+            // 切换购物车显示
+            toggleCart() {
+                try {
+                    const cartSidebar = document.getElementById('cartSidebar');
+                    if (cartSidebar) {
+                        cartSidebar.classList.toggle('active');
+                    }
+                } catch (error) {
+                    console.error('切换购物车显示失败:', error);
+                }
+            },
+            
+            // 查看商品详情
+            viewProduct(productId) {
+                try {
+                    const product = this.products.find(p => p.id === productId);
+                    if (!product) {
+                        this.showNotification('error', '错误', '商品不存在');
+                        return;
+                    }
+                    
+                    this.showNotification('info', '商品详情', `
+                        商品名称：${product.name}
+                        描述：${product.description}
+                        价格：💰 ${product.price}
+                        库存：${product.stock}
+                        分类：${product.category}
+                        状态：${product.status}
+                    `);
+                } catch (error) {
+                    console.error('查看商品详情失败:', error);
+                }
+            },
+            
+            // 刷新商品
+            refreshProducts() {
+                try {
+                    this.loadProducts();
+                    this.showNotification('success', '刷新成功', '商品列表已更新');
+                } catch (error) {
+                    console.error('刷新商品失败:', error);
+                }
+            },
+            
+            // 结算 - 完全修复版
+            checkout() {
+                try {
+                    console.log('商城系统：开始结算流程');
+                    
+                    if (this.cart.length === 0) {
+                        this.showNotification('warning', '购物车为空', '请先添加商品到购物车');
+                        return;
+                    }
+                    
+                    const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    
+                    // 修复：直接从积分系统获取积分
+                    let userPoints = 0;
+                    if (window.pointsSystem) {
+                        userPoints = window.pointsSystem.getPoints();
+                        console.log('商城系统：从积分系统获取积分', userPoints);
+                    } else {
+                        // 备用方案
+                        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                        userPoints = currentUser.points || 0;
+                        console.log('商城系统：从用户数据获取积分', userPoints);
+                    }
+                    
+                    console.log('商城系统：结算信息', { total, userPoints });
+                    
+                    if (userPoints < total) {
+                        this.showNotification('error', '积分不足', `需要 ${total} 积分，当前只有 ${userPoints} 积分`);
+                        return;
+                    }
+                    
+                    // 确认结算
+                    if (confirm(`确认结算？总计：${total} 积分`)) {
+                        console.log('商城系统：用户确认结算，开始扣除积分');
+                        
+                        // 扣除积分
+                        if (window.pointsSystem) {
+                            const result = window.pointsSystem.deductPoints(total, '商城购买');
+                            
+                            if (result.success) {
+                                console.log('商城系统：积分扣除成功', result);
+                                
+                                // 清空购物车
+                                this.cart = [];
+                                this.saveCart();
+                                
+                                // 关闭购物车
+                                const cartSidebar = document.getElementById('cartSidebar');
+                                if (cartSidebar) {
+                                    cartSidebar.classList.remove('active');
+                                }
+                                
+                                this.showNotification('success', '购买成功', `已成功购买商品，扣除 ${total} 积分`);
+                                
+                                // 记录购买历史
+                                this.recordPurchaseHistory();
+                                
+                                // 更新积分显示
+                                this.updatePointsDisplay(result.newPoints);
+                                
+                            } else {
+                                console.error('商城系统：积分扣除失败', result);
+                                this.showNotification('error', '购买失败', result.error);
+                            }
+                        } else {
+                            this.showNotification('error', '系统错误', '积分系统不可用');
+                        }
+                    }
+                } catch (error) {
+                    console.error('商城系统：结算失败', error);
+                    this.showNotification('error', '结算失败', '结算时发生错误');
+                }
+            },
+            
+            // 记录购买历史
+            recordPurchaseHistory() {
+                try {
+                    const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory') || '[]');
+                    const purchase = {
+                        id: 'purchase_' + Date.now(),
+                        items: [...this.cart],
+                        total: this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                        timestamp: new Date().toISOString(),
+                        userId: JSON.parse(localStorage.getItem('currentUser') || '{}').id || 'unknown'
+                    };
+                    
+                    purchaseHistory.unshift(purchase);
+                    
+                    // 限制历史记录数量
+                    if (purchaseHistory.length > 1000) {
+                        purchaseHistory.splice(1000);
+                    }
+                    
+                    localStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+                    
+                    // 创建订单数据并同步到admin
+                    this.createOrderAndSync(purchase);
+                    
+                    console.log('商城系统：购买历史已记录');
+                } catch (error) {
+                    console.error('商城系统：记录购买历史失败', error);
+                }
+            },
+            
+            // 创建订单并同步到admin
+            createOrderAndSync(purchase) {
+                try {
+                    // 创建订单数据
+                    const order = {
+                        id: 'ORDER' + Date.now(),
+                        buyer: purchase.userId || 'unknown',
+                        item: purchase.items.map(item => item.name).join(', '),
+                        quantity: purchase.items.reduce((sum, item) => sum + item.quantity, 0),
+                        totalPrice: purchase.total,
+                        status: 'completed',
+                        timestamp: purchase.timestamp,
+                        createdAt: purchase.timestamp,
+                        items: purchase.items,
+                        source: 'mall_purchase'
+                    };
+                    
+                    // 保存到 userOrders
+                    const userOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+                    userOrders.unshift(order);
+                    
+                    // 限制订单数量
+                    if (userOrders.length > 1000) {
+                        userOrders.splice(1000);
+                    }
+                    
+                    localStorage.setItem('userOrders', JSON.stringify(userOrders));
+                    
+                    // 保存到用户个人订单
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const userOrdersKey = `orders_${currentUser.id || currentUser.username}`;
+                    const userPersonalOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
+                    userPersonalOrders.unshift(order);
+                    
+                    if (userPersonalOrders.length > 1000) {
+                        userPersonalOrders.splice(1000);
+                    }
+                    
+                    localStorage.setItem(userOrdersKey, JSON.stringify(userPersonalOrders));
+                    
+                    // 同步到admin.html
+                    this.syncOrderToAdmin(order);
+                    
+                    console.log('商城系统：订单已创建并同步到admin', order.id);
+                } catch (error) {
+                    console.error('商城系统：创建订单并同步失败', error);
+                }
+            },
+            
+            // 同步订单到admin
+            syncOrderToAdmin(order) {
+                try {
+                    console.log('商城系统：同步订单到admin开始', order.id);
+                    
+                    // 触发数据同步事件
+                    this.triggerDataSync('order', 'create', order);
+                    
+                    // 触发订单同步事件
+                    const orderSyncEvent = new CustomEvent('orderSync', {
+                        detail: {
+                            type: 'order',
+                            action: 'create',
+                            data: order
+                        }
+                    });
+                    
+                    window.dispatchEvent(orderSyncEvent);
+                    
+                    // 触发本地存储事件
+                    const localEvent = new CustomEvent('localStorageSync', {
+                        detail: {
+                            type: 'order',
+                            action: 'create',
+                            data: order
+                        }
+                    });
+                    
+                    window.dispatchEvent(localEvent);
+                    
+                    console.log('商城系统：订单已同步到admin', order.id);
+                } catch (error) {
+                    console.error('商城系统：同步订单到admin失败', error);
+                }
+            },
+            
+            // 触发数据同步事件
+            triggerDataSync(type, action, data) {
+                try {
+                    const syncEvent = new CustomEvent('dataSync', {
+                        detail: {
+                            type: type,
+                            action: action,
+                            data: data
+                        }
+                    });
+                    
+                    // 触发事件
+                    window.dispatchEvent(syncEvent);
+                    
+                    // 触发本地存储事件
+                    const localEvent = new CustomEvent('localStorageSync', {
+                        detail: {
+                            type: type,
+                            action: action,
+                            data: data
+                        }
+                    });
+                    
+                    window.dispatchEvent(localEvent);
+                } catch (error) {
+                    console.error('商城系统：触发数据同步事件失败', error);
+                }
+            },
+            
+            // 更新UI
+            updateUI() {
+                try {
+                    // 更新用户信息
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    this.updateUserInfo(currentUser);
+                    
+                    // 更新购物车
+                    this.updateCartUI();
+                } catch (error) {
+                    console.error('商城系统：更新UI失败', error);
+                }
+            },
+            
+            // 更新积分显示 - 修复版
+            updatePointsDisplay(points) {
+                console.log('商城系统：更新积分显示', points);
+                
+                // 更新所有显示积分的元素
+                const pointsElements = document.querySelectorAll('[id*="userPoints"], [class*="user-points"]');
+                pointsElements.forEach(element => {
+                    if (element.tagName === 'SPAN') {
+                        element.textContent = points;
+                    } else if (element.tagName === 'DIV') {
+                        const span = element.querySelector('span');
+                        if (span) {
+                            span.textContent = points;
+                        } else {
+                            element.textContent = `💰 ${points}`;
+                        }
+                    }
+                });
+                
+                // 触发积分显示更新事件
+                window.dispatchEvent(new CustomEvent('pointsDisplayUpdated', { points }));
+            },
+            
+            // 退出登录
+            logout() {
+                try {
+                    // 使用用户系统退出
+                    if (window.userSystem) {
+                        window.userSystem.logout();
+                    } else {
+                        // 备用方案
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('currentUser');
+                        this.showNotification('info', '退出登录', '您已成功退出登录');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('商城系统：退出登录失败', error);
+                }
+            },
+            
+            // 显示通知
+            showNotification(type, title, message) {
+                try {
+                    // 移除现有通知
+                    const existing = document.querySelector('.notification');
+                    if (existing) existing.remove();
+                    
+                    // 创建新通知
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type}`;
+                    notification.innerHTML = `
+                        <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                        <div class="notification-content">
+                            <div class="notification-title">${title}</div>
+                            <div class="notification-message">${message}</div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(notification);
+                    
+                    // 显示动画
+                    setTimeout(() => notification.classList.add('show'), 100);
+                    
+                    // 自动隐藏
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+                } catch (error) {
+                    console.error('商城系统：显示通知失败', error);
+                }
+            }
+        };
+        
+        // 全局函数
+        function filterByCategory(category) {
+            MallSystem.filterByCategory(category);
+        }
+        
+        function addToCart(productId) {
+            MallSystem.addToCart(productId);
+        }
+        
+        function updateQuantity(productId, quantity) {
+            MallSystem.updateQuantity(productId, quantity);
+        }
+        
+        function removeFromCart(productId) {
+            MallSystem.removeFromCart(productId);
+        }
+        
+        function toggleCart() {
+            MallSystem.toggleCart();
+        }
+        
+        function viewProduct(productId) {
+            MallSystem.viewProduct(productId);
+        }
+        
+        function refreshProducts() {
+            MallSystem.refreshProducts();
+        }
+        
+        function checkout() {
+            MallSystem.checkout();
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('=== 天创商城系统初始化 ===');
+            MallSystem.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天创时代 - 精简游戏平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 这里可以添加通用样式 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 在这里添加您的页面内容 -->
+    
+    <!-- 核心脚本 -->
+    <script src="api-config.js"></script>
+    <script src="api-service.js"></script>
+    <script src="data-adapter.js"></script>
+    <script src="points-system.js"></script>
+    <script src="user-system.js"></script>
+    <script src="common.js"></script>
+    
+    <script>
+        // 页面特定的脚本
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成');
+            
+            // 检查登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const currentUser = localStorage.getItem('currentUser');
+            
+            if (!isLoggedIn || !currentUser) {
+                console.log('用户未登录，跳转到登录页面');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 初始化系统
+            if (window.userSystem) {
+                window.userSystem.init();
+            }
+            
+            if (window.pointsSystem) {
+                window.pointsSystem.init();
+            }
+            
+            // 更新用户信息显示
+            if (window.userSystem) {
+                window.userSystem.updateUserInfo();
+            }
+            
+            // 更新积分显示
+            if (window.pointsSystem) {
+                const currentPoints = window.pointsSystem.getPoints();
+                window.updatePointsDisplay(currentPoints);
+            }
+        });
+    </script>
+</body>
+</html>
