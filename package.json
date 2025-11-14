@@ -1,0 +1,21 @@
+{
+  "name": "my-game-website",
+  "version": "1.0.0",
+  "description": "我的游戏网站",
+  "main": "server.js",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "cors": "^2.8.5",
+    "socket.io": "^4.5.0",
+    "jsonwebtoken": "^9.0.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0"
+  }
+}
