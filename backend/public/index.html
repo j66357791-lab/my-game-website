@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天创时代 - 精简游戏平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 这里保持您原有的所有CSS样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* 动态背景粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        .particle.interactive {
+            width: 6px;
+            height: 6px;
+            opacity: 0.8;
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: logoRotate 10s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 112, 67, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 112, 67, 0.8));
+            }
+        }
+        
+        @keyframes logoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .settings-btn {
+            background: rgba(255, 112, 67, 0.1);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .settings-btn:hover {
+            background: rgba(255, 112, 67, 0.2);
+            transform: rotate(30deg);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 112, 67, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-info:hover {
+            background: rgba(255, 112, 67, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.95rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-info.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        /* 主内容 */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 纵向长条区域 */
+        .zones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        /* 统一长条区域 */
+        .zone {
+            background: rgba(255, 112, 67, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .zone:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(255, 112, 67, 0.5);
+        }
+        
+        /* 区域标题 */
+        .zone-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .zone-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            animation: iconPulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .zone-title-section {
+            flex: 1;
+        }
+        
+        .zone-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+        }
+        
+        .zone-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+        
+        /* 区域内容 */
+        .zone-content {
+            display: flex;
+            gap: 2rem;
+            align-items: stretch;
+        }
+        
+        /* 主要功能卡片 */
+        .main-feature {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .main-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .main-feature:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .main-feature:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: featureFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes featureFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.8rem;
+        }
+        
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .feature-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* 子功能网格 */
+        .sub-features {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .sub-feature {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .sub-feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .sub-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .sub-feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sub-feature-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+        
+        /* 统计数据 */
+        .zone-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 1.5rem 0;
+            border-top: 2px solid rgba(255, 112, 67, 0.3);
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+        
+        /* 底部 */
+        .footer {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 2px solid var(--primary);
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 112, 67, 0.2);
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: var(--transition);
+            max-width: 350px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #27AE60;
+        }
+        
+        .notification.error {
+            border-left-color: #E74C3C;
+        }
+        
+        .notification.info {
+            border-left-color: #3498DB;
+        }
+        
+        .notification-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-message {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 数据源切换按钮 */
+        .data-source-toggle {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .data-source-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .data-source-toggle.remote {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .data-source-toggle.remote:hover {
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        /* 全局背包浮动按钮样式 */
+        .bag-float-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 112, 67, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            animation: bagFloat 3s ease-in-out infinite;
+        }
+        
+        .bag-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255, 112, 67, 0.6);
+            animation: bagFloat 1.5s ease-in-out infinite;
+        }
+        
+        .bag-float-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .bag-float-btn .bag-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF1493;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.4);
+            animation: bagPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes bagFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                box-shadow: 0 8px 25px rgba(255, 112, 67, 0.4);
+            }
+            50% { 
+                transform: translateY(-10px) rotate(5deg); 
+                box-shadow: 0 12px 35px rgba(255, 112, 67, 0.6);
+            }
+        }
+        
+        @keyframes bagPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 2px 8px rgba(255, 20, 147, 0.4);
+            }
+            50% { 
+                transform: scale(1.2); 
+                box-shadow: 0 4px 12px rgba(255, 20, 147, 0.6);
+            }
+        }
+        
+        /* 背包弹窗样式 - 修复语法错误 */
+        .bag-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: bagModalFadeIn 0.3s ease-out;
+        }
+        
+        .bag-modal.active {
+            display: flex;
+        }
+        
+        @keyframes bagModalFadeIn {
+            from { 
+                opacity: 0; 
+                backdrop-filter: blur(0px);
+            }
+            to { 
+                opacity: 1; 
+                backdrop-filter: blur(10px);
+            }
+        }
+        
+        .bag-modal-content {
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: bagModalSlideUp 0.3s ease-out;
+        }
+        
+        @keyframes bagModalSlideUp {
+            from { 
+                transform: translateY(50px); 
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1;
+            }
+        }
+        
+        .bag-modal-header {
+            background: rgba(255, 112, 67, 0.2);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bag-modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .bag-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bag-modal-close:hover {
+            background: rgba(255, 112, 67, 0.2);
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .bag-modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: calc(85vh - 120px);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .zone-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .sub-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .zone-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .bag-float-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .bag-modal-content {
+                margin: 10px;
+                max-height: 90vh;
+            }
+            
+            .bag-modal-header {
+                padding: 1rem;
+            }
+            
+            .bag-modal-title {
+                font-size: 1.4rem;
+            }
+            
+            .bag-modal-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景粒子 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <div class="logo-text">天创时代</div>
+            </div>
+            
+            <div class="nav-right">
+                <!-- 数据源切换按钮 -->
+                <button class="data-source-toggle" id="dataSourceToggle" onclick="toggleDataSource()">
+                    <i class="fas fa-database"></i>
+                    <span id="dataSourceText">本地模式</span>
+                </button>
+                
+                <div class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </div>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">玩家</div>
+                        <div class="user-points">💰 <span id="userPoints">0</span></div>
+                    </div>
+                    
+                    <div class="user-dropdown">
+                        <a href="user-center.html" class="user-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>个人资料</span>
+                        </a>
+                        <a href="achievements.html" class="user-dropdown-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>成就</span>
+                        </a>
+                        <a href="inventory.html" class="user-dropdown-item">
+                            <i class="fas fa-box"></i>
+                            <span>物品栏</span>
+                        </a>
+                        <a href="bag.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>我的背包</span>
+                        </a>
+                        <a href="mall.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>天创商城</span>
+                        </a>
+                        <a href="market.html" class="user-dropdown-item">
+                            <i class="fas fa-store"></i>
+                            <span>交易市场</span>
+                        </a>
+                        <a href="dice.html" class="user-dropdown-item">
+                            <i class="fas fa-dice"></i>
+                            <span>幸运骰子</span>
+                        </a>
+                        <a href="doll.html" class="user-dropdown-item">
+                            <i class="fas fa-doll"></i>
+                            <span>娃娃系统</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <a href="#" class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <h1 class="hero-title">欢迎来到天创时代</h1>
+            <p class="hero-subtitle">探索精彩游戏世界，享受极致娱乐体验</p>
+        </section>
+        
+        <!-- 纵向长条区域 -->
+        <div class="zones-container">
+            <!-- 第一区域：娃娃成长记 -->
+            <div class="zone">
+                <div class="zone-header">
+                    <div class="zone-icon">🧸</div>
+                    <div class="zone-title-section">
+                        <div class="zone-title">娃娃成长记</div>
+                        <div class="zone-subtitle">收集养成，记录成长</div>
+                    </div>
+                </div>
+                
+                <div class="zone-content">
+                    <!-- 主要功能：娃娃系统 -->
+                    <a href="doll.html" class="main-feature" onclick="navigateToGame('doll')">
+                        <div class="feature-icon">🎮</div>
+                        <div class="feature-title">娃娃系统</div>
+                        <div class="feature-desc">抓取娃娃，养成专属角色，享受养成乐趣</div>
+                        <div class="feature-btn">
+                            <span>🎮</span>
+                            <span>开始游戏</span>
+                        </div>
+                    </a>
+                    
+                    <!-- 子功能：娃娃合成 + 娃娃之王 -->
+                    <div class="sub-features">
+                        <a href="#" class="sub-feature" onclick="showComingSoon()">
+                            <div class="sub-feature-icon">🔮</div>
+                            <div class="sub-feature-title">娃娃合成</div>
+                            <div class="sub-feature-desc">合成稀有娃娃</div>
+                        </a>
+                        
+                        <a href="#" class="sub-feature" onclick="showComingSoon()">
+                            <div class="sub-feature-icon">👑</div>
+                            <div class="sub-feature-title">娃娃之王</div>
+                            <div class="sub-feature-desc">争夺娃娃之王</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 统计数据 -->
+                <div class="zone-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">娃娃种类</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">成长阶段</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">∞</div>
+                        <div class="stat-label">养成可能</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第二区域：游戏中心 -->
+            <div class="zone">
+                <div class="zone-header">
+                    <div class="zone-icon">🎯</div>
+                    <div class="zone-title-section">
+                        <div class="zone-title">游戏中心</div>
+                        <div class="zone-subtitle">精彩游戏，无限乐趣</div>
+                    </div>
+                </div>
+                
+                <div class="zone-content">
+                    <!-- 主要功能：恐怖奶奶 -->
+                    <a href="grandma.html" class="main-feature" onclick="navigateToGame('grandma')">
+                        <div class="feature-icon">👵</div>
+                        <div class="feature-title">恐怖奶奶</div>
+                        <div class="feature-desc">刺激逃生游戏，躲避奶奶追捕，赢取丰厚奖励</div>
+                        <div class="feature-btn">
+                            <span>🎮</span>
+                            <span>开始游戏</span>
+                        </div>
+                    </a>
+                    
+                    <!-- 子功能：游戏大厅 + 更多游戏 -->
+                    <div class="sub-features">
+                        <a href="games.html" class="sub-feature" onclick="navigateToGame('games')">
+                            <div class="sub-feature-icon">🎲</div>
+                            <div class="sub-feature-title">游戏大厅</div>
+                            <div class="sub-feature-desc">更多精彩游戏</div>
+                        </a>
+                        
+                        <a href="#" class="sub-feature" onclick="showComingSoon()">
+                            <div class="sub-feature-icon">🎰</div>
+                            <div class="sub-feature-title">即将推出</div>
+                            <div class="sub-feature-desc">敬请期待</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 统计数据 -->
+                <div class="zone-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">5+</div>
+                        <div class="stat-label">游戏数量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24h</div>
+                        <div class="stat-label">在线时长</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">∞</div>
+                        <div class="stat-label">娱乐体验</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第三区域：天创商城 - 权限区分版 -->
+            <div class="zone">
+                <div class="zone-header">
+                    <div class="zone-icon">🛒</div>
+                    <div class="zone-title-section">
+                        <div class="zone-title">天创商城</div>
+                        <div class="zone-subtitle">精选商品，优惠活动，交易市场</div>
+                    </div>
+                </div>
+                
+                <div class="zone-content">
+                    <!-- 主要功能：购物中心 -->
+                    <a href="mall.html" class="main-feature" onclick="navigateToGame('mall')">
+                        <div class="feature-icon">🛍️</div>
+                        <div class="feature-title">购物中心</div>
+                        <div class="feature-desc">精选商品，优惠活动，积分兑换，一站式购物体验</div>
+                        <div class="feature-btn">
+                            <span>🛒</span>
+                            <span>进入商城</span>
+                        </div>
+                    </a>
+                    
+                    <!-- 子功能：权限区分 -->
+                    <div class="sub-features" id="mallSubFeatures">
+                        <!-- 动态生成权限相关的子功能 -->
+                    </div>
+                </div>
+                
+                <!-- 统计数据 -->
+                <div class="zone-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">100+</div>
+                        <div class="stat-label">商品数量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">50%</div>
+                        <div class="stat-label">优惠力度</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">在线服务</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="doll.html">娃娃系统</a>
+                <a href="grandma.html">恐怖奶奶</a>
+                <a href="mall.html">天创商城</a>
+                <a href="market.html">交易市场</a>
+                <a href="bag.html">我的背包</a>
+                <a href="user-center.html">用户中心</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 天创时代. 保留所有权利. | 让游戏更精彩</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全局背包浮动按钮 -->
+    <div class="bag-float-btn" id="bagFloatBtn" onclick="openBagModal()">
+        <i class="fas fa-shopping-bag"></i>
+        <div class="bag-count" id="bagCount">0</div>
+    </div>
+
+    <!-- 背包弹窗 -->
+    <div class="bag-modal" id="bagModal">
+        <div class="bag-modal-content">
+            <div class="bag-modal-header">
+                <div class="bag-modal-title">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>我的背包</span>
+                </div>
+                <button class="bag-modal-close" onclick="closeBagModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bag-modal-body" id="bagModalBody">
+                <!-- 背包内容将在这里动态加载 -->
+                <div style="text-align: center; padding: 2rem; color: #ECF0F1;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎒</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">背包加载中...</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">正在获取您的物品信息</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内嵌JavaScript以解决文件加载问题 -->
+    <script>
+        // 临时内联API配置，解决文件加载问题
+        window.API_CONFIG = {
+            BASE_URL: window.location.origin,
+            ENDPOINTS: {
+                USER: '/api/user',
+                POINTS: '/api/points',
+                ITEMS: '/api/items',
+                MALL: '/api/mall'
+            },
+            TIMEOUT: 5000
+        };
+
+        // 简化的用户系统
+        window.userSystem = {
+            init: function() {
+                console.log('用户系统初始化');
+                this.updateUserInfo();
+            },
+            
+            updateUserInfo: function() {
+                try {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const userName = document.getElementById('userName');
+                    const userPoints = document.getElementById('userPoints');
+                    
+                    if (user && userName) {
+                        userName.textContent = user.name || '玩家';
+                    }
+                    
+                    if (userPoints) {
+                        userPoints.textContent = user.points || 0;
+                    }
+                } catch (error) {
+                    console.error('更新用户信息失败:', error);
+                }
+            },
+            
+            logout: function() {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        };
+
+        // 简化的积分系统
+        window.pointsSystem = {
+            init: function() {
+                console.log('积分系统初始化');
+            },
+            
+            getPoints: function() {
+                try {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    return user.points || 0;
+                } catch (error) {
+                    return 0;
+                }
+            },
+            
+            updatePoints: function(points, reason, data) {
+                try {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    user.points = (user.points || 0) + points;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // 更新显示
+                    const userPoints = document.getElementById('userPoints');
+                    if (userPoints) {
+                        userPoints.textContent = user.points;
+                    }
+                    
+                    // 显示通知
+                    if (window.APP && window.APP.showNotification) {
+                        window.APP.showNotification('success', '积分更新', `${reason}: ${points > 0 ? '+' : ''}${points}积分`);
+                    }
+                } catch (error) {
+                    console.error('更新积分失败:', error);
+                }
+            }
+        };
+
+        // 简化的数据适配器
+        window.dataAdapter = {
+            currentMode: 'local',
+            
+            toggleDataSource: function() {
+                this.currentMode = this.currentMode === 'local' ? 'remote' : 'local';
+                const toggle = document.getElementById('dataSourceToggle');
+                const text = document.getElementById('dataSourceText');
+                
+                if (toggle && text) {
+                    if (this.currentMode === 'remote') {
+                        toggle.classList.add('remote');
+                        text.textContent = '远程模式';
+                    } else {
+                        toggle.classList.remove('remote');
+                        text.textContent = '本地模式';
+                    }
+                }
+                
+                console.log('数据源切换为:', this.currentMode);
+            }
+        };
+
+        // 简化的通用工具
+        window.common = {
+            showNotification: function(type, title, message) {
+                // 移除现有通知
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                // 创建新通知
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // 显示动画
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        };
+    </script>
+    
+    <script>
+        // 应用逻辑 - 保持原有功能，集成API系统
+        const APP = {
+            // 初始化
+            init() {
+                console.log('=== 应用初始化 ===');
+                
+                // 检查登录状态
+                if (!this.checkLoginStatus()) {
+                    console.log('用户未登录，跳转到登录页面');
+                    this.redirectToLogin();
+                    return;
+                }
+                
+                console.log('用户已登录，继续初始化');
+                
+                // 初始化粒子效果
+                this.initParticles();
+                
+                // 初始化事件监听
+                this.initEventListeners();
+                
+                // 初始化用户系统
+                if (window.userSystem) {
+                    window.userSystem.init();
+                }
+                
+                // 初始化积分系统
+                if (window.pointsSystem) {
+                    window.pointsSystem.init();
+                }
+                
+                // 初始化全局背包系统
+                this.initGlobalBag();
+                
+                // 根据用户权限更新界面
+                this.updateUserInterface();
+                
+                // 页面加载完成提示
+                setTimeout(() => {
+                    this.showNotification('success', '欢迎回来', '天创时代欢迎您！');
+                }, 1000);
+            },
+            
+            // 初始化全局背包系统
+            initGlobalBag() {
+                // 延迟初始化背包系统，确保其他系统先加载
+                setTimeout(() => {
+                    if (window.GlobalBagSystem) {
+                        window.GlobalBagSystem.init();
+                    } else {
+                        // 如果背包系统未加载，使用简化版本
+                        this.initSimpleBag();
+                    }
+                }, 500);
+            },
+            
+            // 简化的背包初始化
+            initSimpleBag() {
+                console.log('使用简化背包系统');
+                const bagCount = document.getElementById('bagCount');
+                if (bagCount) {
+                    // 设置默认物品数量
+                    bagCount.textContent = '5';
+                }
+            },
+            
+            // 检查登录状态
+            checkLoginStatus() {
+                try {
+                    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (!isLoggedIn || !currentUser) {
+                        return false;
+                    }
+                    
+                    // 验证用户数据完整性
+                    const user = JSON.parse(currentUser);
+                    if (!user || !user.isActive) {
+                        return false;
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('检查登录状态失败:', error);
+                    return false;
+                }
+            },
+            
+            // 跳转到登录页面
+            redirectToLogin() {
+                try {
+                    console.log('正在跳转到登录页面...');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('跳转失败:', error);
+                    // 备用跳转方式
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 100);
+                }
+            },
+            
+            // 更新用户信息显示
+            updateUserInfo() {
+                try {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const userInfo = document.getElementById('userInfo');
+                    const userName = document.getElementById('userName');
+                    const userPoints = document.getElementById('userPoints');
+                    
+                    if (user && userInfo && userName && userPoints) {
+                        userName.textContent = user.name;
+                        // 使用积分系统获取积分
+                        const points = window.pointsSystem ? 
+                            window.pointsSystem.getPoints() : 
+                            (user.points || 0);
+                        userPoints.textContent = points;
+                        userInfo.style.display = 'flex';
+                    } else {
+                        if (userInfo) userInfo.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('更新用户信息失败:', error);
+                }
+            },
+            
+            // 根据用户权限更新界面
+            updateUserInterface() {
+                try {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const mallSubFeatures = document.getElementById('mallSubFeatures');
+                    
+                    if (!mallSubFeatures) return;
+                    
+                    // 清空现有内容
+                    mallSubFeatures.innerHTML = '';
+                    
+                    // 根据用户权限生成不同的子功能
+                    if (user.username === '18679012034') {
+                        // 管理员权限：显示交易市场和管理后台
+                        mallSubFeatures.innerHTML = `
+                            <a href="market.html" class="sub-feature" onclick="navigateToGame('market')">
+                                <div class="sub-feature-icon">🏪</div>
+                                <div class="sub-feature-title">交易市场</div>
+                                <div class="sub-feature-desc">玩家交易，买卖物品</div>
+                            </a>
+                            
+                            <a href="admin.html" class="sub-feature" onclick="navigateToGame('admin')">
+                                <div class="sub-feature-icon">⚙️</div>
+                                <div class="sub-feature-title">管理后台</div>
+                                <div class="sub-feature-desc">系统管理，数据统计</div>
+                            </a>
+                        `;
+                    } else {
+                        // 普通用户权限：显示交易市场和用户中心
+                        mallSubFeatures.innerHTML = `
+                            <a href="market.html" class="sub-feature" onclick="navigateToGame('market')">
+                                <div class="sub-feature-icon">🏪</div>
+                                <div class="sub-feature-title">交易市场</div>
+                                <div class="sub-feature-desc">玩家交易，买卖物品</div>
+                            </a>
+                            
+                            <a href="user-center.html" class="sub-feature" onclick="navigateToGame('user-center')">
+                                <div class="sub-feature-icon">👤</div>
+                                <div class="sub-feature-title">用户中心</div>
+                                <div class="sub-feature-desc">个人信息管理</div>
+                            </a>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('更新用户界面失败:', error);
+                }
+            },
+            
+            // 初始化粒子效果
+            initParticles() {
+                try {
+                    const particlesContainer = document.getElementById('particles');
+                    const particleCount = 25;
+                    
+                    for (let i = 0; i < particleCount; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 10 + 's';
+                        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+                    
+                    // 添加交互粒子
+                    for (let i = 0; i < 5; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle interactive';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 5 + 's';
+                        particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+                } catch (error) {
+                    console.error('初始化粒子效果失败:', error);
+                }
+            },
+            
+            // 初始化事件监听
+            initEventListeners() {
+                try {
+                    // 用户下拉菜单 - 修复点击事件
+                    const userInfo = document.getElementById('userInfo');
+                    if (userInfo) {
+                        userInfo.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            userInfo.classList.toggle('active');
+                        });
+                        
+                        // 点击其他地方关闭用户下拉菜单
+                        document.addEventListener('click', () => {
+                            userInfo.classList.remove('active');
+                        });
+                    }
+                    
+                    // 退出登录
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.logout();
+                        });
+                    }
+                    
+                    // 设置按钮
+                    const settingsBtn = document.getElementById('settingsBtn');
+                    if (settingsBtn) {
+                        settingsBtn.addEventListener('click', () => {
+                            this.showNotification('info', '设置', '设置功能开发中...');
+                        });
+                    }
+                } catch (error) {
+                    console.error('初始化事件监听失败:', error);
+                }
+            },
+            
+            // 游戏导航
+            navigateToGame(gameId) {
+                try {
+                    this.showNotification('info', '正在进入', `正在加载${gameId}...`);
+                    
+                    // 检查文件是否存在
+                    fetch(gameId + '.html', { method: 'HEAD' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.href = gameId + '.html';
+                            } else {
+                                this.showNotification('error', '页面不存在', `${gameId}.html 文件不存在`);
+                            }
+                        })
+                        .catch(error => {
+                            this.showNotification('error', '网络错误', '无法连接到服务器');
+                        });
+                } catch (error) {
+                    console.error('游戏导航失败:', error);
+                }
+            },
+            
+            // 显示即将推出
+            showComingSoon() {
+                this.showNotification('info', '即将推出', '更多精彩游戏敬请期待！');
+            },
+            
+            // 显示通知
+            showNotification(type, title, message) {
+                try {
+                    // 使用通用通知系统
+                    if (window.common && window.common.showNotification) {
+                        window.common.showNotification(type, title, message);
+                        return;
+                    }
+                    
+                    // 备用通知实现
+                    // 移除现有通知
+                    const existing = document.querySelector('.notification');
+                    if (existing) existing.remove();
+                    
+                    // 创建新通知
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type}`;
+                    notification.innerHTML = `
+                        <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                        <div class="notification-content">
+                            <div class="notification-title">${title}</div>
+                            <div class="notification-message">${message}</div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(notification);
+                    
+                    // 显示动画
+                    setTimeout(() => notification.classList.add('show'), 100);
+                    
+                    // 自动隐藏
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+                } catch (error) {
+                    console.error('显示通知失败:', error);
+                }
+            },
+            
+            // 退出登录
+            logout() {
+                try {
+                    // 使用用户系统退出
+                    if (window.userSystem) {
+                        window.userSystem.logout();
+                    } else {
+                        // 备用方案
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('currentUser');
+                        this.showNotification('info', '退出登录', '您已成功退出登录');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.error('退出登录失败:', error);
+                }
+            }
+        };
+        
+        // 全局函数
+        function navigateToGame(gameId) {
+            APP.navigateToGame(gameId);
+        }
+        
+        function showComingSoon() {
+            APP.showComingSoon();
+        }
+        
+        // 数据源切换函数
+        function toggleDataSource() {
+            if (window.dataAdapter) {
+                window.dataAdapter.toggleDataSource();
+            }
+        }
+        
+        // 简化的背包系统
+        function openBagModal() {
+            try {
+                const modal = document.getElementById('bagModal');
+                if (modal) {
+                    modal.classList.add('active');
+                    // 加载背包内容
+                    loadBagContent();
+                }
+            } catch (error) {
+                console.error('打开背包模态框失败:', error);
+            }
+        }
+        
+        function closeBagModal() {
+            try {
+                const modal = document.getElementById('bagModal');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+            } catch (error) {
+                console.error('关闭背包模态框失败:', error);
+            }
+        }
+        
+        // 加载背包内容
+        function loadBagContent() {
+            try {
+                const bagModalBody = document.getElementById('bagModalBody');
+                if (!bagModalBody) return;
+                
+                // 模拟背包数据
+                const bagItems = [
+                    { id: 1, name: '基础娃娃', icon: '🧸', count: 1, quality: '普通' },
+                    { id: 2, name: '拐杖', icon: '🦯', count: 1, quality: '普通' },
+                    { id: 3, name: '免伤卡', icon: '🛡️', count: 2, quality: '稀有' },
+                    { id: 4, name: '默认皮肤', icon: '🎨', count: 1, quality: '普通' },
+                    { id: 5, name: '积分', icon: '💰', count: 1000, quality: '特殊' }
+                ];
+                
+                bagModalBody.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; padding: 1rem;">
+                        ${bagItems.map(item => `
+                            <div style="background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 112, 67, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" 
+                                 onmouseover="this.style.background='rgba(255, 112, 67, 0.2)'" 
+                                 onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">${item.icon}</div>
+                                <div style="color: white; font-weight: 600; margin-bottom: 0.3rem;">${item.name}</div>
+                                <div style="color: #FFC107; font-size: 0.9rem;">×${item.count}</div>
+                                <div style="color: #ECF0F1; font-size: 0.8rem; margin-top: 0.3rem;">${item.quality}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('加载背包内容失败:', error);
+            }
+        }
+        
+        // 页面初始化 - 确保只初始化一次
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('=== 页面初始化 ===');
+            APP.init();
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case 'd': 
+                    try {
+                        document.querySelector('.zones-container').scrollIntoView({ behavior: 'smooth' });
+                    } catch (error) {
+                        console.error('快捷键处理失败:', error);
+                    }
+                    break;
+                case 'h': 
+                    try {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } catch (error) {
+                        console.error('快捷键处理失败:', error);
+                    }
+                    break;
+                case 'escape': 
+                    try {
+                        document.querySelector('.notification')?.remove();
+                        closeBagModal();
+                    } catch (error) {
+                        console.error('快捷键处理失败:', error);
+                    }
+                    break;
+                case 'b': 
+                    try {
+                        openBagModal();
+                    } catch (error) {
+                        console.error('快捷键处理失败:', error);
+                    }
+                    break;
+            }
+        });
+        
+        // 页面可见性变化监听
+        document.addEventListener('visibilitychange', function() {
+            try {
+                if (document.hidden) {
+                    // 页面隐藏时暂停动画
+                    document.querySelectorAll('.particle').forEach(el => {
+                        el.style.animationPlayState = 'paused';
+                    });
+                } else {
+                    // 页面显示时恢复动画
+                    document.querySelectorAll('.particle').forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }
+            } catch (error) {
+                console.error('页面可见性变化监听失败:', error);
+            }
+        });
+        
+        // 鼠标跟随效果
+        document.addEventListener('mousemove', function(e) {
+            try {
+                const zones = document.querySelectorAll('.zone');
+                zones.forEach(zone => {
+                    const rect = zone.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    const distance = Math.sqrt(x * x + y * y);
+                    const maxDistance = 200;
+                    
+                    if (distance < maxDistance) {
+                        const intensity = 1 - (distance / maxDistance);
+                        zone.style.transform = `translateY(${-5 * intensity}px) scale(${1 + 0.02 * intensity})`;
+                    }
+                });
+            } catch (error) {
+                console.error('鼠标跟随效果失败:', error);
+            }
+        });
+    </script>
+</body>
+</html>

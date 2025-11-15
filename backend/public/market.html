@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易市场 - 天创时代</title>
+    
+    <!-- 优化字体加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* 这里保持您原有的所有CSS样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* 动态背景粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        .particle.interactive {
+            width: 6px;
+            height: 6px;
+            opacity: 0.8;
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: logoRotate 10s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 112, 67, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 112, 67, 0.8));
+            }
+        }
+        
+        @keyframes logoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .settings-btn {
+            background: rgba(255, 112, 67, 0.1);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .settings-btn:hover {
+            background: rgba(255, 112, 67, 0.2);
+            transform: rotate(30deg);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 112, 67, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-info:hover {
+            background: rgba(255, 112, 67, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.95rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-info.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        /* 主内容 */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 市场布局 */
+        .market-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* 市场侧边栏 */
+        .market-sidebar {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            height: fit-content;
+        }
+        
+        .market-categories {
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .category-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.2);
+            border-radius: 10px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .category-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+            border-color: rgba(255, 112, 67, 0.4);
+        }
+        
+        .category-item.active {
+            background: var(--gradient);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .category-icon {
+            font-size: 1.2rem;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .category-count {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 市场统计 */
+        .market-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .stat-value {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* 市场主内容 */
+        .market-main {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            min-height: 600px;
+        }
+        
+        /* 市场头部 */
+        .market-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .market-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .market-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .market-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .market-btn:hover {
+            background: rgba(255, 112, 67, 0.2);
+            border-color: rgba(255, 112, 67, 0.4);
+        }
+        
+        .market-btn.primary {
+            background: var(--gradient);
+            border: none;
+        }
+        
+        .market-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* 市场网格 */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .market-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .market-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .market-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .market-item-seller {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .market-item-seller-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .market-item-seller-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .market-item-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .market-item-content {
+            margin-bottom: 1rem;
+        }
+        
+        .market-item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .market-item-name {
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .market-item-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        
+        .market-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .market-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .market-item-quantity-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .market-item-quantity-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .market-item-quantity-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            text-align: center;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+        
+        .market-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .market-item-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+        
+        .market-item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .market-item-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .market-item-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-desc {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-dark);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: var(--transition);
+            max-width: 350px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #27AE60;
+        }
+        
+        .notification.error {
+            border-left-color: #E74C3C;
+        }
+        
+        .notification.info {
+            border-left-color: #3498DB;
+        }
+        
+        .notification-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-message {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .market-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .market-sidebar {
+                display: none;
+            }
+            
+            .market-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .market-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .market-actions {
+                justify-content: center;
+            }
+            
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景粒子 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🏪</div>
+                <div class="logo-text">交易市场</div>
+            </div>
+            
+            <div class="nav-right">
+                <div class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </div>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">玩家</div>
+                        <div class="user-points">💰 <span id="userPoints">0</span></div>
+                    </div>
+                    
+                    <div class="user-dropdown">
+                        <a href="index.html" class="user-dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>返回首页</span>
+                        </a>
+                        <a href="user-center.html" class="user-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>个人资料</span>
+                        </a>
+                        <a href="mall.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>天创商城</span>
+                        </a>
+                        <a href="market.html" class="user-dropdown-item active">
+                            <i class="fas fa-store"></i>
+                            <span>交易市场</span>
+                        </a>
+                        <a href="dice.html" class="user-dropdown-item">
+                            <i class="fas fa-dice"></i>
+                            <span>幸运骰子</span>
+                        </a>
+                        <a href="doll.html" class="user-dropdown-item">
+                            <i class="fas fa-doll"></i>
+                            <span>娃娃系统</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <a href="#" class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 页面标题 -->
+        <section class="page-header">
+            <h1 class="page-title">🏪 交易市场</h1>
+            <p class="page-subtitle">玩家间自由交易，买卖商品</p>
+        </section>
+        
+        <!-- 市场布局 -->
+        <div class="market-layout">
+            <!-- 市场侧边栏 -->
+            <aside class="market-sidebar">
+                <div class="market-categories">
+                    <div class="category-title">
+                        <i class="fas fa-list"></i>
+                        <span>商品分类</span>
+                    </div>
+                    <div class="category-list" id="categoryList">
+                        <div class="category-item active" data-category="all">
+                            <i class="fas fa-th"></i>
+                            <span class="category-name">全部</span>
+                            <span class="category-count" id="allCount">0</span>
+                        </div>
+                        <div class="category-item" data-category="item">
+                            <i class="fas fa-cube"></i>
+                            <span class="category-name">道具</span>
+                            <span class="category-count" id="itemCount">0</span>
+                        </div>
+                        <div class="category-item" data-category="equipment">
+                            <i class="fas fa-shield-alt"></i>
+                            <span class="category-name">装备</span>
+                            <span class="category-count" id="equipmentCount">0</span>
+                        </div>
+                        <div class="category-item" data-category="skin">
+                            <i class="fas fa-palette"></i>
+                            <span class="category-name">皮肤</span>
+                            <span class="category-count" id="skinCount">0</span>
+                        </div>
+                        <div class="category-item" data-category="currency">
+                            <i class="fas fa-coins"></i>
+                            <span class="category-name">货币</span>
+                            <span class="category-count" id="currencyCount">0</span>
+                        </div>
+                        <div class="category-item" data-category="other">
+                            <i class="fas fa-ellipsis-h"></i>
+                            <span class="category-name">其他</span>
+                            <span class="category-count" id="otherCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="market-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">总商品</span>
+                        <span class="stat-value" id="totalItems">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">总价值</span>
+                        <span class="stat-value" id="totalValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">我的商品</span>
+                        <span class="stat-value" id="myItems">0</span>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- 市场主内容 -->
+            <div class="market-main">
+                <div class="market-header">
+                    <div class="market-title">
+                        <i class="fas fa-store"></i>
+                        <span>市场商品</span>
+                    </div>
+                    <div class="market-actions">
+                        <button class="market-btn" id="refreshBtn">
+                            <i class="fas fa-sync"></i>
+                            <span>刷新市场</span>
+                        </button>
+                        <button class="market-btn primary" id="publishBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>发布商品</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="market-grid" id="marketGrid">
+                    <!-- 市场商品将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 优化脚本加载 -->
+    <script>
+        // 动态API配置 - 自动适应服务器地址
+        window.API_CONFIG = {
+            BASE_URL: window.location.origin,
+            ENDPOINTS: {
+                USER: '/api/user',
+                POINTS: '/api/points',
+                ITEMS: '/api/items',
+                MALL: '/api/mall'
+            },
+            TIMEOUT: 5000
+        };
+
+        // 预加载关键脚本
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            script.onerror = () => {
+                console.error('Failed to load script:', src);
+                // 如果外部脚本加载失败，使用内联备用版本
+                if (callback) callback();
+            };
+            document.head.appendChild(script);
+        }
+
+        // 按顺序加载脚本
+        const scripts = [
+            'api-service.js',
+            'data-adapter.js', 
+            'points-system.js',
+            'user-system.js',
+            'common.js'
+        ];
+
+        let loadedScripts = 0;
+        
+        function loadNextScript() {
+            if (loadedScripts < scripts.length) {
+                loadScript(scripts[loadedScripts], () => {
+                    loadedScripts++;
+                    loadNextScript();
+                });
+            } else {
+                // 所有脚本加载完成，初始化市场系统
+                initMarketSystem();
+            }
+        }
+
+        // 初始化市场系统
+        function initMarketSystem() {
+            console.log('=== 交易市场系统初始化 ===');
+            
+            // 检查登录状态
+            if (!checkLoginStatus()) {
+                return;
+            }
+            
+            // 初始化粒子效果
+            initParticles();
+            
+            // 初始化事件监听
+            initEventListeners();
+            
+            // 加载市场数据
+            loadMarketData();
+            
+            // 更新用户信息
+            updateUserInfo();
+            
+            // 初始化积分系统
+            if (window.pointsSystem) {
+                window.pointsSystem.subscribe((data) => {
+                    this.updatePointsDisplay(data.newPoints);
+                });
+                
+                // 监听积分更新事件
+                window.addEventListener('pointsUpdated', (e) => {
+                    this.updatePointsDisplay(e.detail.newPoints);
+                });
+            }
+            
+            console.log('交易市场系统初始化完成');
+        }
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const currentUser = localStorage.getItem('currentUser');
+            
+            if (!isLoggedIn || !currentUser) {
+                console.log('用户未登录，跳转到登录页面');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 初始化粒子效果
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 25;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+            
+            // 添加交互粒子
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle interactive';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 初始化事件监听
+        function initEventListeners() {
+            // 用户下拉菜单
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo) {
+                userInfo.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userInfo.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', () => {
+                    userInfo.classList.remove('active');
+                });
+            }
+            
+            // 退出登录
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // 设置按钮
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', () => {
+                    showNotification('info', '设置', '设置功能开发中...');
+                });
+            }
+            
+            // 分类切换
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    this.switchCategory(item.dataset.category);
+                });
+            });
+            
+            // 市场操作按钮
+            const refreshBtn = document.getElementById('refreshBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    this.refreshMarket();
+                });
+            }
+            
+            const publishBtn = document.getElementById('publishBtn');
+            if (publishBtn) {
+                publishBtn.addEventListener('click', () => {
+                    this.publishItem();
+                });
+            }
+        }
+        
+        // 更新用户信息
+        function updateUserInfo() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userName = document.getElementById('userName');
+            const userPoints = document.getElementById('userPoints');
+            
+            if (user && userName && userPoints) {
+                userName.textContent = user.name;
+                // 使用积分系统获取积分
+                const points = window.pointsSystem ? 
+                    window.pointsSystem.getPoints() : 
+                    (user.points || 0);
+                userPoints.textContent = points;
+            }
+        }
+        
+        // 加载市场数据
+        function loadMarketData() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userId = user.id || user.username;
+            
+            // 从localStorage加载市场数据
+            const savedMarketItems = localStorage.getItem('marketItems');
+            if (savedMarketItems) {
+                this.marketItems = JSON.parse(savedMarketItems);
+            } else {
+                // 如果没有市场数据，创建默认数据
+                this.marketItems = createDefaultMarketItems();
+                localStorage.setItem('marketItems', JSON.stringify(this.marketItems));
+            }
+            
+            // 更新显示
+            this.updateMarketDisplay();
+        }
+        
+        // 创建默认市场数据
+        function createDefaultMarketItems() {
+            return [
+                {
+                    id: 'market_1',
+                    name: '幸运骰子券',
+                    icon: '🎲',
+                    category: 'item',
+                    description: '免费参与幸运骰子游戏',
+                    price: 150,
+                    quantity: 10,
+                    seller: '系统',
+                    sellerId: 'system',
+                    status: 'active',
+                    publishTime: new Date().toISOString()
+                },
+                {
+                    id: 'market_2',
+                    name: '积分翻倍卡',
+                    icon: '💎',
+                    category: 'item',
+                    description: '使用后获得双倍积分奖励',
+                    price: 300,
+                    quantity: 5,
+                    seller: '系统',
+                    sellerId: 'system',
+                    status: 'active',
+                    publishTime: new Date().toISOString()
+                },
+                {
+                    id: 'market_3',
+                    name: 'VIP体验卡',
+                    icon: '👑',
+                    category: 'item',
+                    description: '7天VIP会员体验卡',
+                    price: 500,
+                    quantity: 3,
+                    seller: '系统',
+                    sellerId: 'system',
+                    status: 'active',
+                    publishTime: new Date().toISOString()
+                },
+                {
+                    id: 'market_4',
+                    name: '限定皮肤',
+                    icon: '🎨',
+                    category: 'skin',
+                    description: '限定版游戏皮肤',
+                    price: 800,
+                    quantity: 2,
+                    seller: '系统',
+                    sellerId: 'system',
+                    status: 'active',
+                    publishTime: new Date().toISOString()
+                },
+                {
+                    id: 'market_5',
+                    name: '神秘盲盒',
+                    icon: '🎁',
+                    category: 'other',
+                    description: '包含随机道具的神秘盲盒',
+                    price: 200,
+                    quantity: 15,
+                    seller: '系统',
+                    sellerId: 'system',
+                    status: 'active',
+                    publishTime: new Date().toISOString()
+                }
+            ];
+        }
+        
+        // 更新市场显示
+        function updateMarketDisplay() {
+            const marketGrid = document.getElementById('marketGrid');
+            if (!marketGrid) return;
+            
+            // 过滤商品
+            let filteredItems = this.marketItems;
+            if (this.currentCategory !== 'all') {
+                filteredItems = this.marketItems.filter(item => item.category === this.currentCategory);
+            }
+            
+            if (filteredItems.length === 0) {
+                marketGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">🏪</div>
+                        <div class="empty-title">市场是空的</div>
+                        <div class="empty-desc">暂无商品在售</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            marketGrid.innerHTML = filteredItems.map(item => {
+                return `
+                    <div class="market-item">
+                        <div class="market-item-header">
+                            <div class="market-item-seller">
+                                <div class="market-item-seller-avatar">${item.seller.charAt(0)}</div>
+                                <div class="market-item-seller-name">${item.seller}</div>
+                            </div>
+                            <div class="market-item-price">💰 ${item.price}</div>
+                        </div>
+                        
+                        <div class="market-item-content">
+                            <div class="market-item-icon">${item.icon}</div>
+                            <div class="market-item-name">${item.name}</div>
+                            <div class="market-item-description">${item.description}</div>
+                        </div>
+                        
+                        <div class="market-item-footer">
+                            <div class="market-item-quantity">
+                                <button class="market-item-quantity-btn" onclick="decreaseQuantity('${item.id}')">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="market-item-quantity-input" value="1" min="1" max="${item.quantity}" id="quantity_${item.id}">
+                                <button class="market-item-quantity-btn" onclick="increaseQuantity('${item.id}')">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="market-item-actions">
+                                <button class="market-item-btn" onclick="buyItem('${item.id}')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>购买</span>
+                                </button>
+                                <button class="market-item-btn secondary" onclick="viewItemDetail('${item.id}')">
+                                    <i class="fas fa-eye"></i>
+                                    <span>详情</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 更新统计
+            this.updateStats();
+        }
+        
+        // 更新统计
+        function updateStats() {
+            // 更新分类数量
+            const categories = ['all', 'item', 'equipment', 'skin', 'currency', 'other'];
+            categories.forEach(category => {
+                const count = category === 'all' ? 
+                    this.marketItems.length : 
+                    this.marketItems.filter(item => item.category === category).length;
+                
+                const countElement = document.getElementById(`${category}Count`);
+                if (countElement) {
+                    countElement.textContent = count;
+                }
+            });
+            
+            // 更新总商品和总价值
+            const totalItems = document.getElementById('totalItems');
+            const totalValue = document.getElementById('totalValue');
+            const myItems = document.getElementById('myItems');
+            
+            if (totalItems) totalItems.textContent = this.marketItems.length;
+            if (totalValue) {
+                const value = this.marketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                totalValue.textContent = value;
+            }
+            if (myItems) {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const myItemsCount = this.marketItems.filter(item => item.sellerId === user.id || item.sellerId === user.username).length;
+                myItems.textContent = myItemsCount;
+            }
+        }
+        
+        // 切换分类
+        function switchCategory(category) {
+            this.currentCategory = category;
+            
+            // 更新分类UI
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // 更新显示
+            this.updateMarketDisplay();
+        }
+        
+        // 增加数量
+        function increaseQuantity(itemId) {
+            const item = this.marketItems.find(item => item.id === itemId);
+            if (!item) return;
+            
+            const quantityInput = document.getElementById(`quantity_${itemId}`);
+            const currentQuantity = parseInt(quantityInput.value);
+            
+            if (currentQuantity < item.quantity) {
+                quantityInput.value = currentQuantity + 1;
+            }
+        }
+        
+        // 减少数量
+        function decreaseQuantity(itemId) {
+            const item = this.marketItems.find(item => item.id === itemId);
+            if (!item) return;
+            
+            const quantityInput = document.getElementById(`quantity_${itemId}`);
+            const currentQuantity = parseInt(quantityInput.value);
+            
+            if (currentQuantity > 1) {
+                quantityInput.value = currentQuantity - 1;
+            }
+        }
+        
+        // 购买商品
+        function buyItem(itemId) {
+            const item = this.marketItems.find(item => item.id === itemId);
+            if (!item) {
+                this.showNotification('error', '购买失败', '商品不存在');
+                return;
+            }
+            
+            const quantityInput = document.getElementById(`quantity_${itemId}`);
+            const quantity = parseInt(quantityInput.value);
+            
+            if (quantity < 1 || quantity > item.quantity) {
+                this.showNotification('error', '购买失败', '数量无效');
+                return;
+            }
+            
+            const totalPrice = item.price * quantity;
+            
+            // 检查积分是否足够
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const currentPoints = window.pointsSystem ? 
+                window.pointsSystem.getPoints() : 
+                (user.points || 0);
+            
+            if (currentPoints < totalPrice) {
+                this.showNotification('error', '购买失败', `积分不足，需要 ${totalPrice} 积分`);
+                return;
+            }
+            
+            // 确认购买
+            if (confirm(`确定要购买 ${quantity} 个 ${item.name} 吗？\n总价：${totalPrice} 积分`)) {
+                // 扣除积分
+                if (window.pointsSystem) {
+                    const result = window.pointsSystem.deductPoints(totalPrice, '市场购买');
+                    
+                    if (result.success) {
+                        // 更新商品数量
+                        item.quantity -= quantity;
+                        
+                        // 保存到localStorage
+                        localStorage.setItem('marketItems', JSON.stringify(this.marketItems));
+                        
+                        // 添加到用户物品
+                        this.addToUserInventory(item, quantity);
+                        
+                        // 更新显示
+                        this.updateMarketDisplay();
+                        
+                        this.showNotification('success', '购买成功', `成功购买 ${quantity} 个 ${item.name}`);
+                    } else {
+                        this.showNotification('error', '购买失败', result.error);
+                    }
+                } else {
+                    this.showNotification('error', '购买失败', '积分系统不可用');
+                }
+            }
+        }
+        
+        // 添加到用户物品
+        function addToUserInventory(item, quantity) {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userId = user.id || user.username;
+            
+            // 获取用户物品
+            const userInventory = JSON.parse(localStorage.getItem(`userInventory_${userId}`) || '[]');
+            
+            // 添加物品
+            for (let i = 0; i < quantity; i++) {
+                userInventory.push({
+                    id: `user_${item.id}_${Date.now()}_${i}`,
+                    originalId: item.id,
+                    name: item.name,
+                    icon: item.icon,
+                    category: item.category,
+                    description: item.description,
+                    purchaseTime: new Date().toISOString(),
+                    price: item.price
+                });
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem(`userInventory_${userId}`, JSON.stringify(userInventory));
+        }
+        
+        // 查看商品详情
+        function viewItemDetail(itemId) {
+            const item = this.marketItems.find(item => item.id === itemId);
+            if (!item) {
+                this.showNotification('error', '查看失败', '商品不存在');
+                return;
+            }
+            
+            this.showNotification('info', '商品详情', `
+                商品名称：${item.name}
+                卖家：${item.seller}
+                价格：${item.price}
+                库存：${item.quantity}
+                分类：${item.category}
+                描述：${item.description}
+                发布时间：${new Date(item.publishTime).toLocaleString()}
+            `);
+        }
+        
+        // 发布商品
+        function publishItem() {
+            this.showNotification('info', '发布商品', '发布商品功能开发中...');
+        }
+        
+        // 刷新市场
+        function refreshMarket() {
+            this.loadMarketData();
+            this.showNotification('success', '刷新成功', '市场数据已更新');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 使用用户系统退出
+            if (window.userSystem) {
+                window.userSystem.logout();
+            } else {
+                // 备用方案
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
+                this.showNotification('info', '退出登录', '您已成功退出登录');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+        
+        // 显示通知
+        function showNotification(type, title, message) {
+            // 移除现有通知
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            // 创建新通知
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // 交易市场系统
+        const MarketSystem = {
+            // 当前选中的分类
+            currentCategory: 'all',
+            
+            // 市场数据
+            marketItems: [],
+            
+            // 初始化
+            init() {
+                console.log('=== 交易市场系统初始化 ===');
+                
+                // 检查登录状态
+                if (!this.checkLoginStatus()) {
+                    return;
+                }
+                
+                // 初始化粒子效果
+                this.initParticles();
+                
+                // 初始化事件监听
+                this.initEventListeners();
+                
+                // 加载市场数据
+                this.loadMarketData();
+                
+                // 更新用户信息
+                this.updateUserInfo();
+                
+                // 初始化积分系统
+                if (window.pointsSystem) {
+                    window.pointsSystem.subscribe((data) => {
+                        this.updatePointsDisplay(data.newPoints);
+                    });
+                    
+                    // 监听积分更新事件
+                    window.addEventListener('pointsUpdated', (e) => {
+                        this.updatePointsDisplay(e.detail.newPoints);
+                    });
+                }
+                
+                console.log('交易市场系统初始化完成');
+            },
+            
+            // 检查登录状态
+            checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const currentUser = localStorage.getItem('currentUser');
+                
+                if (!isLoggedIn || !currentUser) {
+                    console.log('用户未登录，跳转到登录页面');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                return true;
+            },
+            
+            // 初始化粒子效果
+            initParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = 25;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 10 + 's';
+                    particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+                
+                // 添加交互粒子
+                for (let i = 0; i < 5; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle interactive';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            },
+            
+            // 初始化事件监听
+            initEventListeners() {
+                // 用户下拉菜单
+                const userInfo = document.getElementById('userInfo');
+                if (userInfo) {
+                    userInfo.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        userInfo.classList.toggle('active');
+                    });
+                    
+                    document.addEventListener('click', () => {
+                        userInfo.classList.remove('active');
+                    });
+                }
+                
+                // 退出登录
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.logout();
+                    });
+                }
+                
+                // 设置按钮
+                const settingsBtn = document.getElementById('settingsBtn');
+                if (settingsBtn) {
+                    settingsBtn.addEventListener('click', () => {
+                        this.showNotification('info', '设置', '设置功能开发中...');
+                    });
+                }
+                
+                // 分类切换
+                const categoryItems = document.querySelectorAll('.category-item');
+                categoryItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.switchCategory(item.dataset.category);
+                    });
+                });
+                
+                // 市场操作按钮
+                const refreshBtn = document.getElementById('refreshBtn');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        this.refreshMarket();
+                    });
+                }
+                
+                const publishBtn = document.getElementById('publishBtn');
+                if (publishBtn) {
+                    publishBtn.addEventListener('click', () => {
+                        this.publishItem();
+                    });
+                }
+            },
+            
+            // 更新用户信息
+            updateUserInfo() {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const userName = document.getElementById('userName');
+                const userPoints = document.getElementById('userPoints');
+                
+                if (user && userName && userPoints) {
+                    userName.textContent = user.name;
+                    // 使用积分系统获取积分
+                    const points = window.pointsSystem ? 
+                        window.pointsSystem.getPoints() : 
+                        (user.points || 0);
+                    userPoints.textContent = points;
+                }
+            },
+            
+            // 加载市场数据
+            loadMarketData() {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const userId = user.id || user.username;
+                
+                // 从localStorage加载市场数据
+                const savedMarketItems = localStorage.getItem('marketItems');
+                if (savedMarketItems) {
+                    this.marketItems = JSON.parse(savedMarketItems);
+                } else {
+                    // 如果没有市场数据，创建默认数据
+                    this.marketItems = this.createDefaultMarketItems();
+                    localStorage.setItem('marketItems', JSON.stringify(this.marketItems));
+                }
+                
+                // 更新显示
+                this.updateMarketDisplay();
+            },
+            
+            // 创建默认市场数据
+            createDefaultMarketItems() {
+                return [
+                    {
+                        id: 'market_1',
+                        name: '幸运骰子券',
+                        icon: '🎲',
+                        category: 'item',
+                        description: '免费参与幸运骰子游戏',
+                        price: 150,
+                        quantity: 10,
+                        seller: '系统',
+                        sellerId: 'system',
+                        status: 'active',
+                        publishTime: new Date().toISOString()
+                    },
+                    {
+                        id: 'market_2',
+                        name: '积分翻倍卡',
+                        icon: '💎',
+                        category: 'item',
+                        description: '使用后获得双倍积分奖励',
+                        price: 300,
+                        quantity: 5,
+                        seller: '系统',
+                        sellerId: 'system',
+                        status: 'active',
+                        publishTime: new Date().toISOString()
+                    },
+                    {
+                        id: 'market_3',
+                        name: 'VIP体验卡',
+                        icon: '👑',
+                        category: 'item',
+                        description: '7天VIP会员体验卡',
+                        price: 500,
+                        quantity: 3,
+                        seller: '系统',
+                        sellerId: 'system',
+                        status: 'active',
+                        publishTime: new Date().toISOString()
+                    },
+                    {
+                        id: 'market_4',
+                        name: '限定皮肤',
+                        icon: '🎨',
+                        category: 'skin',
+                        description: '限定版游戏皮肤',
+                        price: 800,
+                        quantity: 2,
+                        seller: '系统',
+                        sellerId: 'system',
+                        status: 'active',
+                        publishTime: new Date().toISOString()
+                    },
+                    {
+                        id: 'market_5',
+                        name: '神秘盲盒',
+                        icon: '🎁',
+                        category: 'other',
+                        description: '包含随机道具的神秘盲盒',
+                        price: 200,
+                        quantity: 15,
+                        seller: '系统',
+                        sellerId: 'system',
+                        status: 'active',
+                        publishTime: new Date().toISOString()
+                    }
+                ];
+            },
+            
+            // 更新市场显示
+            updateMarketDisplay() {
+                const marketGrid = document.getElementById('marketGrid');
+                if (!marketGrid) return;
+                
+                // 过滤商品
+                let filteredItems = this.marketItems;
+                if (this.currentCategory !== 'all') {
+                    filteredItems = this.marketItems.filter(item => item.category === this.currentCategory);
+                }
+                
+                if (filteredItems.length === 0) {
+                    marketGrid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-icon">🏪</div>
+                            <div class="empty-title">市场是空的</div>
+                            <div class="empty-desc">暂无商品在售</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                marketGrid.innerHTML = filteredItems.map(item => {
+                    return `
+                        <div class="market-item">
+                            <div class="market-item-header">
+                                <div class="market-item-seller">
+                                    <div class="market-item-seller-avatar">${item.seller.charAt(0)}</div>
+                                    <div class="market-item-seller-name">${item.seller}</div>
+                                </div>
+                                <div class="market-item-price">💰 ${item.price}</div>
+                            </div>
+                            
+                            <div class="market-item-content">
+                                <div class="market-item-icon">${item.icon}</div>
+                                <div class="market-item-name">${item.name}</div>
+                                <div class="market-item-description">${item.description}</div>
+                            </div>
+                            
+                            <div class="market-item-footer">
+                                <div class="market-item-quantity">
+                                    <button class="market-item-quantity-btn" onclick="MarketSystem.decreaseQuantity('${item.id}')">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="market-item-quantity-input" value="1" min="1" max="${item.quantity}" id="quantity_${item.id}">
+                                    <button class="market-item-quantity-btn" onclick="MarketSystem.increaseQuantity('${item.id}')">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="market-item-actions">
+                                    <button class="market-item-btn" onclick="MarketSystem.buyItem('${item.id}')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span>购买</span>
+                                    </button>
+                                    <button class="market-item-btn secondary" onclick="MarketSystem.viewItemDetail('${item.id}')">
+                                        <i class="fas fa-eye"></i>
+                                        <span>详情</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // 更新统计
+                this.updateStats();
+            },
+            
+            // 更新统计
+            updateStats() {
+                // 更新分类数量
+                const categories = ['all', 'item', 'equipment', 'skin', 'currency', 'other'];
+                categories.forEach(category => {
+                    const count = category === 'all' ? 
+                        this.marketItems.length : 
+                        this.marketItems.filter(item => item.category === category).length;
+                    
+                    const countElement = document.getElementById(`${category}Count`);
+                    if (countElement) {
+                        countElement.textContent = count;
+                    }
+                });
+                
+                // 更新总商品和总价值
+                const totalItems = document.getElementById('totalItems');
+                const totalValue = document.getElementById('totalValue');
+                const myItems = document.getElementById('myItems');
+                
+                if (totalItems) totalItems.textContent = this.marketItems.length;
+                if (totalValue) {
+                    const value = this.marketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    totalValue.textContent = value;
+                }
+                if (myItems) {
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const myItemsCount = this.marketItems.filter(item => item.sellerId === user.id || item.sellerId === user.username).length;
+                    myItems.textContent = myItemsCount;
+                }
+            },
+            
+            // 切换分类
+            switchCategory(category) {
+                this.currentCategory = category;
+                
+                // 更新分类UI
+                document.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-category="${category}"]`).classList.add('active');
+                
+                // 更新显示
+                this.updateMarketDisplay();
+            },
+            
+            // 增加数量
+            increaseQuantity(itemId) {
+                const item = this.marketItems.find(item => item.id === itemId);
+                if (!item) return;
+                
+                const quantityInput = document.getElementById(`quantity_${itemId}`);
+                const currentQuantity = parseInt(quantityInput.value);
+                
+                if (currentQuantity < item.quantity) {
+                    quantityInput.value = currentQuantity + 1;
+                }
+            },
+            
+            // 减少数量
+            decreaseQuantity(itemId) {
+                const item = this.marketItems.find(item => item.id === itemId);
+                if (!item) return;
+                
+                const quantityInput = document.getElementById(`quantity_${itemId}`);
+                const currentQuantity = parseInt(quantityInput.value);
+                
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                }
+            },
+            
+            // 购买商品
+            buyItem(itemId) {
+                const item = this.marketItems.find(item => item.id === itemId);
+                if (!item) {
+                    this.showNotification('error', '购买失败', '商品不存在');
+                    return;
+                }
+                
+                const quantityInput = document.getElementById(`quantity_${itemId}`);
+                const quantity = parseInt(quantityInput.value);
+                
+                if (quantity < 1 || quantity > item.quantity) {
+                    this.showNotification('error', '购买失败', '数量无效');
+                    return;
+                }
+                
+                const totalPrice = item.price * quantity;
+                
+                // 检查积分是否足够
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const currentPoints = window.pointsSystem ? 
+                    window.pointsSystem.getPoints() : 
+                    (user.points || 0);
+                
+                if (currentPoints < totalPrice) {
+                    this.showNotification('error', '购买失败', `积分不足，需要 ${totalPrice} 积分`);
+                    return;
+                }
+                
+                // 确认购买
+                if (confirm(`确定要购买 ${quantity} 个 ${item.name} 吗？\n总价：${totalPrice} 积分`)) {
+                    // 扣除积分
+                    if (window.pointsSystem) {
+                        const result = window.pointsSystem.deductPoints(totalPrice, '市场购买');
+                        
+                        if (result.success) {
+                            // 更新商品数量
+                            item.quantity -= quantity;
+                            
+                            // 保存到localStorage
+                            localStorage.setItem('marketItems', JSON.stringify(this.marketItems));
+                            
+                            // 添加到用户物品
+                            this.addToUserInventory(item, quantity);
+                            
+                            // 更新显示
+                            this.updateMarketDisplay();
+                            
+                            this.showNotification('success', '购买成功', `成功购买 ${quantity} 个 ${item.name}`);
+                        } else {
+                            this.showNotification('error', '购买失败', result.error);
+                        }
+                    } else {
+                        this.showNotification('error', '购买失败', '积分系统不可用');
+                    }
+                }
+            },
+            
+            // 添加到用户物品
+            addToUserInventory(item, quantity) {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const userId = user.id || user.username;
+                
+                // 获取用户物品
+                const userInventory = JSON.parse(localStorage.getItem(`userInventory_${userId}`) || '[]');
+                
+                // 添加物品
+                for (let i = 0; i < quantity; i++) {
+                    userInventory.push({
+                        id: `user_${item.id}_${Date.now()}_${i}`,
+                        originalId: item.id,
+                        name: item.name,
+                        icon: item.icon,
+                        category: item.category,
+                        description: item.description,
+                        purchaseTime: new Date().toISOString(),
+                        price: item.price
+                    });
+                }
+                
+                // 保存到localStorage
+                localStorage.setItem(`userInventory_${userId}`, JSON.stringify(userInventory));
+            },
+            
+            // 查看商品详情
+            viewItemDetail(itemId) {
+                const item = this.marketItems.find(item => item.id === itemId);
+                if (!item) {
+                    this.showNotification('error', '查看失败', '商品不存在');
+                    return;
+                }
+                
+                this.showNotification('info', '商品详情', `
+                    商品名称：${item.name}
+                    卖家：${item.seller}
+                    价格：${item.price}
+                    库存：${item.quantity}
+                    分类：${item.category}
+                    描述：${item.description}
+                    发布时间：${new Date(item.publishTime).toLocaleString()}
+                `);
+            },
+            
+            // 发布商品
+            publishItem() {
+                this.showNotification('info', '发布商品', '发布商品功能开发中...');
+            },
+            
+            // 刷新市场
+            refreshMarket() {
+                this.loadMarketData();
+                this.showNotification('success', '刷新成功', '市场数据已更新');
+            },
+            
+            // 退出登录
+            logout() {
+                // 使用用户系统退出
+                if (window.userSystem) {
+                    window.userSystem.logout();
+                } else {
+                    // 备用方案
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('currentUser');
+                    this.showNotification('info', '退出登录', '您已成功退出登录');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                }
+            },
+            
+            // 显示通知
+            showNotification(type, title, message) {
+                // 移除现有通知
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                // 创建新通知
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // 显示动画
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        };
+        
+        // 全局函数
+        window.MarketSystem = MarketSystem;
+        
+        // 全局函数
+        function switchCategory(category) {
+            if (window.MarketSystem) {
+                window.MarketSystem.switchCategory(category);
+            }
+        }
+        
+        function increaseQuantity(itemId) {
+            if (window.MarketSystem) {
+                window.MarketSystem.increaseQuantity(itemId);
+            }
+        }
+        
+        function decreaseQuantity(itemId) {
+            if (window.MarketSystem) {
+                window.MarketSystem.decreaseQuantity(itemId);
+            }
+        }
+        
+        function buyItem(itemId) {
+            if (window.MarketSystem) {
+                window.MarketSystem.buyItem(itemId);
+            }
+        }
+        
+        function viewItemDetail(itemId) {
+            if (window.MarketSystem) {
+                window.MarketSystem.viewItemDetail(itemId);
+            }
+        }
+        
+        function publishItem() {
+            if (window.MarketSystem) {
+                window.MarketSystem.publishItem();
+            }
+        }
+        
+        function refreshMarket() {
+            if (window.MarketSystem) {
+                window.MarketSystem.refreshMarket();
+            }
+        }
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('=== 交易市场页面初始化 ===');
+            MarketSystem.init();
+        });
+    </script>
+</body>
+</html>
