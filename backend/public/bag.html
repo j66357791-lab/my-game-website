@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背包系统 - 天创时代</title>
+    
+    <!-- 强制云端模式配置 -->
+    <meta name="force-cloud-mode" content="true">
+    <meta name="api-server" content="https://tianchuang.onrender.com">
+    
+    <!-- 优化字体加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: linear-gradient(135deg, #FFE5F1 0%, #FFD1DC 25%, #FFC0CB 50%, #FFB6C1 75%, #FFA07A 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* 动态背景粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+        
+        .particle.interactive {
+            width: 6px;
+            height: 6px;
+            opacity: 0.8;
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 背包背景动画 */
+        .bag-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M100,20 C60,20 30,50 30,90 C30,130 60,160 100,160 C140,160 170,130 170,90 C170,50 140,20 100,20 Z" fill="none" stroke="rgba(255,182,193,0.1)" stroke-width="2"/></svg>') repeat;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 1;
+            animation: bagFloat 20s linear infinite;
+        }
+        
+        @keyframes bagFloat {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-10px) translateY(-5px) rotate(5deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0deg); }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: logoRotate 10s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 112, 67, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 112, 67, 0.8));
+            }
+        }
+        
+        @keyframes logoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .settings-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 112, 67, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-info:hover {
+            background: rgba(255, 112, 67, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-info.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        /* 主内容 */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 背包系统布局 */
+        .bag-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* 背包侧边栏 */
+        .bag-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.2);
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .sidebar-menu-link:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .sidebar-menu-link.active {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .sidebar-menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 背包主内容 */
+        .bag-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .main-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 背包网格 */
+        .bag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .bag-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bag-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .bag-item.selected {
+            background: rgba(255, 112, 67, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(255, 112, 67, 0.3);
+        }
+        
+        .bag-item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .bag-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bag-item-count {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .bag-item-quality {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--gradient);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .bag-item-quality.common {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+        
+        .bag-item-quality.rare {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .bag-item-quality.epic {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .bag-item-quality.legendary {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        /* 背包详情面板 */
+        .bag-detail-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .bag-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .bag-detail-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .bag-detail-close {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bag-detail-close:hover {
+            background: rgba(255, 112, 67, 0.1);
+            color: var(--primary);
+        }
+        
+        .bag-detail-content {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .bag-detail-icon {
+            font-size: 3rem;
+        }
+        
+        .bag-detail-info {
+            flex: 1;
+        }
+        
+        .bag-detail-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bag-detail-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        
+        .bag-detail-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .detail-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 112, 67, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        
+        .detail-stat-label {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .detail-stat-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .bag-detail-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .detail-btn {
+            flex: 1;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        
+        .detail-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .detail-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .detail-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-desc {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: var(--transition);
+            max-width: 350px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #27AE60;
+        }
+        
+        .notification.error {
+            border-left-color: #E74C3C;
+        }
+        
+        .notification.info {
+            border-left-color: #3498DB;
+        }
+        
+        .notification-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-message {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .bag-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .bag-sidebar {
+                display: none;
+            }
+            
+            .bag-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .main-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .main-actions {
+                justify-content: center;
+            }
+            
+            .bag-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景粒子 -->
+    <div class="particles" id="particles"></div>
+    <div class="bag-bg" id="bagBg"></div>
+    
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">🎒</div>
+                <div class="logo-text">背包系统</div>
+            </div>
+            
+            <div class="nav-right">
+                <a href="doll-king.html" class="settings-btn">
+                    <i class="fas fa-crown"></i>
+                    <span>娃娃之王</span>
+                </a>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">玩家</div>
+                        <div class="user-points">💰 <span id="userPoints">0</span></div>
+                    </div>
+                    
+                    <div class="user-dropdown">
+                        <a href="index.html" class="user-dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>返回首页</span>
+                        </a>
+                        <a href="user-center.html" class="user-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>个人资料</span>
+                        </a>
+                        <a href="achievements.html" class="user-dropdown-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>成就</span>
+                        </a>
+                        <a href="inventory.html" class="user-dropdown-item">
+                            <i class="fas fa-box"></i>
+                            <span>物品栏</span>
+                        </a>
+                        <a href="bag.html" class="user-dropdown-item active">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>我的背包</span>
+                        </a>
+                        <a href="mall.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>天创商城</span>
+                        </a>
+                        <a href="market.html" class="user-dropdown-item">
+                            <i class="fas fa-store"></i>
+                            <span>交易市场</span>
+                        </a>
+                        <a href="dice.html" class="user-dropdown-item">
+                            <i class="fas fa-dice"></i>
+                            <span>幸运骰子</span>
+                        </a>
+                        <a href="doll.html" class="user-dropdown-item">
+                            <i class="fas fa-doll"></i>
+                            <span>娃娃系统</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <a href="#" class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 页面标题 -->
+        <section class="page-header">
+            <h1 class="page-title">🎒 背包系统</h1>
+            <p class="page-subtitle">管理您的物品，查看收藏和道具</p>
+        </section>
+        
+        <!-- 背包系统布局 -->
+        <div class="bag-layout">
+            <!-- 背包侧边栏 -->
+            <aside class="bag-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-title">物品分类</div>
+                    <div class="sidebar-subtitle">快速导航</div>
+                </div>
+                
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#all" class="sidebar-menu-link active" data-category="all">
+                            <i class="fas fa-th sidebar-menu-icon"></i>
+                            <span>全部物品</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#doll" class="sidebar-menu-link" data-category="doll">
+                            <i class="fas fa-doll sidebar-menu-icon"></i>
+                            <span>娃娃</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#crutch" class="sidebar-menu-link" data-category="crutch">
+                            <i class="fas fa-walking-cane sidebar-menu-icon"></i>
+                            <span>拐杖</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#points" class="sidebar-menu-link" data-category="points">
+                            <i class="fas fa-coins sidebar-menu-icon"></i>
+                            <span>积分</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="bag-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">总物品</span>
+                        <span class="stat-value" id="bagTotalItems">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">总价值</span>
+                        <span class="stat-value" id="bagTotalValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">背包容量</span>
+                        <span class="stat-value">100/100</span>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- 背包主内容 -->
+            <div class="bag-main">
+                <div class="main-header">
+                    <div class="main-title">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>我的背包</span>
+                    </div>
+                    <div class="main-actions">
+                        <button class="action-btn" id="sortBtn">
+                            <i class="fas fa-sort"></i>
+                            <span>排序</span>
+                        </button>
+                        <button class="action-btn secondary" id="organizeBtn">
+                            <i class="fas fa-th"></i>
+                            <span>整理</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bag-grid" id="bagGrid">
+                    <!-- 背包物品将在这里动态生成 -->
+                </div>
+                
+                <!-- 背包详情面板 -->
+                <div class="bag-detail-panel" id="bagDetailPanel" style="display: none;">
+                    <div class="bag-detail-header">
+                        <div class="bag-detail-title">物品详情</div>
+                        <button class="bag-detail-close" id="detailClose">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="bag-detail-content">
+                        <div class="bag-detail-icon" id="detailIcon">🎒</div>
+                        <div class="bag-detail-info">
+                            <div class="bag-detail-name" id="detailName">物品名称</div>
+                            <div class="bag-detail-desc" id="detailDesc">物品描述</div>
+                            <div class="bag-detail-stats" id="detailStats">
+                                <!-- 动态生成属性 -->
+                            </div>
+                            <div class="bag-detail-actions" id="detailActions">
+                                <!-- 动态生成操作按钮 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 强制云端模式的脚本加载 -->
+    <script>
+        // 强制设置云端模式配置
+        window.API_CONFIG = {
+            // 修改为你的云端服务器地址
+            BASE_URL: 'https://tianchuang.onrender.com/api',
+            
+            TIMEOUT: 15000,
+            VERSION: '1.0.0',
+            
+            // 保持原有环境设置
+            ENV: 'production',
+            
+            // 保持原有接口端点
+            ENDPOINTS: {
+                // 用户相关接口
+                USER: {
+                    LOGIN: '/login',
+                    REGISTER: '/register',
+                    GET_INFO: '/user',
+                    UPDATE_INFO: '/user',
+                    LOGOUT: '/logout',
+                    GET_ALL: '/users',
+                    UPDATE_POINTS: '/user/points',
+                    GET_HISTORY: '/user/points/history',
+                    GET_STATS: '/user/stats'
+                },
+                
+                // 积分相关接口
+                POINTS: {
+                    GET_BALANCE: '/points/balance',
+                    GET_HISTORY: '/points/history',
+                    UPDATE_POINTS: '/points/update',
+                    GET_DASHBOARD: '/points/dashboard',
+                    GET_AUDIT_LOG: '/points/audit-log',
+                    GET_STATISTICS: '/points/statistics'
+                },
+                
+                // 背包相关接口
+                BACKPACK: {
+                    GET_ITEMS: '/backpack/items',
+                    ADD_ITEM: '/backpack/items',
+                    USE_ITEM: '/backpack/items/use',
+                    DELETE_ITEM: '/backpack/items/:id',
+                    GET_STATS: '/backpack/stats'
+                },
+                
+                // 订单相关接口
+                ORDERS: {
+                    GET_LIST: '/orders',
+                    CREATE: '/orders',
+                    GET_DETAIL: '/orders/:id',
+                    UPDATE_STATUS: '/orders/:id/status',
+                    CANCEL: '/orders/:id/cancel',
+                    GET_USER_ORDERS: '/orders/user'
+                },
+                
+                // 游戏相关接口
+                GAMES: {
+                    DICE_PLAY: '/games/dice/new',
+                    DICE_LEADERBOARD: '/games/dice/leaderboard',
+                    GRANDMA_PLAY: '/games/grandma/play',
+                    DOLL_BUY: '/dolls/buy',
+                    DOLL_LIST: '/dolls'
+                },
+                
+                // 通用接口
+                COMMON: {
+                    HEALTH_CHECK: '/health',
+                    VERSION: '/version'
+                }
+            },
+            
+            // 保持原有HTTP状态码
+            STATUS_CODES: {
+                SUCCESS: 200,
+                CREATED: 201,
+                BAD_REQUEST: 400,
+                UNAUTHORIZED: 401,
+                FORBIDDEN: 403,
+                NOT_FOUND: 404,
+                INTERNAL_ERROR: 500
+            },
+            
+            // 保持原有业务错误码
+            ERROR_CODES: {
+                UNKNOWN_ERROR: 1000,
+                INVALID_PARAMS: 1001,
+                NETWORK_ERROR: 1002,
+                USER_NOT_FOUND: 2001,
+                INVALID_CREDENTIALS: 2002,
+                INSUFFICIENT_POINTS: 3001,
+                ITEM_NOT_FOUND: 4001,
+                ORDER_NOT_FOUND: 5001
+            },
+            
+            // 保持原有便捷方法
+            getUrl: function(endpoint) {
+                return this.BASE_URL + endpoint;
+            },
+            
+            // 保持原有环境检查
+            isDevelopment: function() {
+                return this.ENV === 'development';
+            },
+            
+            // 保持原有完整API地址获取
+            getFullUrl: function(path) {
+                return this.BASE_URL + path;
+            }
+        };
+
+        // 强制设置云端模式
+        localStorage.setItem('forceCloudMode', 'true');
+        localStorage.removeItem('useLocalStorage');
+
+        // 保持原有控制台提示
+        console.log(`🌐 API配置：地址: ${window.API_CONFIG.BASE_URL}`);
+        console.log(`📱 API配置：域名: tianchuang.onrender.com`);
+        console.log(`⚡ API配置：版本: ${window.API_CONFIG.VERSION}`);
+    </script>
+    
+    <!-- 修改为云端版本的脚本加载 -->
+    <script src="https://tianchuang.onrender.com/js/api-config.js"></script>
+    <script src="https://tianchuang.onrender.com/js/api-service.js"></script>
+    <script src="https://tianchuang.onrender.com/js/data-adapter.js"></script>
+    <script src="https://tianchuang.onrender.com/js/common.js"></script>
+    <script src="https://tianchuang.onrender.com/js/points-system.js"></script>
+    <script src="https://tianchuang.onrender.com/js/backpack-system.js"></script>
+    <script src="https://tianchuang.onrender.com/js/user-system.js"></script>
+
+    <!-- 背包系统逻辑 -->
+    <script>
+        // 等待所有系统加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌐 === DOM加载完成，开始初始化背包系统 ===');
+            
+            // 延迟初始化，确保所有系统都已加载
+            setTimeout(() => {
+                // 检查关键系统是否加载
+                if (typeof window.dataAdapter === 'undefined') {
+                    console.error('🌐 dataAdapter未加载');
+                    return;
+                }
+                
+                if (typeof window.pointsSystem === 'undefined') {
+                    console.error('🌐 pointsSystem未加载');
+                    return;
+                }
+                
+                if (typeof window.userSystem === 'undefined') {
+                    console.error('🌐 userSystem未加载');
+                    return;
+                }
+                
+                if (typeof window.backpackSystem === 'undefined') {
+                    console.error('🌐 backpackSystem未加载');
+                    return;
+                }
+                
+                console.log('🌐 ✅ 所有系统加载正常，开始初始化背包');
+                
+                // 背包系统 - 强制云端模式版
+                window.BagSystem = {
+                    // 当前选中的分类
+                    currentCategory: 'all',
+                    
+                    // 背包物品数据
+                    bagItems: [],
+                    
+                    // 当前选中的物品
+                    selectedItem: null,
+                    
+                    // 初始化
+                    init() {
+                        console.log('🌐 === 背包系统初始化（强制云端模式） ===');
+                        
+                        // 强制设置云端模式
+                        if (window.dataAdapter) {
+                            window.dataAdapter.forceCloudMode();
+                        }
+                        
+                        if (window.apiService) {
+                            window.apiService.forceCloudMode();
+                        }
+                        
+                        if (window.pointsSystem) {
+                            window.pointsSystem.forceCloudMode = true;
+                            window.pointsSystem.init();
+                        }
+                        
+                        if (window.userSystem) {
+                            window.userSystem.init();
+                        }
+                        
+                        if (window.backpackSystem) {
+                            window.backpackSystem.forceCloudMode = true;
+                            window.backpackSystem.init();
+                        }
+                        
+                        // 检查登录状态
+                        if (!this.checkLogin()) {
+                            console.log('🌐 用户未登录，跳转到登录页面');
+                            this.redirectToLogin();
+                            return;
+                        }
+                        
+                        console.log('🌐 用户已登录，继续初始化');
+                        
+                        // 初始化粒子效果
+                        this.initParticles();
+                        
+                        // 初始化事件监听
+                        this.initEventListeners();
+                        
+                        // 监听积分更新事件
+                        window.addEventListener('pointsUpdated', (e) => {
+                            const { newPoints } = e.detail;
+                            this.updatePointsDisplay(newPoints);
+                        });
+                        
+                        // 监听用户信息更新事件
+                        window.addEventListener('userInfoUpdated', (e) => {
+                            const { user } = e.detail;
+                            this.updateUserInfo(user);
+                        });
+                        
+                        // 监听背包更新事件
+                        window.addEventListener('backpackUpdated', (e) => {
+                            const { items } = e.detail;
+                            this.bagItems = items;
+                            this.displayBagItems();
+                        });
+                        
+                        // 加载背包数据
+                        this.loadBagData();
+                        
+                        // 更新UI
+                        this.updateUI();
+                        
+                        console.log('🌐 背包系统初始化完成');
+                    },
+                    
+                    // 检查登录状态
+                    checkLogin() {
+                        try {
+                            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                            const currentUser = localStorage.getItem('currentUser');
+                            
+                            if (!isLoggedIn || !currentUser) {
+                                return false;
+                            }
+                            
+                            // 验证用户数据完整性
+                            const user = JSON.parse(currentUser);
+                            if (!user || !user.isActive) {
+                                return false;
+                            }
+                            
+                            return true;
+                        } catch (error) {
+                            console.error('🌐 检查登录状态失败:', error);
+                            return false;
+                        }
+                    },
+                    
+                    // 跳转到登录页面
+                    redirectToLogin() {
+                        try {
+                            console.log('🌐 正在跳转到登录页面...');
+                            window.location.href = 'login.html';
+                        } catch (error) {
+                            console.error('🌐 跳转失败:', error);
+                            // 备用跳转方式
+                            setTimeout(() => {
+                                window.location.href = 'login.html';
+                            }, 100);
+                        }
+                    },
+                    
+                    // 初始化粒子效果
+                    initParticles() {
+                        const particlesContainer = document.getElementById('particles');
+                        const particleCount = 25;
+                        
+                        for (let i = 0; i < particleCount; i++) {
+                            const particle = document.createElement('div');
+                            particle.className = 'particle';
+                            particle.style.left = Math.random() * 100 + '%';
+                            particle.style.animationDelay = Math.random() * 10 + 's';
+                            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                            particlesContainer.appendChild(particle);
+                        }
+                        
+                        // 添加交互粒子
+                        for (let i = 0; i < 5; i++) {
+                            const particle = document.createElement('div');
+                            particle.className = 'particle interactive';
+                            particle.style.left = Math.random() * 100 + '%';
+                            particle.style.animationDelay = Math.random() * 5 + 's';
+                            particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+                            particlesContainer.appendChild(particle);
+                        }
+                    },
+                    
+                    // 初始化事件监听
+                    initEventListeners() {
+                        // 用户下拉菜单
+                        const userInfo = document.getElementById('userInfo');
+                        if (userInfo) {
+                            userInfo.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                userInfo.classList.toggle('active');
+                            });
+                            
+                            document.addEventListener('click', () => {
+                                userInfo.classList.remove('active');
+                            });
+                        }
+                        
+                        // 退出登录
+                        const logoutBtn = document.getElementById('logoutBtn');
+                        if (logoutBtn) {
+                            logoutBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                this.logout();
+                            });
+                        }
+                        
+                        // 侧边栏菜单项
+                        const menuItems = document.querySelectorAll('.sidebar-menu-link');
+                        menuItems.forEach(item => {
+                            item.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                const category = item.dataset.category;
+                                if (category) {
+                                    this.filterByCategory(category);
+                                    // 更新活动状态
+                                    menuItems.forEach(mi => mi.classList.remove('active'));
+                                    item.classList.add('active');
+                                }
+                            });
+                        });
+                        
+                        // 操作按钮
+                        const sortBtn = document.getElementById('sortBtn');
+                        if (sortBtn) {
+                            sortBtn.addEventListener('click', () => {
+                                this.sortBagItems();
+                            });
+                        }
+                        
+                        const organizeBtn = document.getElementById('organizeBtn');
+                        if (organizeBtn) {
+                            organizeBtn.addEventListener('click', () => {
+                                this.organizeBagItems();
+                            });
+                        }
+                        
+                        // 详情面板关闭按钮
+                        const detailClose = document.getElementById('detailClose');
+                        if (detailClose) {
+                            detailClose.addEventListener('click', () => {
+                                this.hideBagDetail();
+                            });
+                        }
+                    },
+                    
+                    // 加载背包数据
+                    async loadBagData() {
+                        try {
+                            console.log('🌐 === 加载背包数据 ===');
+                            
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            const userId = user.id || user.username;
+                            
+                            // 从积分系统获取积分
+                            if (window.pointsSystem) {
+                                try {
+                                    const points = window.pointsSystem.getPoints();
+                                    console.log('🌐 从积分系统获取积分:', points);
+                                } catch (error) {
+                                    console.log('🌐 积分系统获取积分失败，使用本地数据:', error);
+                                }
+                            }
+                            
+                            // 从云端加载背包数据
+                            if (window.backpackSystem) {
+                                try {
+                                    const items = await window.backpackSystem.getItems();
+                                    if (items && items.length > 0) {
+                                        this.bagItems = items;
+                                        console.log('🌐 从云端加载背包数据成功:', items);
+                                    } else {
+                                        console.log('🌐 云端背包数据为空，使用本地数据');
+                                        this.loadLocalBagData();
+                                    }
+                                } catch (error) {
+                                    console.log('🌐 云端背包数据加载失败，使用本地数据:', error);
+                                    this.loadLocalBagData();
+                                }
+                            } else {
+                                console.log('🌐 背包系统未初始化，使用本地数据');
+                                this.loadLocalBagData();
+                            }
+                            
+                            // 显示背包物品
+                            this.displayBagItems();
+                            
+                            // 更新UI
+                            this.updateUI();
+                        } catch (error) {
+                            console.error('🌐 加载背包数据失败:', error);
+                        }
+                    },
+                    
+                    // 加载本地背包数据（备用）
+                    loadLocalBagData() {
+                        try {
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            const userId = user.id || user.username;
+                            
+                            // 从localStorage加载背包数据
+                            const savedBagItems = localStorage.getItem(`bagItems_${userId}`);
+                            if (savedBagItems) {
+                                this.bagItems = JSON.parse(savedBagItems);
+                            } else {
+                                // 如果没有背包数据，创建默认数据
+                                this.bagItems = this.createDefaultBagItems();
+                                localStorage.setItem(`bagItems_${userId}`, JSON.stringify(this.bagItems));
+                            }
+                            
+                            // 显示背包物品
+                            this.displayBagItems();
+                        } catch (error) {
+                            console.error('🌐 加载本地背包数据失败:', error);
+                        }
+                    },
+                    
+                    // 创建默认背包物品数据
+                    createDefaultBagItems() {
+                        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                        
+                        // 从娃娃系统获取娃娃数据
+                        let dollItems = [];
+                        if (window.DollSystem && window.DollSystem.gameState) {
+                            const userDolls = window.DollSystem.gameState.userDolls || [];
+                            dollItems = userDolls.map(doll => ({
+                                id: `doll_${doll.id}`,
+                                name: doll.name,
+                                icon: doll.icon,
+                                category: 'doll',
+                                count: 1,
+                                value: doll.level === 1 ? 100 : doll.level === 2 ? 300 : 500,
+                                quality: doll.level === 1 ? 'common' : doll.level === 2 ? 'rare' : 'epic',
+                                description: `${doll.level}级娃娃，每日收益${doll.dailyEarnings}`,
+                                obtainTime: doll.purchaseDate,
+                                usable: false,
+                                sellable: true,
+                                dollData: doll
+                            }));
+                        }
+                        
+                        // 从骰子系统获取拐杖数据
+                        let crutchItems = [];
+                        if (window.DiceGame && window.DiceGame.gameState) {
+                            const treasureHistory = window.DiceGame.gameState.history || [];
+                            const crutchTotal = treasureHistory.reduce((total, record) => {
+                                const crutchRewards = record.betHistory.filter(bet => 
+                                    bet.reward && bet.reward.type === 'crutch'
+                                ).reduce((sum, bet) => sum + bet.reward.value, 0);
+                                return total + crutchRewards;
+                            }, 0);
+                            
+                            if (crutchTotal > 0) {
+                                crutchItems = [{
+                                    id: 'crutch_total',
+                                    name: '拐杖',
+                                    icon: '🦯',
+                                    category: 'crutch',
+                                    count: Math.floor(crutchTotal),
+                                    value: 50,
+                                    quality: 'common',
+                                    description: '从骰子宝箱获得的拐杖，可用于娃娃系统',
+                                    obtainTime: new Date().toISOString(),
+                                    usable: true,
+                                    sellable: true
+                                }];
+                            }
+                        }
+                        
+                        // 积分物品
+                        const points = window.pointsSystem ? window.pointsSystem.getPoints() : (user.points || 0);
+                        const pointsItem = {
+                            id: 'points_balance',
+                            name: '积分余额',
+                            icon: '💰',
+                            category: 'points',
+                            count: points,
+                            value: 1,
+                            quality: 'common',
+                            description: `当前积分余额：${points}天创积分`,
+                            obtainTime: new Date().toISOString(),
+                            usable: false,
+                            sellable: false
+                        };
+                        
+                        return [...dollItems, ...crutchItems, pointsItem];
+                    },
+                    
+                    // 保存背包数据到云端
+                    async saveBagDataToCloud() {
+                        try {
+                            console.log('🌐 === 保存背包数据到云端 ===');
+                            
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            const userId = user.id || user.username;
+                            
+                            if (!userId) {
+                                console.log('🌐 用户ID不存在，跳过云端保存');
+                                return;
+                            }
+                            
+                            // 保存到本地
+                            this.saveBagData();
+                            
+                            // 尝试保存到云端
+                            if (window.backpackSystem) {
+                                try {
+                                    const result = await window.backpackSystem.updateItems(this.bagItems);
+                                    
+                                    if (result.success) {
+                                        console.log('🌐 背包数据保存到云端成功');
+                                    } else {
+                                        console.log('🌐 背包数据保存到云端失败:', result);
+                                    }
+                                } catch (error) {
+                                    console.log('🌐 背包数据保存到云端失败:', error);
+                                }
+                            }
+                        } catch (error) {
+                            console.error('🌐 保存背包数据到云端失败:', error);
+                        }
+                    },
+                    
+                    // 保存背包数据
+                    saveBagData() {
+                        try {
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            const userId = user.id || user.username;
+                            
+                            // 保存背包数据
+                            localStorage.setItem(`bagItems_${userId}`, JSON.stringify(this.bagItems));
+                            
+                            // 同时保存到云端
+                            this.saveBagDataToCloud();
+                        } catch (error) {
+                            console.error('🌐 保存背包数据失败:', error);
+                        }
+                    },
+                    
+                    // 显示背包物品
+                    displayBagItems() {
+                        try {
+                            const bagGrid = document.getElementById('bagGrid');
+                            
+                            // 过滤物品
+                            let filteredItems = this.bagItems;
+                            if (this.currentCategory !== 'all') {
+                                filteredItems = this.bagItems.filter(item => item.category === this.currentCategory);
+                            }
+                            
+                            if (filteredItems.length === 0) {
+                                bagGrid.innerHTML = `
+                                    <div class="empty-state" style="grid-column: 1 / -1;">
+                                        <div class="empty-icon">🎒</div>
+                                        <div class="empty-title">背包是空的</div>
+                                        <div class="empty-desc">您还没有任何物品</div>
+                                    </div>
+                                `;
+                                return;
+                            }
+                            
+                            bagGrid.innerHTML = filteredItems.map(item => {
+                                return `
+                                    <div class="bag-item ${item.selected ? 'selected' : ''}" onclick="selectBagItem('${item.id}')">
+                                        ${item.quality ? `<div class="bag-item-quality ${item.quality}">${this.getQualityName(item.quality)}</div>` : ''}
+                                        <div class="bag-item-icon">${item.icon}</div>
+                                        <div class="bag-item-name">${item.name}</div>
+                                        <div class="bag-item-count">×${item.count}</div>
+                                    </div>
+                                `;
+                            }).join('');
+                            
+                            // 更新统计
+                            this.updateBagStats();
+                        } catch (error) {
+                            console.error('🌐 显示背包物品失败:', error);
+                        }
+                    },
+                    
+                    // 按分类过滤背包物品
+                    filterByCategory(category) {
+                        this.currentCategory = category;
+                        this.displayBagItems();
+                    },
+                    
+                    // 选择背包物品
+                    selectBagItem(itemId) {
+                        const item = this.bagItems.find(item => item.id === itemId);
+                        if (!item) return;
+                        
+                        this.selectedItem = item;
+                        
+                        // 更新选中状态
+                        document.querySelectorAll('.bag-item').forEach(itemElement => {
+                            itemElement.classList.remove('selected');
+                        });
+                        document.querySelector(`[onclick="selectBagItem('${itemId}')"]`).classList.add('selected');
+                        
+                        // 显示物品详情
+                        this.showBagDetail(item);
+                    },
+                    
+                    // 显示背包物品详情
+                    showBagDetail(item) {
+                        const detailPanel = document.getElementById('bagDetailPanel');
+                        if (!detailPanel) return;
+                        
+                        // 更新详情内容
+                        document.getElementById('detailIcon').textContent = item.icon;
+                        document.getElementById('detailName').textContent = item.name;
+                        document.getElementById('detailDesc').textContent = item.description;
+                        
+                        // 生成属性信息
+                        let statsHtml = `
+                            <div class="detail-stat">
+                                <div class="detail-stat-label">稀有度</div>
+                                <div class="detail-stat-value">${this.getQualityName(item.quality)}</div>
+                            </div>
+                            <div class="detail-stat">
+                                <div class="detail-stat-label">数量</div>
+                                <div class="detail-stat-value">×${item.count}</div>
+                            </div>
+                            <div class="detail-stat">
+                                <div class="detail-stat-label">价值</div>
+                                <div class="detail-stat-value">💰 ${item.value}</div>
+                            </div>
+                            <div class="detail-stat">
+                                <div class="detail-stat-label">获得时间</div>
+                                <div class="detail-stat-value">${this.formatTime(item.obtainTime)}</div>
+                            </div>
+                            <div class="detail-stat">
+                                <div class="detail-stat-label">总价值</div>
+                                <div class="detail-stat-value">💰 ${item.count * item.value}</div>
+                            </div>
+                        `;
+                        
+                        // 如果是娃娃，添加娃娃特有属性
+                        if (item.category === 'doll' && item.dollData) {
+                            const doll = item.dollData;
+                            statsHtml += `
+                                <div class="detail-stat">
+                                    <div class="detail-stat-label">等级</div>
+                                    <div class="detail-stat-value">${doll.level}级</div>
+                                </div>
+                                <div class="detail-stat">
+                                    <div class="detail-stat-label">每日收益</div>
+                                    <div class="detail-stat-value">${doll.dailyEarnings}</div>
+                                </div>
+                                <div class="detail-stat">
+                                    <div class="detail-stat-label">存活天数</div>
+                                    <div class="detail-stat-value">${this.calculateRemainingDays(doll)}天</div>
+                                </div>
+                                <div class="detail-stat">
+                                    <div class="detail-stat-label">状态</div>
+                                    <div class="detail-stat-value">${doll.status === 'active' ? '活跃' : '不活跃'}</div>
+                                </div>
+                            `;
+                        }
+                        
+                        document.getElementById('detailStats').innerHTML = statsHtml;
+                        
+                        // 生成操作按钮
+                        let actionsHtml = '';
+                        
+                        if (item.category === 'doll' && item.dollData && item.dollData.status === 'active') {
+                            actionsHtml += `
+                                <button class="detail-btn" onclick="useBagItem('${item.id}'); this.closest('.bag-detail-panel').remove();">
+                                    <i class="fas fa-hand-pointer"></i>
+                                    <span>查看详情</span>
+                                </button>
+                            `;
+                        } else if (item.category === 'crutch' && item.usable) {
+                            actionsHtml += `
+                                <button class="detail-btn" onclick="useBagItem('${item.id}'); this.closest('.bag-detail-panel').remove();">
+                                    <i class="fas fa-hand-pointer"></i>
+                                    <span>使用拐杖</span>
+                                </button>
+                            `;
+                        }
+                        
+                        if (item.sellable) {
+                            actionsHtml += `
+                                <button class="detail-btn secondary" onclick="sellBagItem('${item.id}'); this.closest('.bag-detail-panel').remove();">
+                                    <i class="fas fa-coins"></i>
+                                    <span>出售</span>
+                                </button>
+                            `;
+                        }
+                        
+                        document.getElementById('detailActions').innerHTML = actionsHtml;
+                        
+                        // 显示面板
+                        detailPanel.style.display = 'block';
+                    },
+                    
+                    // 隐藏背包物品详情
+                    hideBagDetail() {
+                        const detailPanel = document.getElementById('bagDetailPanel');
+                        if (detailPanel) {
+                            detailPanel.style.display = 'none';
+                        }
+                        this.selectedItem = null;
+                    },
+                    
+                    // 使用背包物品
+                    async useBagItem(itemId) {
+                        try {
+                            console.log('🌐 === 使用背包物品 ===');
+                            
+                            const item = this.bagItems.find(item => item.id === itemId);
+                            
+                            if (!item || !item.usable) {
+                                this.showNotification('error', '使用物品失败', '物品不存在或不可使用');
+                                return;
+                            }
+                            
+                            if (item.category === 'crutch') {
+                                // 使用拐杖
+                                this.useCrutch(item);
+                            } else {
+                                this.showNotification('info', '使用物品', `使用${item.name}`);
+                            }
+                            
+                            // 更新显示
+                            this.displayBagItems();
+                        } catch (error) {
+                            console.error('🌐 使用背包物品失败:', error);
+                        }
+                    },
+                    
+                    // 使用拐杖
+                    async useCrutch(item) {
+                        try {
+                            console.log('🌐 === 使用拐杖 ===');
+                            
+                            // 跳转到娃娃系统
+                            if (window.DollSystem && window.DollSystem.gameState) {
+                                const userDolls = window.DollSystem.gameState.userDolls.filter(doll => doll.status === 'active');
+                                
+                                if (userDolls.length === 0) {
+                                    this.showNotification('error', '使用拐杖失败', '您没有活跃的娃娃');
+                                    return;
+                                }
+                                
+                                // 跳转到娃娃系统
+                                this.showNotification('success', '使用拐杖成功', '拐杖已添加到娃娃系统');
+                                setTimeout(() => {
+                                    window.location.href = 'doll.html';
+                                }, 1000);
+                            } else {
+                                this.showNotification('error', '使用拐杖失败', '娃娃系统未找到');
+                            }
+                        } else {
+                            this.showNotification('error', '使用拐杖失败', '娃娃系统未找到');
+                        }
+                        } catch (error) {
+                            console.error('🌐 使用拐杖失败:', error);
+                        }
+                    },
+                    
+                    // 出售背包物品
+                    async sellBagItem(itemId) {
+                        try {
+                            console.log('🌐 === 出售背包物品 ===');
+                            
+                            const item = this.bagItems.find(item => item.id === itemId);
+                            
+                            if (!item || !item.sellable) {
+                                this.showNotification('error', '出售失败', '该物品不可出售');
+                                return;
+                            }
+                            
+                            const sellPrice = Math.floor(item.value * 0.5); // 50%出售价格
+                            const sellCount = item.count;
+                            const totalValue = sellPrice * sellCount;
+                            
+                            // 获得积分
+                            if (window.pointsSystem) {
+                                const result = await window.pointsSystem.updatePoints(
+                                    totalValue, 
+                                    '出售' + item.name, 
+                                    { 
+                                        itemType: item.category,
+                                        itemName: item.name,
+                                        itemCount: sellCount,
+                                        totalValue: totalValue
+                                    }
+                                );
+                                
+                                if (result.success) {
+                                    this.showNotification('success', '出售成功', `成功出售${sellCount}个${item.name}，获得${totalValue}积分`);
+                                } else {
+                                    this.showNotification('error', '出售失败', result.error);
+                                }
+                            } else {
+                                // 备用方案
+                                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                                user.points += totalValue;
+                                localStorage.setItem('currentUser', JSON.stringify(user));
+                                
+                                // 更新用户信息显示
+                                this.updateUserInfo(user);
+                                
+                                this.showNotification('success', '出售成功', `成功出售${sellCount}个${item.name}，获得${totalValue}积分`);
+                            }
+                            
+                            // 从背包中移除
+                            const index = this.bagItems.findIndex(item => item.id === itemId);
+                            if (index > -1) {
+                                this.bagItems.splice(index, 1);
+                            }
+                            
+                            // 保存数据
+                            this.saveBagData();
+                            
+                            // 更新显示
+                            this.displayBagItems();
+                            
+                            this.showNotification('success', '出售成功', `成功出售${sellCount}个${item.name}，获得${totalValue}积分`);
+                        } catch (error) {
+                            console.error('🌐 出售背包物品失败:', error);
+                        }
+                    },
+                    
+                    // 排序背包物品
+                    sortBagItems() {
+                        // 按价值从高到低排序
+                        this.bagItems.sort((a, b) => b.value - a.value);
+                        
+                        // 按稀有度从高到低排序
+                        const rarityOrder = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+                        this.bagItems.sort((a, b) => {
+                            const rarityA = rarityOrder[a.quality] || 0;
+                            const rarityB = rarityOrder[b.quality] || 0;
+                            return rarityB - rarityA;
+                        });
+                        
+                        this.saveBagData();
+                        this.displayBagItems();
+                        this.showNotification('info', '排序完成', '物品已按价值和稀有度排序');
+                    },
+                    
+                    // 整理背包物品
+                    organizeBagItems() {
+                        // 按分类整理
+                        const categories = ['doll', 'crutch', 'points'];
+                        const organizedItems = [];
+                        
+                        categories.forEach(category => {
+                            const items = this.bagItems.filter(item => item.category === category);
+                            organizedItems.push(...items);
+                        });
+                        
+                        // 按稀有度从高到低排序
+                        const rarityOrder = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+                        organizedItems.sort((a, b) => {
+                            const rarityA = rarityOrder[a.quality] || 0;
+                            const rarityB = rarityOrder[b.quality] || 0;
+                            return rarityB - rarityA;
+                        });
+                        
+                        this.bagItems = organizedItems;
+                        this.saveBagData();
+                        this.displayBagItems();
+                        this.showNotification('info', '整理完成', '物品已按分类和稀有度整理');
+                    },
+                    
+                    // 计算剩余天数
+                    calculateRemainingDays(doll) {
+                        const purchaseDate = new Date(doll.purchaseDate);
+                        const currentDate = new Date();
+                        const daysPassed = Math.floor((currentDate - purchaseDate) / (1000 * 60 * 24));
+                        return Math.max(0, (doll.lifespan || 60) - daysPassed);
+                    },
+                    
+                    // 更新背包统计
+                    updateBagStats() {
+                        try {
+                            // 更新分类数量
+                            const categories = ['all', 'doll', 'crutch', 'points'];
+                            categories.forEach(category => {
+                                const count = category === 'all' ? 
+                                    this.bagItems.length : 
+                                    this.bagItems.filter(item => item.category === category).length;
+                                
+                                const countElement = document.getElementById(`${category}Items`);
+                                if (countElement) {
+                                    countElement.textContent = count;
+                                }
+                            });
+                            
+                            // 更新总物品和总价值
+                            const totalItems = document.getElementById('bagTotalItems');
+                            const totalValue = document.getElementById('bagTotalValue');
+                            
+                            if (totalItems) totalItems.textContent = this.bagItems.length;
+                            if (totalValue) totalValue.textContent = this.calculateBagValue();
+                        } catch (error) {
+                            console.error('🌐 更新背包统计失败:', error);
+                        }
+                    },
+                    
+                    // 计算背包总价值
+                    calculateBagValue() {
+                        return this.bagItems.reduce((total, item) => total + (item.count * item.value), 0);
+                    },
+                    
+                    // 获取稀有度名称
+                    getQualityName(quality) {
+                        const qualityTexts = {
+                            'common': '普通',
+                            'rare': '稀有',
+                            'epic': '史诗',
+                            'legendary': '传说'
+                        };
+                        return qualityTexts[quality] || '普通';
+                    },
+                    
+                    // 格式化时间
+                    formatTime(timeString) {
+                        const date = new Date(timeString);
+                        const now = new Date();
+                        const diff = now - date;
+                        
+                        if (diff < 60000) {
+                            return '刚刚';
+                        } else if (diff < 86400000) {
+                            return Math.floor(diff / 86400000) + '天前';
+                        } else if (diff < 2592000000) {
+                            return Math.floor(diff / 86400000) + '天前';
+                        } else {
+                            return '很久以前';
+                        }
+                    },
+                    
+                    // 更新用户信息显示
+                    updateUserInfo(user) {
+                        try {
+                            const userName = document.getElementById('userName');
+                            const userPoints = document.getElementById('userPoints');
+                            
+                            if (user && userName && userPoints) {
+                                userName.textContent = user.name || '未知用户';
+                                // 使用积分系统获取积分
+                                const points = window.pointsSystem ? 
+                                    window.pointsSystem.getPoints() : 
+                                    (user.points || 0);
+                                userPoints.textContent = points;
+                            }
+                        } catch (error) {
+                            console.error('🌐 更新用户信息失败:', error);
+                        }
+                    },
+                    
+                    // 更新积分显示
+                    updatePointsDisplay(points) {
+                        try {
+                            const userPoints = document.getElementById('userPoints');
+                            if (userPoints) {
+                                userPoints.textContent = points;
+                                console.log('🌐 积分显示已更新:', points);
+                            }
+                        } catch (error) {
+                            console.error('🌐 更新积分显示失败:', error);
+                        }
+                    },
+                    
+                    // 更新UI
+                    updateUI() {
+                        try {
+                            // 更新用户信息
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            this.updateUserInfo(user);
+                            
+                            // 更新背包显示
+                            this.displayBagItems();
+                        } catch (error) {
+                            console.error('🌐 更新UI失败:', error);
+                        }
+                    },
+                    
+                    // 退出登录
+                    logout() {
+                        try {
+                            // 使用用户系统退出
+                            if (window.userSystem) {
+                                window.userSystem.logout();
+                            } else {
+                                // 备用方案
+                                localStorage.removeItem('isLoggedIn');
+                                localStorage.removeItem('currentUser');
+                                this.showNotification('info', '退出登录', '您已成功退出登录');
+                                setTimeout(() => {
+                                    window.location.href = 'login.html';
+                                }, 1000);
+                            }
+                        } catch (error) {
+                            console.error('🌐 退出登录失败:', error);
+                        }
+                    },
+                    
+                    // 显示通知
+                    showNotification(type, title, message) {
+                        try {
+                            // 移除现有通知
+                            const existingNotification = document.querySelector('.notification');
+                            if (existingNotification) {
+                                existingNotification.remove();
+                            }
+                            
+                            // 创建新通知
+                            const notification = document.createElement('div');
+                            notification.className = `notification ${type}`;
+                            notification.innerHTML = `
+                                <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                                <div class="notification-content">
+                                    <div class="notification-title">${title}</div>
+                                    <div class="notification-message">${message}</div>
+                                </div>
+                            `;
+                            
+                            document.body.appendChild(notification);
+                            
+                            // 显示动画
+                            setTimeout(() => {
+                                notification.classList.add('show');
+                            }, 100);
+                            
+                            // 自动隐藏
+                            setTimeout(() => {
+                                notification.classList.remove('show');
+                                setTimeout(() => notification.remove(), 300);
+                            }, 3000);
+                        } catch (error) {
+                            console.error('🌐 显示通知失败:', error);
+                        }
+                    }
+                };
+                
+                // 初始化背包系统
+                if (window.BagSystem) {
+                    window.BagSystem.init();
+                    
+                    // 更新用户信息
+                    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    window.BagSystem.updateUserInfo(user);
+                } else {
+                    console.error('🌐 BagSystem未定义');
+                }
+            }, 1000); // 延迟1秒确保所有系统加载完成
+        });
+    </script>
+</body>
+</html>
