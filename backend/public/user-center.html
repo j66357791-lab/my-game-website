@@ -1,0 +1,3068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心 - 天创时代</title>
+    
+    <!-- 优化字体加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* 这里保持您原有的所有CSS样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: linear-gradient(135deg, #FFE5F1 0%, #FFD1DC 25%, #FFC0CB 50%, #FFB6C1 75%, #FFA07A 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 背景动画 */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .bg-doll {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+        
+        .bg-doll.wave {
+            animation: wave-motion 8s ease-in-out infinite;
+        }
+        
+        @keyframes wave-motion {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+            25% { transform: translateX(30px) translateY(-20px) rotate(15deg); }
+            50% { transform: translateX(60px) translateY(0) rotate(0deg); }
+            75% { transform: translateX(30px) translateY(20px) rotate(-15deg); }
+        }
+        
+        .bg-doll.float {
+            animation: float-motion 15s ease-in-out infinite;
+        }
+        
+        @keyframes float-motion {
+            0% { transform: translateX(0) translateY(100vh) rotate(0deg); }
+            25% { transform: translateX(25vw) translateY(75vh) rotate(90deg); }
+            50% { transform: translateX(50vw) translateY(50vh) rotate(180deg); }
+            75% { transform: translateX(75vw) translateY(25vh) rotate(270deg); }
+            100% { transform: translateX(100vw) translateY(0) rotate(360deg); }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: logoRotate 10s linear infinite;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 112, 67, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(255, 112, 67, 0.8));
+            }
+        }
+        
+        @keyframes logoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 112, 67, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-info:hover {
+            background: rgba(255, 112, 67, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .user-points {
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+        
+        .user-info.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background: rgba(255, 112, 67, 0.3);
+            margin: 0.5rem 0;
+        }
+        
+        /* 主容器 */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .page-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease 0.3s;
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 用户中心布局 */
+        .user-center-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .sidebar-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: 600;
+            margin: 0 auto 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar-username {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-level {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .sidebar-menu-link:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .sidebar-menu-link.active {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .sidebar-menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            min-height: 600px;
+        }
+        
+        /* 标签导航 */
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 112, 67, 0.3);
+            padding-bottom: 1rem;
+        }
+        
+        .tab-item {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .tab-item:hover {
+            background: rgba(255, 112, 67, 0.1);
+        }
+        
+        .tab-item.active {
+            background: var(--gradient);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* 标签内容 */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 个人信息表单 */
+        .profile-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-label {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 10px;
+            color: #333;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 订单列表 */
+        .order-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .order-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .order-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .order-id {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .order-status.pending {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .order-status.processing {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .order-status.shipped {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .order-status.delivered {
+            background: #28a745;
+            color: white;
+        }
+        
+        .order-status.cancelled {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .order-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-detail-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .order-detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .order-action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        
+        .order-action-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* 积分记录 */
+        .points-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .points-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .points-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .points-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .points-id {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .points-amount {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .points-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .points-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .points-detail-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .points-detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* 通知 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(400px);
+            transition: var(--transition);
+            max-width: 350px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: #27AE60;
+        }
+        
+        .notification.error {
+            border-left-color: #E74C3C;
+        }
+        
+        .notification.info {
+            border-left-color: #3498DB;
+        }
+        
+        .notification-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-message {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .user-center-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-bottom: 2rem;
+            }
+            
+            .profile-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .tab-navigation {
+                flex-wrap: wrap;
+                overflow-x: auto;
+            }
+            
+            .tab-item {
+                white-space: nowrap;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">👤</div>
+                <div class="logo-text">用户中心</div>
+            </div>
+            
+            <div class="nav-right">
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-home"></i>
+                    <span>返回首页</span>
+                </a>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">加载中...</div>
+                        <div class="user-points">💰 <span id="userPoints">0</span></div>
+                    </div>
+                    
+                    <div class="user-dropdown">
+                        <a href="index.html" class="user-dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>返回首页</span>
+                        </a>
+                        <a href="mall.html" class="user-dropdown-item">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>天创商城</span>
+                        </a>
+                        <a href="market.html" class="user-dropdown-item">
+                            <i class="fas fa-store"></i>
+                            <span>交易市场</span>
+                        </a>
+                        <a href="dice.html" class="user-dropdown-item">
+                            <i class="fas fa-dice"></i>
+                            <span>幸运骰子</span>
+                        </a>
+                        <a href="doll.html" class="user-dropdown-item">
+                            <i class="fas fa-doll"></i>
+                            <span>娃娃系统</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <a href="user-center.html" class="user-dropdown-item active">
+                            <i class="fas fa-user"></i>
+                            <span>个人中心</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>退出登录</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主容器 -->
+    <main class="main-container">
+        <!-- 页面标题 -->
+        <section class="page-header">
+            <h1 class="page-title">👤 用户中心</h1>
+            <p class="page-subtitle">管理您的个人信息、订单和账户设置</p>
+        </section>
+        
+        <!-- 用户中心布局 -->
+        <div class="user-center-layout">
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-avatar">👤</div>
+                    <div class="sidebar-username" id="sidebarUsername">加载中...</div>
+                    <div class="sidebar-level" id="sidebarLevel">普通用户</div>
+                </div>
+                
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a href="#profile" class="sidebar-menu-link active" data-tab="profile">
+                            <i class="fas fa-user sidebar-menu-icon"></i>
+                            <span>个人信息</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#orders" class="sidebar-menu-link" data-tab="orders">
+                            <i class="fas fa-shopping-cart sidebar-menu-icon"></i>
+                            <span>我的订单</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#points" class="sidebar-menu-link" data-tab="points">
+                            <i class="fas fa-coins sidebar-menu-icon"></i>
+                            <span>积分记录</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#security" class="sidebar-menu-link" data-tab="security">
+                            <i class="fas fa-shield-alt sidebar-menu-icon"></i>
+                            <span>账户安全</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a href="#notifications" class="sidebar-menu-link" data-tab="notifications">
+                            <i class="fas fa-bell sidebar-menu-icon"></i>
+                            <span>消息通知</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            
+            <!-- 内容区域 -->
+            <div class="content-area">
+                <!-- 标签导航 -->
+                <div class="tab-navigation">
+                    <button class="tab-item active" data-tab="profile">👤 个人信息</button>
+                    <button class="tab-item" data-tab="orders">📦 我的订单</button>
+                    <button class="tab-item" data-tab="points">💰 积分记录</button>
+                    <button class="tab-item" data-tab="security">🔒 账户安全</button>
+                    <button class="tab-item" data-tab="notifications">🔔 消息通知</button>
+                </div>
+                
+                <!-- 个人信息标签内容 -->
+                <div id="profile" class="tab-content active">
+                    <div class="section-header">
+                        <h2 class="section-title">个人信息</h2>
+                        <p class="section-subtitle">管理您的基本信息和偏好设置</p>
+                    </div>
+                    
+                    <form class="profile-form" id="profileForm">
+                        <div class="form-group">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-input" id="profileUsername" value="加载中...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">邮箱</label>
+                            <input type="email" class="form-input" id="profileEmail" value="加载中...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">手机号</label>
+                            <input type="tel" class="form-input" id="profilePhone" value="加载中...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">真实姓名</label>
+                            <input type="text" class="form-input" id="profileRealName" value="加载中...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">生日</label>
+                            <input type="date" class="form-input" id="profileBirthday" value="加载中...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <select class="form-select" id="profileGender">
+                                <option value="">请选择</option>
+                                <option value="male">男</option>
+                                <option value="female">女</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label class="form-label">个人简介</label>
+                            <textarea class="form-textarea" id="profileBio" rows="4" placeholder="介绍一下自己...">加载中...</textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn" id="saveProfileBtn">
+                                <i class="fas fa-save"></i>
+                                <span>保存修改</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="resetProfileBtn">
+                                <i class="fas fa-undo"></i>
+                                <span>重置</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 我的订单标签内容 -->
+                <div id="orders" class="tab-content">
+                    <div class="section-header">
+                        <h2 class="section-title">我的订单</h2>
+                        <p class="section-subtitle">查看和管理您的所有订单</p>
+                    </div>
+                    
+                    <div class="order-list" id="orderList">
+                        <!-- 订单列表将在这里动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 积分记录标签内容 -->
+                <div id="points" class="tab-content">
+                    <div class="section-header">
+                        <h2 class="section-title">积分记录</h2>
+                        <p class="section-subtitle">查看您的积分获取和使用记录</p>
+                    </div>
+                    
+                    <div class="points-list" id="pointsList">
+                        <!-- 积分记录将在这里动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 账户安全标签内容 -->
+                <div id="security" class="tab-content">
+                    <div class="section-header">
+                        <h2 class="section-title">账户安全</h2>
+                        <p class="section-subtitle">保护您的账户安全</p>
+                    </div>
+                    
+                    <div class="security-sections">
+                        <div class="security-section">
+                            <h3>🔒 修改密码</h3>
+                            <form id="passwordForm">
+                                <div class="form-group">
+                                    <label class="form-label">当前密码</label>
+                                    <input type="password" class="form-input" id="currentPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">新密码</label>
+                                    <input type="password" class="form-input" id="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">确认新密码</label>
+                                    <input type="password" class="form-input" id="confirmPassword" required>
+                                </div>
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-key"></i>
+                                    <span>修改密码</span>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h3>📱 绑定手机</h3>
+                            <form id="phoneForm">
+                                <div class="form-group">
+                                    <label class="form-label">手机号</label>
+                                    <input type="tel" class="form-input" id="bindPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">验证码</label>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="text" class="form-input" id="phoneCode" required>
+                                        <button type="button" class="btn" id="sendCodeBtn">发送验证码</button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span>绑定手机</span>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h3>📧 绑定邮箱</h3>
+                            <form id="emailForm">
+                                <div class="form-group">
+                                    <label class="form-label">邮箱地址</label>
+                                    <input type="email" class="form-input" id="bindEmail" required>
+                                </div>
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>绑定邮箱</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 消息通知标签内容 -->
+                <div id="notifications" class="tab-content">
+                    <div class="section-header">
+                        <h2 class="section-title">消息通知</h2>
+                        <p class="section-subtitle">管理您的通知偏好设置</p>
+                    </div>
+                    
+                    <div class="notification-settings">
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span>邮件通知</span>
+                            </label>
+                            <p class="setting-description">接收重要邮件通知</p>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="smsNotifications" checked>
+                                <span>短信通知</span>
+                            </label>
+                            <p class="setting-description">接收短信验证码和重要通知</p>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="pushNotifications" checked>
+                                <span>推送通知</span>
+                            </label>
+                            <p class="setting-description">接收浏览器推送通知</p>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="orderNotifications" checked>
+                                <span>订单通知</span>
+                            </label>
+                            <p class="setting-description">接收订单状态变更通知</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 优化脚本加载 -->
+    <script>
+        // 动态API配置 - 自动适应服务器地址
+        window.API_CONFIG = {
+            BASE_URL: window.location.origin,
+            ENDPOINTS: {
+                USER: '/api/user',
+                POINTS: '/api/points',
+                ITEMS: '/api/items',
+                MALL: '/api/mall'
+            },
+            TIMEOUT: 5000
+        };
+
+        // 预加载关键脚本
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            script.onerror = () => {
+                console.error('Failed to load script:', src);
+                // 如果外部脚本加载失败，使用内联备用版本
+                if (callback) callback();
+            };
+            document.head.appendChild(script);
+        }
+
+        // 按顺序加载脚本
+        const scripts = [
+            'api-service.js',
+            'data-adapter.js', 
+            'points-system.js',
+            'user-system.js',
+            'common.js'
+        ];
+
+        let loadedScripts = 0;
+        
+        function loadNextScript() {
+            if (loadedScripts < scripts.length) {
+                loadScript(scripts[loadedScripts], () => {
+                    loadedScripts++;
+                    loadNextScript();
+                });
+            } else {
+                // 所有脚本加载完成，初始化用户中心
+                initUserCenter();
+            }
+        }
+
+        // 初始化用户中心
+        function initUserCenter() {
+            console.log('=== 用户中心页面初始化 ===');
+            
+            // 检查登录状态
+            if (!checkLoginStatus()) {
+                return;
+            }
+            
+            // 初始化背景
+            initBackground();
+            
+            // 初始化标签切换
+            initTabSwitch();
+            
+            // 初始化各个标签内容
+            initProfile();
+            initOrders();
+            initPoints();
+            initSecurity();
+            initNotifications();
+            
+            // 监听用户系统事件
+            initUserSystemEvents();
+            
+            console.log('用户中心页面初始化完成');
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const currentUser = localStorage.getItem('currentUser');
+            
+            if (!isLoggedIn || !currentUser) {
+                console.log('用户未登录，跳转到登录页面');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // 初始化背景
+        function initBackground() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            const dollEmojis = ['🧸', '🎀', '🌸', '🦄', '🌈', '🦋', '🌺', '🌺', '🍓', '🎂', '🎈'];
+            const animations = ['wave', 'jump', 'spin', 'dance', 'float'];
+            
+            // 创建不同运动轨迹的娃娃
+            for (let i = 0; i < 15; i++) {
+                const doll = document.createElement('div');
+                doll.className = 'bg-doll ' + animations[i % animations.length];
+                doll.textContent = dollEmojis[i % dollEmojis.length];
+                doll.style.left = Math.random() * 100 + '%';
+                doll.style.top = Math.random() * 100 + '%';
+                doll.style.fontSize = (Math.random() * 2 + 2) + 'rem';
+                doll.style.animationDelay = Math.random() * 5 + 's';
+                doll.style.animationDuration = (15 + Math.random() * 10) + 's';
+                bgAnimation.appendChild(doll);
+            }
+        }
+
+        // 初始化标签切换
+        function initTabSwitch() {
+            // 标签点击事件
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = tab.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+            
+            // 侧边栏菜单点击事件
+            document.querySelectorAll('.sidebar-menu-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = link.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+        }
+
+        // 切换标签
+        function switchTab(tabName) {
+            // 移除所有活动状态
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.sidebar-menu-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 添加新的活动状态
+            const activeTab = document.querySelector(`.tab-item[data-tab="${tabName}"]`);
+            const activeLink = document.querySelector(`.sidebar-menu-link[data-tab="${tabName}"]`);
+            const activeContent = document.getElementById(tabName);
+            
+            if (activeTab) activeTab.classList.add('active');
+            if (activeLink) activeLink.classList.add('active');
+            if (activeContent) activeContent.classList.add('active');
+            
+            // 更新URL
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabName);
+            window.history.replaceState({}, '', url);
+        }
+
+        // 初始化个人信息
+        function initProfile() {
+            // 从URL获取当前标签
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlTab = urlParams.get('tab');
+            if (urlTab && urlTab !== 'profile') {
+                switchTab('profile');
+            }
+            
+            // 加载用户信息
+            loadProfile();
+            
+            // 绑定表单事件
+            bindProfileEvents();
+        }
+
+        // 加载个人信息
+        function loadProfile() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (!user) return;
+            
+            // 更新侧边栏信息
+            document.getElementById('sidebarUsername').textContent = user.name || '未知用户';
+            document.getElementById('sidebarLevel').textContent = user.level || '普通用户';
+            
+            // 更新表单字段
+            document.getElementById('profileUsername').value = user.name || '';
+            document.getElementById('profileEmail').value = user.email || '';
+            document.getElementById('profilePhone').value = user.phone || '';
+            document.getElementById('profileRealName').value = user.realName || '';
+            document.getElementById('profileBirthday').value = user.birthday || '';
+            document.getElementById('profileGender').value = user.gender || '';
+            document.getElementById('profileBio').value = user.bio || '';
+        }
+
+        // 绑定个人信息表单事件
+        function bindProfileEvents() {
+            // 保存按钮
+            document.getElementById('saveProfileBtn').addEventListener('click', () => {
+                saveProfile();
+            });
+            
+            // 重置按钮
+            document.getElementById('resetProfileBtn').addEventListener('click', () => {
+                loadProfile();
+            });
+        }
+
+        // 保存个人信息
+        async function saveProfile() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (!user) return;
+            
+            const profileData = {
+                name: document.getElementById('profileUsername').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+                realName: document.getElementById('profileRealName').value,
+                birthday: document.getElementById('profileBirthday').value,
+                gender: document.getElementById('profileGender').value,
+                bio: document.getElementById('profileBio').value
+            };
+            
+            // 验证数据
+            if (!profileData.name || !profileData.email) {
+                showNotification('error', '保存失败', '用户名和邮箱不能为空');
+                return;
+            }
+            
+            try {
+                // 更新用户数据
+                Object.assign(user, profileData);
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // 同步到后端
+                await window.userSystem.syncToBackend('profile_updated', {
+                    userId: user.id,
+                    profileData: profileData
+                });
+                
+                // 更新显示
+                loadProfile();
+                
+                showNotification('success', '保存成功', '个人信息已更新');
+                
+            } catch (error) {
+                console.error('保存个人信息失败:', error);
+                showNotification('error', '保存失败', '保存个人信息时发生错误');
+            }
+        }
+
+        // 初始化订单
+        function initOrders() {
+            loadOrders();
+            bindOrderEvents();
+        }
+
+        // 加载订单
+        function loadOrders() {
+            const orders = window.userSystem.getUserOrders();
+            renderOrders(orders);
+        }
+
+        // 渲染订单列表
+        function renderOrders(orders) {
+            const orderList = document.getElementById('orderList');
+            if (!orderList) return;
+            
+            if (orders.length === 0) {
+                orderList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无订单</h3>
+                        <p style="font-size: 1rem;">您还没有任何订单</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            orderList.innerHTML = orders.map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-id">订单号: ${order.id}</div>
+                        <div class="order-status ${order.status}">${getStatusText(order.status)}</div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <span class="order-detail-label">商品:</span>
+                            <span class="order-detail-value">${order.productName || '未知商品'}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">数量:</span>
+                            <span class="order-detail-value">${order.quantity || 1}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">金额:</span>
+                            <span class="order-detail-value">¥${order.totalAmount || 0}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">下单时间:</span>
+                            <span class="order-detail-value">${new Date(order.createdAt).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        ${getOrderActions(order)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                pending: '待处理',
+                processing: '处理中',
+                shipped: '已发货',
+                delivered: '已送达',
+                cancelled: '已取消'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 获取订单操作按钮
+        function getOrderActions(order) {
+            let actions = '';
+            
+            switch (order.status) {
+                case 'pending':
+                    actions = `
+                        <button class="order-action-btn" onclick="cancelOrder('${order.id}')">取消订单</button>
+                    `;
+                    break;
+                case 'processing':
+                    actions = `
+                        <button class="order-action-btn" onclick="viewOrderDetail('${order.id}')">查看详情</button>
+                    `;
+                    break;
+                case 'shipped':
+                    actions = `
+                        <button class="order-action-btn" onclick="confirmReceipt('${order.id}')">确认收货</button>
+                    `;
+                    break;
+                case 'delivered':
+                    actions = `
+                        <button class="order-action-btn" onclick="viewOrderDetail('${order.id}')">查看详情</button>
+                        <button class="order-action-btn" onclick="reviewOrder('${order.id}')">评价订单</button>
+                    `;
+                    break;
+                case 'cancelled':
+                    actions = `
+                        <button class="order-action-btn" onclick="viewOrderDetail('${order.id}')">查看详情</button>
+                    `;
+                    break;
+            }
+            
+            return actions;
+        }
+
+        // 绑定订单事件
+        function bindOrderEvents() {
+            // 刷新按钮
+            const refreshBtn = document.getElementById('refreshOrdersBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    loadOrders();
+                });
+            }
+        }
+
+        // 取消订单
+        async function cancelOrder(orderId) {
+            if (!confirm('确定要取消这个订单吗？')) {
+                return;
+            }
+            
+            const success = window.userSystem.updateOrderStatus(orderId, 'cancelled', '用户取消');
+            if (success) {
+                loadOrders();
+                showNotification('info', '订单已取消', `订单 ${orderId} 已取消`);
+            }
+        }
+
+        // 确认收货
+        async function confirmReceipt(orderId) {
+            const success = window.userSystem.updateOrderStatus(orderId, 'delivered', '用户确认收货');
+            if (success) {
+                loadOrders();
+                showNotification('success', '确认收货', `订单 ${orderId} 已确认收货`);
+                
+                // 可以在这里添加确认收货后的逻辑
+                // 比如自动评价、积分奖励等
+            }
+        }
+
+        // 查看订单详情
+        function viewOrderDetail(orderId) {
+            // 这里可以打开订单详情模态框
+            console.log('查看订单详情:', orderId);
+            showNotification('info', '订单详情', `订单 ${orderId} 的详细信息`);
+        }
+
+        // 评价订单
+        function reviewOrder(orderId) {
+            // 这里可以打开评价模态框
+            console.log('评价订单:', orderId);
+            showNotification('info', '订单评价', `订单 ${orderId} 的评价功能`);
+        }
+
+        // 初始化积分记录
+        function initPoints() {
+            loadPoints();
+            bindPointsEvents();
+        }
+
+        // 加载积分记录
+        function loadPoints() {
+            // 这里可以从积分系统获取积分记录
+            const pointsList = document.getElementById('pointsList');
+            if (!pointsList) return;
+            
+            // 模拟积分记录数据
+            const pointsRecords = [
+                {
+                    id: 'P001',
+                    type: 'earned',
+                    amount: 100,
+                    description: '幸运骰子获胜',
+                    timestamp: '2024-01-15 10:30:00',
+                    balance: 1500
+                },
+                {
+                    id: 'P002',
+                    type: 'spent',
+                    amount: 50,
+                    description: '购买娃娃',
+                    timestamp: '2024-01-14 15:20:00',
+                    balance: 1400
+                },
+                {
+                    id: 'P003',
+                    type: 'earned',
+                    amount: 200,
+                    description: '宝箱奖励',
+                    timestamp: '2024-01-13 09:15:00',
+                    balance: 1450
+                }
+            ];
+            
+            if (pointsRecords.length === 0) {
+                pointsList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无积分记录</h3>
+                        <p style="font-size: 1rem;">您还没有任何积分记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            pointsList.innerHTML = pointsRecords.map(record => `
+                <div class="points-item">
+                    <div class="points-header">
+                        <div class="points-id">${record.type === 'earned' ? '获得' : '消费'} ${record.amount} 积分</div>
+                        <div class="points-amount">${record.description}</div>
+                    </div>
+                    
+                    <div class="points-details">
+                        <div class="points-detail">
+                            <span class="points-detail-label">时间:</span>
+                            <span class="points-detail-value">${new Date(record.timestamp).toLocaleString()}</span>
+                        </div>
+                        <div class="points-detail">
+                            <span class="points-detail-label">余额:</span>
+                            <span class="points-detail-value">${record.balance} 积分</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 绑定积分事件
+        function bindPointsEvents() {
+            // 刷新按钮
+            const refreshBtn = document.getElementById('refreshPointsBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    loadPoints();
+                });
+            }
+        }
+
+        // 初始化账户安全
+        function initSecurity() {
+            bindSecurityEvents();
+        }
+
+        // 绑定安全事件
+        function bindSecurityEvents() {
+            // 修改密码表单
+            const passwordForm = document.getElementById('passwordForm');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    changePassword();
+                });
+            }
+            
+            // 绑定手机表单
+            const phoneForm = document.getElementById('phoneForm');
+            if (phoneForm) {
+                phoneForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    bindPhone();
+                });
+            }
+            
+            // 发送验证码按钮
+            const sendCodeBtn = document.getElementById('sendCodeBtn');
+            if (sendCodeBtn) {
+                sendCodeBtn.addEventListener('click', () => {
+                    sendPhoneCode();
+                });
+            }
+            
+            // 绑定邮箱表单
+            const emailForm = document.getElementById('emailForm');
+            if (emailForm) {
+                emailForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    bindEmail();
+                });
+            }
+        }
+
+        // 修改密码
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('error', '修改失败', '请填写所有字段');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('error', '修改失败', '新密码和确认密码不一致');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showNotification('error', '修改失败', '密码长度至少6位');
+                return;
+            }
+            
+            try {
+                // 这里可以添加实际的密码修改逻辑
+                // 比如调用API验证当前密码并更新新密码
+                const response = await fetch('/api/user/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+                
+                if (response.ok) {
+                    // 清空表单
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    
+                    showNotification('success', '密码修改成功', '您的密码已成功修改');
+                } else {
+                    showNotification('error', '修改失败', '密码修改失败，请检查当前密码');
+                }
+            } catch (error) {
+                console.error('修改密码失败:', error);
+                showNotification('error', '修改失败', '密码修改时发生错误');
+            }
+        }
+
+        // 绑定手机
+        async function bindPhone() {
+            const phone = document.getElementById('bindPhone').value;
+            const code = document.getElementById('phoneCode').value;
+            
+            if (!phone || !code) {
+                showNotification('error', '绑定失败', '请填写手机号和验证码');
+                return;
+            }
+            
+            try {
+                // 这里可以添加实际的手机绑定逻辑
+                const response = await fetch('/api/user/bind-phone', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        code: code
+                    })
+                });
+                
+                if (response.ok) {
+                    // 更新用户信息
+                    const user = window.userSystem.currentUser;
+                    user.phone = phone;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // 清空表单
+                    document.getElementById('bindPhone').value = '';
+                    document.getElementById('phoneCode').value = '';
+                    
+                    showNotification('success', '绑定成功', '手机号已成功绑定');
+                } else {
+                    showNotification('error', '绑定失败', '手机号绑定失败，请检查验证码');
+                }
+            } catch (error) {
+                console.error('绑定手机失败:', error);
+                showNotification('error', '绑定失败', '手机号绑定时发生错误');
+            }
+        }
+
+        // 发送手机验证码
+        async function sendPhoneCode() {
+            const phone = document.getElementById('bindPhone').value;
+            
+            if (!phone) {
+                showNotification('error', '发送失败', '请填写手机号');
+                return;
+            }
+            
+            try {
+                // 这里可以添加实际的发送验证码逻辑
+                const response = await fetch('/api/user/send-phone-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone
+                    })
+                });
+                
+                if (response.ok) {
+                    showNotification('success', '发送成功', '验证码已发送到您的手机');
+                    
+                    // 开始倒计时
+                    startCodeCountdown();
+                } else {
+                    showNotification('error', '发送失败', '验证码发送失败');
+                }
+            } catch (error) {
+                console.error('发送验证码失败:', error);
+                showNotification('error', '发送失败', '验证码发送时发生错误');
+            }
+        }
+
+        // 开始验证码倒计时
+        function startCodeCountdown() {
+            const sendBtn = document.getElementById('sendCodeBtn');
+            let countdown = 60;
+            
+            sendBtn.disabled = true;
+            sendBtn.textContent = `${countdown}秒后重发`;
+            
+            const timer = setInterval(() => {
+                countdown--;
+                sendBtn.textContent = `${countdown}秒后重发`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = '发送验证码';
+                }
+            }, 1000);
+        }
+
+        // 绑定邮箱
+        async function bindEmail() {
+            const email = document.getElementById('bindEmail').value;
+            
+            if (!email) {
+                showNotification('error', '绑定失败', '请填写邮箱地址');
+                return;
+            }
+            
+            try {
+                // 这里可以添加实际的邮箱绑定逻辑
+                const response = await fetch('/api/user/bind-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
+                });
+                
+                if (response.ok) {
+                    // 更新用户信息
+                    const user = window.userSystem.currentUser;
+                    user.email = email;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // 清空表单
+                    document.getElementById('bindEmail').value = '';
+                    
+                    showNotification('success', '绑定成功', '邮箱已成功绑定');
+                } else {
+                    showNotification('error', '绑定失败', '邮箱绑定失败，请检查邮箱地址');
+                }
+            } catch (error) {
+                console.error('绑定邮箱失败:', error);
+                showNotification('error', '绑定失败', '邮箱绑定时发生错误');
+            }
+        }
+
+        // 初始化消息通知
+        function initNotifications() {
+            loadNotifications();
+            bindNotificationEvents();
+        }
+
+        // 加载通知
+        function loadNotifications() {
+            const notificationList = document.getElementById('notificationList');
+            if (!notificationList) return;
+            
+            // 模拟通知数据
+            const notifications = [
+                {
+                    id: 'N001',
+                    type: 'info',
+                    title: '系统通知',
+                    message: '欢迎使用天创时代平台',
+                    timestamp: '2024-01-15 10:00:00',
+                    read: false
+                },
+                {
+                    id: 'N002',
+                    type: 'success',
+                    title: '订单通知',
+                    message: '您的订单已发货',
+                    timestamp: '2024-01-14 15:30:00',
+                    read: false
+                },
+                {
+                    id: 'N003',
+                    type: 'warning',
+                    title: '积分提醒',
+                    message: '您的积分即将过期',
+                    timestamp: '2024-01-13 09:00:00',
+                    read: true
+                }
+            ];
+            
+            if (notifications.length === 0) {
+                notificationList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔔</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无通知</h3>
+                        <p style="font-size: 1rem;">您没有新的通知消息</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            notificationList.innerHTML = notifications.map(notification => `
+                <div class="order-item ${notification.read ? 'read' : ''}">
+                    <div class="order-header">
+                        <div class="order-id">${notification.title}</div>
+                        <div class="order-status ${notification.type}">${notification.type}</div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <span class="order-detail-label">时间:</span>
+                            <span class="order-detail-value">${new Date(notification.timestamp).toLocaleString()}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">内容:</span>
+                            <span class="order-detail-value">${notification.message}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="order-action-btn" onclick="markNotificationRead('${notification.id}')">
+                            ${notification.read ? '标记未读' : '标记已读'}
+                        </button>
+                        <button class="order-action-btn" onclick="deleteNotification('${notification.id}')">
+                            删除
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 绑定通知事件
+        function bindNotificationEvents() {
+            // 通知设置变更
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    updateNotificationSettings();
+                });
+            });
+        }
+
+        // 更新通知设置
+        function updateNotificationSettings() {
+            const settings = {
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                smsNotifications: document.getElementById('smsNotifications').checked,
+                pushNotifications: document.getElementById('pushNotifications').checked,
+                orderNotifications: document.getElementById('orderNotifications').checked
+            };
+            
+            // 保存设置到本地存储
+            localStorage.setItem('notificationSettings', JSON.stringify(settings));
+            
+            // 应用设置
+            applyNotificationSettings(settings);
+        }
+
+        // 应用通知设置
+        function applyNotificationSettings(settings) {
+            // 这里可以根据设置启用或禁用不同类型的通知
+            console.log('应用通知设置:', settings);
+        }
+
+        // 标记通知已读
+        function markNotificationRead(notificationId) {
+            // 这里可以更新通知状态
+            console.log('标记通知已读:', notificationId);
+            loadNotifications();
+        }
+
+        // 删除通知
+        function deleteNotification(notificationId) {
+            // 这里可以从通知列表中删除通知
+            console.log('删除通知:', notificationId);
+            loadNotifications();
+        }
+
+        // 初始化用户系统事件
+        function initUserSystemEvents() {
+            // 监听用户系统事件
+            window.addEventListener('userSystemEvent', (event) => {
+                console.log('用户中心：收到用户系统事件', event.detail);
+                handleUserSystemEvent(event.detail);
+            });
+            
+            // 监听积分系统事件
+            window.addEventListener('pointsUpdated', (event) => {
+                console.log('用户中心：收到积分更新事件', event.detail);
+                updatePointsDisplay(event.detail.newPoints);
+            });
+            
+            // 监听积分显示更新事件
+            window.addEventListener('pointsDisplayUpdated', (event) => {
+                console.log('用户中心：收到积分显示更新事件', event.detail);
+                updatePointsDisplay(event.detail.points);
+            });
+        }
+
+        // 处理用户系统事件
+        function handleUserSystemEvent(data) {
+            console.log('处理用户系统事件:', data);
+            
+            // 根据事件类型处理不同的同步逻辑
+            switch (data.type) {
+                case 'user_updated':
+                    handleUserUpdated(data);
+                    break;
+                case 'points_updated':
+                    handlePointsUpdated(data);
+                    break;
+                case 'order_updated':
+                    handleOrderUpdated(data);
+                    break;
+                default:
+                    console.log('未知的用户系统事件类型:', data.type);
+            }
+        }
+
+        // 处理用户更新事件
+        function handleUserUpdated(data) {
+            console.log('处理用户更新事件:', data);
+            
+            // 更新用户信息显示
+            updateUserInfo(data.user);
+            
+            // 如果在个人信息标签，重新加载
+            if (currentTab === 'profile') {
+                loadProfile();
+            }
+        }
+
+        // 处理积分更新事件
+        function handlePointsUpdated(data) {
+            console.log('处理积分更新事件:', data);
+            
+            // 更新积分显示
+            updatePointsDisplay(data.newPoints);
+            
+            // 如果在积分记录标签，重新加载
+            if (currentTab === 'points') {
+                loadPoints();
+            }
+        }
+
+        // 处理订单更新事件
+        function handleOrderUpdated(data) {
+            console.log('处理订单更新事件:', data);
+            
+            // 如果在订单标签，重新加载
+            if (currentTab === 'orders') {
+                loadOrders();
+            }
+        }
+
+        // 更新用户信息显示
+        function updateUserInfo(user) {
+            try {
+                const userName = document.getElementById('userName');
+                const userPoints = document.getElementById('userPoints');
+                
+                if (user && userName) {
+                    userName.textContent = user.name || '未知用户';
+                }
+                
+                if (userPoints) {
+                    // 使用积分系统获取积分
+                    const points = window.pointsSystem ? 
+                        window.pointsSystem.getPoints() : 
+                        (user.points || 0);
+                    userPoints.textContent = points;
+                }
+            } catch (error) {
+                console.error('更新用户信息显示失败:', error);
+            }
+        }
+
+        // 更新积分显示 - 修复版
+        function updatePointsDisplay(points) {
+            console.log('用户中心：更新积分显示', points);
+            
+            // 更新所有显示积分的元素
+            const pointsElements = document.querySelectorAll('[id*="userPoints"], [class*="user-points"]');
+            pointsElements.forEach(element => {
+                if (element.tagName === 'SPAN') {
+                    element.textContent = points;
+                } else if (element.tagName === 'DIV') {
+                    const span = element.querySelector('span');
+                    if (span) {
+                        span.textContent = points;
+                    } else {
+                        element.textContent = `💰 ${points}`;
+                    }
+                }
+            });
+            
+            // 触发积分显示更新事件
+            window.dispatchEvent(new CustomEvent('pointsDisplayUpdated', { points }));
+        }
+
+        // 显示通知
+        function showNotification(type, title, message) {
+            try {
+                // 移除现有通知
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+                
+                // 创建新通知
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // 显示动画
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            } catch (error) {
+                console.error('显示通知失败:', error);
+            }
+        }
+
+        // 全局函数
+        function switchTab(tabName) {
+            if (window.UserCenter) {
+                window.UserCenter.switchTab(tabName);
+            }
+        }
+
+        function saveProfile() {
+            if (window.UserCenter) {
+                window.UserCenter.saveProfile();
+            }
+        }
+
+        function loadProfile() {
+            if (window.UserCenter) {
+                window.UserCenter.loadProfile();
+            }
+        }
+
+        function loadOrders() {
+            if (window.UserCenter) {
+                window.UserCenter.loadOrders();
+            }
+        }
+
+        function loadPoints() {
+            if (window.UserCenter) {
+                window.UserCenter.loadPoints();
+            }
+        }
+
+        function cancelOrder(orderId) {
+            if (window.UserCenter) {
+                window.UserCenter.cancelOrder(orderId);
+            }
+        }
+
+        function confirmReceipt(orderId) {
+            if (window.UserCenter) {
+                window.UserCenter.confirmReceipt(orderId);
+            }
+        }
+
+        function viewOrderDetail(orderId) {
+            if (window.UserCenter) {
+                window.UserCenter.viewOrderDetail(orderId);
+            }
+        }
+
+        function reviewOrder(orderId) {
+            if (window.UserCenter) {
+                window.UserCenter.reviewOrder(orderId);
+            }
+        }
+
+        function changePassword() {
+            if (window.UserCenter) {
+                window.UserCenter.changePassword();
+            }
+        }
+
+        function bindPhone() {
+            if (window.UserCenter) {
+                window.UserCenter.bindPhone();
+            }
+        }
+
+        function sendPhoneCode() {
+            if (window.UserCenter) {
+                window.UserCenter.sendPhoneCode();
+            }
+        }
+
+        function bindEmail() {
+            if (window.UserCenter) {
+                window.UserCenter.bindEmail();
+            }
+        }
+
+        function markNotificationRead(notificationId) {
+            if (window.UserCenter) {
+                window.UserCenter.markNotificationRead(notificationId);
+            }
+        }
+
+        function deleteNotification(notificationId) {
+            if (window.UserCenter) {
+                window.UserCenter.deleteNotification(notificationId);
+            }
+        }
+
+        // 用户中心系统
+        const UserCenter = {
+            // 当前激活的标签
+            currentTab: 'profile',
+            
+            // 初始化
+            init() {
+                console.log('=== 用户中心系统初始化 ===');
+                
+                // 检查登录状态
+                if (!checkLoginStatus()) {
+                    return;
+                }
+                
+                // 初始化背景
+                this.initBackground();
+                
+                // 初始化标签切换
+                this.initTabSwitch();
+                
+                // 初始化各个标签内容
+                this.initProfile();
+                this.initOrders();
+                this.initPoints();
+                this.initSecurity();
+                this.initNotifications();
+                
+                // 监听用户系统事件
+                this.initUserSystemEvents();
+                
+                console.log('用户中心系统初始化完成');
+            },
+            
+            // 检查登录状态
+            checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                const currentUser = localStorage.getItem('currentUser');
+                
+                if (!isLoggedIn || !currentUser) {
+                    console.log('用户未登录，跳转到登录页面');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                
+                return true;
+            },
+            
+            // 初始化背景
+            initBackground() {
+                const bgAnimation = document.getElementById('bgAnimation');
+                const dollEmojis = ['🧸', '🎀', '🌸', '🦄', '🌈', '🦋', '🌺', '🌺', '🍓', '🎂', '🎈'];
+                const animations = ['wave', 'jump', 'spin', 'dance', 'float'];
+                
+                // 创建不同运动轨迹的娃娃
+                for (let i = 0; i < 15; i++) {
+                    const doll = document.createElement('div');
+                    doll.className = 'bg-doll ' + animations[i % animations.length];
+                    doll.textContent = dollEmojis[i % dollEmojis.length];
+                    doll.style.left = Math.random() * 100 + '%';
+                    doll.style.top = Math.random() * 100 + '%';
+                    doll.style.fontSize = (Math.random() * 2 + 2) + 'rem';
+                    doll.style.animationDelay = Math.random() * 5 + 's';
+                    doll.style.animationDuration = (15 + Math.random() * 10) + 's';
+                    bgAnimation.appendChild(doll);
+                }
+            },
+            
+            // 初始化标签切换
+            initTabSwitch() {
+                // 标签点击事件
+                document.querySelectorAll('.tab-item').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const tabName = tab.getAttribute('data-tab');
+                        this.switchTab(tabName);
+                    });
+                });
+                
+                // 侧边栏菜单点击事件
+                document.querySelectorAll('.sidebar-menu-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const tabName = link.getAttribute('data-tab');
+                        this.switchTab(tabName);
+                    });
+                });
+            },
+            
+            // 切换标签
+            switchTab(tabName) {
+                // 移除所有活动状态
+                document.querySelectorAll('.tab-item').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.sidebar-menu-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 添加新的活动状态
+                const activeTab = document.querySelector(`.tab-item[data-tab="${tabName}"]`);
+                const activeLink = document.querySelector(`.sidebar-menu-link[data-tab="${tabName}"]`);
+                const activeContent = document.getElementById(tabName);
+                
+                if (activeTab) activeTab.classList.add('active');
+                if (activeLink) activeLink.classList.add('active');
+                if (activeContent) activeContent.classList.add('active');
+                
+                this.currentTab = tabName;
+                
+                // 更新URL
+                const url = new URL(window.location);
+                url.searchParams.set('tab', tabName);
+                window.history.replaceState({}, '', url);
+            },
+            
+            // 初始化个人信息
+            initProfile() {
+                // 从URL获取当前标签
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlTab = urlParams.get('tab');
+                if (urlTab && urlTab !== 'profile') {
+                    this.switchTab('profile');
+                }
+                
+                // 加载用户信息
+                this.loadProfile();
+                
+                // 绑定表单事件
+                this.bindProfileEvents();
+            },
+            
+            // 加载个人信息
+            loadProfile() {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (!user) return;
+                
+                // 更新侧边栏信息
+                document.getElementById('sidebarUsername').textContent = user.name || '未知用户';
+                document.getElementById('sidebarLevel').textContent = user.level || '普通用户';
+                
+                // 更新表单字段
+                document.getElementById('profileUsername').value = user.name || '';
+                document.getElementById('profileEmail').value = user.email || '';
+                document.getElementById('profilePhone').value = user.phone || '';
+                document.getElementById('profileRealName').value = user.realName || '';
+                document.getElementById('profileBirthday').value = user.birthday || '';
+                document.getElementById('profileGender').value = user.gender || '';
+                document.getElementById('profileBio').value = user.bio || '';
+            },
+            
+            // 绑定个人信息表单事件
+            bindProfileEvents() {
+                // 保存按钮
+                document.getElementById('saveProfileBtn').addEventListener('click', () => {
+                    this.saveProfile();
+                });
+                
+                // 重置按钮
+                document.getElementById('resetProfileBtn').addEventListener('click', () => {
+                    this.loadProfile();
+                });
+            },
+            
+            // 保存个人信息
+            async function saveProfile() {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (!user) return;
+                
+                const profileData = {
+                    name: document.getElementById('profileUsername').value,
+                    email: document.getElementById('profileEmail').value,
+                    phone: document.getElementById('profilePhone').value,
+                    realName: document.getElementById('profileRealName').value,
+                    birthday: document.getElementById('profileBirthday').value,
+                    gender: document.getElementById('profileGender').value,
+                    bio: document.getElementById('profileBio').value
+                };
+                
+                // 验证数据
+                if (!profileData.name || !profileData.email) {
+                    this.showNotification('error', '保存失败', '用户名和邮箱不能为空');
+                    return;
+                }
+                
+                try {
+                    // 更新用户数据
+                    Object.assign(user, profileData);
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // 同步到后端
+                    await window.userSystem.syncToBackend('profile_updated', {
+                        userId: user.id,
+                        profileData: profileData
+                    });
+                    
+                    // 更新显示
+                    this.loadProfile();
+                    
+                    this.showNotification('success', '保存成功', '个人信息已更新');
+                    
+                } catch (error) {
+                    console.error('保存个人信息失败:', error);
+                    this.showNotification('error', '保存失败', '保存个人信息时发生错误');
+                }
+            },
+            
+            // 初始化订单
+            initOrders() {
+                this.loadOrders();
+                this.bindOrderEvents();
+            },
+            
+            // 加载订单
+            loadOrders() {
+                const orders = window.userSystem.getUserOrders();
+                this.renderOrders(orders);
+            },
+            
+            // 渲染订单列表
+            renderOrders(orders) {
+                const orderList = document.getElementById('orderList');
+                if (!orderList) return;
+                
+                if (orders.length === 0) {
+                    orderList.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无订单</h3>
+                            <p style="font-size: 1rem;">您还没有任何订单</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                orderList.innerHTML = orders.map(order => `
+                    <div class="order-item">
+                        <div class="order-header">
+                            <div class="order-id">订单号: ${order.id}</div>
+                            <div class="order-status ${order.status}">${this.getStatusText(order.status)}</div>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="order-detail">
+                                <span class="order-detail-label">商品:</span>
+                                <span class="order-detail-value">${order.productName || '未知商品'}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">数量:</span>
+                                <span class="order-detail-value">${order.quantity || 1}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">金额:</span>
+                                <span class="order-detail-value">¥${order.totalAmount || 0}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">下单时间:</span>
+                                <span class="order-detail-value">${new Date(order.createdAt).toLocaleString()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-actions">
+                            ${this.getOrderActions(order)}
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // 获取状态文本
+            getStatusText(status) {
+                const statusMap = {
+                    pending: '待处理',
+                    processing: '处理中',
+                    shipped: '已发货',
+                    delivered: '已送达',
+                    cancelled: '已取消'
+                };
+                return statusMap[status] || status;
+            },
+            
+            // 获取订单操作按钮
+            getOrderActions(order) {
+                let actions = '';
+                
+                switch (order.status) {
+                    case 'pending':
+                        actions = `
+                            <button class="order-action-btn" onclick="UserCenter.cancelOrder('${order.id}')">取消订单</button>
+                        `;
+                        break;
+                    case 'processing':
+                        actions = `
+                            <button class="order-action-btn" onclick="UserCenter.viewOrderDetail('${order.id}')">查看详情</button>
+                        `;
+                        break;
+                    case 'shipped':
+                        actions = `
+                            <button class="order-action-btn" onclick="UserCenter.confirmReceipt('${order.id}')">确认收货</button>
+                        `;
+                        break;
+                    case 'delivered':
+                        actions = `
+                            <button class="order-action-btn" onclick="UserCenter.viewOrderDetail('${order.id}')">查看详情</button>
+                            <button class="order-action-btn" onclick="UserCenter.reviewOrder('${order.id}')">评价订单</button>
+                        `;
+                        break;
+                    case 'cancelled':
+                        actions = `
+                            <button class="order-action-btn" onclick="UserCenter.viewOrderDetail('${order.id}')">查看详情</button>
+                        `;
+                        break;
+                }
+                
+                return actions;
+            },
+            
+            // 绑定订单事件
+            bindOrderEvents() {
+                // 刷新按钮
+                const refreshBtn = document.getElementById('refreshOrdersBtn');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        this.loadOrders();
+                    });
+                }
+            },
+            
+            // 取消订单
+            async function cancelOrder(orderId) {
+                if (!confirm('确定要取消这个订单吗？')) {
+                    return;
+                }
+                
+                const success = window.userSystem.updateOrderStatus(orderId, 'cancelled', '用户取消');
+                if (success) {
+                    this.loadOrders();
+                    this.showNotification('info', '订单已取消', `订单 ${orderId} 已取消`);
+                }
+            },
+            
+            // 确认收货
+            async function confirmReceipt(orderId) {
+                const success = window.userSystem.updateOrderStatus(orderId, 'delivered', '用户确认收货');
+                if (success) {
+                    this.loadOrders();
+                    this.showNotification('success', '确认收货', `订单 ${orderId} 已确认收货`);
+                    
+                    // 可以在这里添加确认收货后的逻辑
+                    // 比如自动评价、积分奖励等
+                }
+            },
+            
+            // 查看订单详情
+            function viewOrderDetail(orderId) {
+                // 这里可以打开订单详情模态框
+                console.log('查看订单详情:', orderId);
+                this.showNotification('info', '订单详情', `订单 ${orderId} 的详细信息`);
+            },
+            
+            // 评价订单
+            function reviewOrder(orderId) {
+                // 这里可以打开评价模态框
+                console.log('评价订单:', orderId);
+                this.showNotification('info', '订单评价', `订单 ${orderId} 的评价功能`);
+            },
+            
+            // 初始化积分记录
+            initPoints() {
+                this.loadPoints();
+                this.bindPointsEvents();
+            },
+            
+            // 加载积分记录
+            loadPoints() {
+                // 这里可以从积分系统获取积分记录
+                const pointsList = document.getElementById('pointsList');
+                if (!pointsList) return;
+                
+                // 模拟积分记录数据
+                const pointsRecords = [
+                    {
+                        id: 'P001',
+                        type: 'earned',
+                        amount: 100,
+                        description: '幸运骰子获胜',
+                        timestamp: '2024-01-15 10:30:00',
+                        balance: 1500
+                    },
+                    {
+                        id: 'P002',
+                        type: 'spent',
+                        amount: 50,
+                        description: '购买娃娃',
+                        timestamp: '2024-01-14 15:20:00',
+                        balance: 1400
+                    },
+                    {
+                        id: 'P003',
+                        type: 'earned',
+                        amount: 200,
+                        description: '宝箱奖励',
+                        timestamp: '2024-01-13 09:15:00',
+                        balance: 1450
+                    }
+                ];
+                
+                if (pointsRecords.length === 0) {
+                    pointsList.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无积分记录</h3>
+                            <p style="font-size: 1rem;">您还没有任何积分记录</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                pointsList.innerHTML = pointsRecords.map(record => `
+                    <div class="points-item">
+                        <div class="points-header">
+                            <div class="points-id">${record.type === 'earned' ? '获得' : '消费'} ${record.amount} 积分</div>
+                            <div class="points-amount">${record.description}</div>
+                        </div>
+                        
+                        <div class="points-details">
+                            <div class="points-detail">
+                                <span class="points-detail-label">时间:</span>
+                                <span class="points-detail-value">${new Date(record.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="points-detail">
+                                <span class="points-detail-label">余额:</span>
+                                <span class="points-detail-value">${record.balance} 积分</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // 绑定积分事件
+            bindPointsEvents() {
+                // 刷新按钮
+                const refreshBtn = document.getElementById('refreshPointsBtn');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', () => {
+                        this.loadPoints();
+                    });
+                }
+            },
+            
+            // 初始化账户安全
+            initSecurity() {
+                this.bindSecurityEvents();
+            },
+            
+            // 绑定安全事件
+            bindSecurityEvents() {
+                // 修改密码表单
+                const passwordForm = document.getElementById('passwordForm');
+                if (passwordForm) {
+                    passwordForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.changePassword();
+                    });
+                }
+                
+                // 绑定手机表单
+                const phoneForm = document.getElementById('phoneForm');
+                if (phoneForm) {
+                    phoneForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.bindPhone();
+                    });
+                }
+                
+                // 发送验证码按钮
+                const sendCodeBtn = document.getElementById('sendCodeBtn');
+                if (sendCodeBtn) {
+                    sendCodeBtn.addEventListener('click', () => {
+                        this.sendPhoneCode();
+                    });
+                }
+                
+                // 绑定邮箱表单
+                const emailForm = document.getElementById('emailForm');
+                if (emailForm) {
+                    emailForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.bindEmail();
+                    });
+                }
+            },
+            
+            // 修改密码
+            async function changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    this.showNotification('error', '修改失败', '请填写所有字段');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    this.showNotification('error', '修改失败', '新密码和确认密码不一致');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    this.showNotification('error', '修改失败', '密码长度至少6位');
+                    return;
+                }
+                
+                try {
+                    // 这里可以添加实际的密码修改逻辑
+                    // 比如调用API验证当前密码并更新新密码
+                    const response = await fetch('/api/user/change-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        // 清空表单
+                        document.getElementById('currentPassword').value = '';
+                        document.getElementById('newPassword').value = '';
+                        document.getElementById('confirmPassword').value = '';
+                        
+                        this.showNotification('success', '密码修改成功', '您的密码已成功修改');
+                    } else {
+                        this.showNotification('error', '修改失败', '密码修改失败，请检查当前密码');
+                    }
+                } catch (error) {
+                    console.error('修改密码失败:', error);
+                    this.showNotification('error', '修改失败', '密码修改时发生错误');
+                }
+            },
+            
+            // 绑定手机
+            async function bindPhone() {
+                const phone = document.getElementById('bindPhone').value;
+                const code = document.getElementById('phoneCode').value;
+                
+                if (!phone || !code) {
+                    this.showNotification('error', '绑定失败', '请填写手机号和验证码');
+                    return;
+                }
+                
+                try {
+                    // 这里可以添加实际的手机绑定逻辑
+                    const response = await fetch('/api/user/bind-phone', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            phone: phone,
+                            code: code
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        // 更新用户信息
+                        const user = window.userSystem.currentUser;
+                        user.phone = phone;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        
+                        // 清空表单
+                        document.getElementById('bindPhone').value = '';
+                        document.getElementById('phoneCode').value = '';
+                        
+                        this.showNotification('success', '绑定成功', '手机号已成功绑定');
+                    } else {
+                        this.showNotification('error', '绑定失败', '手机号绑定失败，请检查验证码');
+                    }
+                } catch (error) {
+                    console.error('绑定手机失败:', error);
+                    this.showNotification('error', '绑定失败', '手机号绑定时发生错误');
+                }
+            },
+            
+            // 发送手机验证码
+            async function sendPhoneCode() {
+                const phone = document.getElementById('bindPhone').value;
+                
+                if (!phone) {
+                    this.showNotification('error', '发送失败', '请填写手机号');
+                    return;
+                }
+                
+                try {
+                    // 这里可以添加实际的发送验证码逻辑
+                    const response = await fetch('/api/user/send-phone-code', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            phone: phone
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        this.showNotification('success', '发送成功', '验证码已发送到您的手机');
+                        
+                        // 开始倒计时
+                        this.startCodeCountdown();
+                    } else {
+                        this.showNotification('error', '发送失败', '验证码发送失败');
+                    }
+                } catch (error) {
+                    console.error('发送验证码失败:', error);
+                    this.showNotification('error', '发送失败', '验证码发送时发生错误');
+                }
+            },
+            
+            // 开始验证码倒计时
+            function startCodeCountdown() {
+                const sendBtn = document.getElementById('sendCodeBtn');
+                let countdown = 60;
+                
+                sendBtn.disabled = true;
+                sendBtn.textContent = `${countdown}秒后重发`;
+                
+                const timer = setInterval(() => {
+                    countdown--;
+                    sendBtn.textContent = `${countdown}秒后重发`;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        sendBtn.disabled = false;
+                        sendBtn.textContent = '发送验证码';
+                    }
+                }, 1000);
+            },
+            
+            // 绑定邮箱
+            async function bindEmail() {
+                const email = document.getElementById('bindEmail').value;
+                
+                if (!email) {
+                    this.showNotification('error', '绑定失败', '请填写邮箱地址');
+                    return;
+                }
+                
+                try {
+                    // 这里可以添加实际的邮箱绑定逻辑
+                    const response = await fetch('/api/user/bind-email', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        // 更新用户信息
+                        const user = window.userSystem.currentUser;
+                        user.email = email;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        
+                        // 清空表单
+                        document.getElementById('bindEmail').value = '';
+                        
+                        this.showNotification('success', '绑定成功', '邮箱已成功绑定');
+                    } else {
+                        this.showNotification('error', '绑定失败', '邮箱绑定失败，请检查邮箱地址');
+                    }
+                } catch (error) {
+                    console.error('绑定邮箱失败:', error);
+                    this.showNotification('error', '绑定失败', '邮箱绑定时发生错误');
+                }
+            },
+            
+            // 初始化消息通知
+            initNotifications() {
+                this.loadNotifications();
+                this.bindNotificationEvents();
+            },
+            
+            // 加载通知
+            loadNotifications() {
+                const notificationList = document.getElementById('notificationList');
+                if (!notificationList) return;
+                
+                // 模拟通知数据
+                const notifications = [
+                    {
+                        id: 'N001',
+                        type: 'info',
+                        title: '系统通知',
+                        message: '欢迎使用天创时代平台',
+                        timestamp: '2024-01-15 10:00:00',
+                        read: false
+                    },
+                    {
+                        id: 'N002',
+                        type: 'success',
+                        title: '订单通知',
+                        message: '您的订单已发货',
+                        timestamp: '2024-01-14 15:30:00',
+                        read: false
+                    },
+                    {
+                        id: 'N003',
+                        type: 'warning',
+                        title: '积分提醒',
+                        message: '您的积分即将过期',
+                        timestamp: '2024-01-13 09:00:00',
+                        read: true
+                    }
+                ];
+                
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🔔</div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">暂无通知</h3>
+                            <p style="font-size: 1rem;">您没有新的通知消息</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                notificationList.innerHTML = notifications.map(notification => `
+                    <div class="order-item ${notification.read ? 'read' : ''}">
+                        <div class="order-header">
+                            <div class="order-id">${notification.title}</div>
+                            <div class="order-status ${notification.type}">${notification.type}</div>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="order-detail">
+                                <span class="order-detail-label">时间:</span>
+                                <span class="order-detail-value">${new Date(notification.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">内容:</span>
+                                <span class="order-detail-value">${notification.message}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="order-action-btn" onclick="UserCenter.markNotificationRead('${notification.id}')">
+                                ${notification.read ? '标记未读' : '标记已读'}
+                            </button>
+                            <button class="order-action-btn" onclick="UserCenter.deleteNotification('${notification.id}')">
+                                删除
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // 绑定通知事件
+            bindNotificationEvents() {
+                // 通知设置变更
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        this.updateNotificationSettings();
+                    });
+                });
+            },
+            
+            // 更新通知设置
+            updateNotificationSettings() {
+                const settings = {
+                    emailNotifications: document.getElementById('emailNotifications').checked,
+                    smsNotifications: document.getElementById('smsNotifications').checked,
+                    pushNotifications: document.getElementById('pushNotifications').checked,
+                    orderNotifications: document.getElementById('orderNotifications').checked
+                };
+                
+                // 保存设置到本地存储
+                localStorage.setItem('notificationSettings', JSON.stringify(settings));
+                
+                // 应用设置
+                this.applyNotificationSettings(settings);
+            },
+            
+            // 应用通知设置
+            applyNotificationSettings(settings) {
+                // 这里可以根据设置启用或禁用不同类型的通知
+                console.log('应用通知设置:', settings);
+            },
+            
+            // 标记通知已读
+            function markNotificationRead(notificationId) {
+                // 这里可以更新通知状态
+                console.log('标记通知已读:', notificationId);
+                this.loadNotifications();
+            },
+            
+            // 删除通知
+            function deleteNotification(notificationId) {
+                // 这里可以从通知列表中删除通知
+                console.log('删除通知:', notificationId);
+                this.loadNotifications();
+            },
+            
+            // 显示通知
+            showNotification(type, title, message) {
+                try {
+                    // 移除现有通知
+                    const existing = document.querySelector('.notification');
+                    if (existing) existing.remove();
+                    
+                    // 创建新通知
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type}`;
+                    notification.innerHTML = `
+                        <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ️'}</div>
+                        <div class="notification-content">
+                            <div class="notification-title">${title}</div>
+                            <div class="notification-message">${message}</div>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(notification);
+                    
+                    // 显示动画
+                    setTimeout(() => notification.classList.add('show'), 100);
+                    
+                    // 自动隐藏
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+                } catch (error) {
+                    console.error('显示通知失败:', error);
+                }
+            }
+        };
+        
+        // 全局函数
+        window.UserCenter = UserCenter;
+        
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('=== 用户中心页面初始化 ===');
+            UserCenter.init();
+        });
+    </script>
+</body>
+</html>
