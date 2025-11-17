@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天创娃娃收藏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-dice"></i>
+                天创娃娃收藏
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active" data-panel="user-panel">我的娃娃</a></li>
+                <li><a href="#" class="nav-link" data-panel="synthesis-panel">娃娃合成</a></li>
+                <!-- 龟兔赛跑入口 -->
+                <li><a href="racing.html" class="nav-link">龟兔赛跑</a></li>
+                <li><a href="#" class="nav-link" id="admin-link" data-panel="admin-panel" style="display:none;">管理后台</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-points" id="user-points">0.00 积分</div>
+                <div class="avatar" id="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-menu">
+                    <button id="logout-btn" class="btn btn-sm">退出</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container main-content">
+        <!-- 用户娃娃收藏面板 -->
+        <div id="user-panel" class="panel active">
+            <h1>我的娃娃收藏</h1>
+            <p>在这里查看您拥有的所有娃娃</p>
+            
+            <!-- 收益倒计时 -->
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">每日收益发放倒计时</div>
+                    </div>
+                    <div class="countdown">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdown-hours">00</div>
+                            <div class="countdown-label">小时</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countdown-minutes">00</div>
+                            <div class="countdown-label">分钟</div>
+                        </div>
+                    </div>
+                    <p>下次发放时间：每天 24:00</p>
+                    <p>预计发放：<span id="expected-payout">0.00</span> 积分</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">最近发放记录</div>
+                    </div>
+                    <div id="payout-history">
+                        <p>暂无发放记录</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 统计信息 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-dolls">0</div>
+                    <div class="stat-label">娃娃总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="daily-income">0.00</div>
+                    <div class="stat-label">每日收益</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="active-dolls">0</div>
+                    <div class="stat-label">活跃娃娃</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-lifespan">0</div>
+                    <div class="stat-label">平均存活天数</div>
+                </div>
+            </div>
+            
+            <!-- 分级收益统计 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">分级收益统计</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="level1-income">0.00</div>
+                        <div class="stat-label">一级娃娃收益</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="level2-income">0.00</div>
+                        <div class="stat-label">二级娃娃收益</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="level3-income">0.00</div>
+                        <div class="stat-label">三级娃娃收益</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 娃娃购买区域 -->
+            <h2 style="margin: 30px 0 20px;">购买新娃娃</h2>
+            <div class="doll-grid">
+                <!-- 一级娃娃 -->
+                <div class="doll-card">
+                    <div class="doll-header">
+                        <h3>一级娃娃</h3>
+                        <div class="doll-level">初级收藏</div>
+                    </div>
+                    <div class="doll-body">
+                        <div class="doll-price">50 积分</div>
+                        <div class="doll-feature">
+                            <i class="fas fa-gem"></i>
+                            <span>每日收益 0.84-0.92 积分</span>
+                        </div>
+                        <div class="doll-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>存活时长 60 天</span>
+                        </div>
+                        <div class="doll-feature">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>购买限制 无限制</span>
+                        </div>
+                        <button class="btn btn-block" onclick="buyDoll(1)">购买</button>
+                    </div>
+                </div>
+                
+                <!-- 二级娃娃 -->
+                <div class="doll-card">
+                    <div class="doll-header">
+                        <h3>二级娃娃</h3>
+                        <div class="doll-level">中级收藏</div>
+                    </div>
+                    <div class="doll-body">
+                        <div class="doll-price">200 积分</div>
+                        <div class="doll-feature">
+                            <i class="fas fa-gem"></i>
+                            <span>每日收益 3.05-3.25 积分</span>
+                        </div>
+                        <div class="doll-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>存活时长 70 天</span>
+                        </div>
+                        <button class="btn btn-block" onclick="buyDoll(2)">购买</button>
+                    </div>
+                </div>
+                
+                <!-- 三级娃娃 -->
+                <div class="doll-card">
+                    <div class="doll-header">
+                        <h3>三级娃娃</h3>
+                        <div class="doll-level">高级收藏</div>
+                    </div>
+                    <div class="doll-body">
+                        <div class="doll-price">500 积分</div>
+                        <div class="doll-feature">
+                            <i class="fas fa-gem"></i>
+                            <span>每日收益 6-6.3 积分</span>
+                        </div>
+                        <div class="doll-feature">
+                            <i class="fas fa-clock"></i>
+                            <span>存活时长 90 天</span>
+                        </div>
+                        <div class="doll-feature">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>获得方式 仅限合成获得</span>
+                        </div>
+                        <button class="btn btn-block btn-warning" onclick="openSynthesisPanel()">前往合成</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 我的娃娃列表 -->
+            <h2 style="margin: 30px 0 20px;">我的娃娃</h2>
+            <div id="my-dolls" class="doll-grid">
+                <!-- 娃娃列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 娃娃合成面板 -->
+        <div id="synthesis-panel" class="panel">
+            <h1>娃娃合成</h1>
+            <p>将两个相同等级的娃娃合成为更高等级的娃娃</p>
+            
+            <div class="synthesis-area">
+                <div class="doll-slot" id="slot1" onclick="selectDollForSynthesis(1)">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="synthesis-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="doll-slot" id="slot2" onclick="selectDollForSynthesis(2)">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="synthesis-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="doll-slot" id="result-slot">
+                    <i class="fas fa-question"></i>
+                </div>
+            </div>
+            
+            <div class="synthesis-controls">
+                <div class="success-rate" id="success-rate">
+                    当前成功率: 0%
+                </div>
+                <div class="form-group">
+                    <label for="synthesis-points" class="form-label">投入积分 (每1积分提高0.9%成功率)</label>
+                    <input type="number" id="synthesis-points" class="form-control" min="0" value="0" onchange="updateSuccessRate()">
+                </div>
+                <button class="btn btn-warning" id="synthesis-btn" onclick="synthesizeDolls()" disabled>开始合成</button>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">
+                    <div class="card-title">可用娃娃</div>
+                </div>
+                <div id="available-dolls" class="doll-grid">
+                    <!-- 可用娃娃将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 管理员面板 -->
+        <div id="admin-panel" class="panel admin-panel">
+            <h1>管理员后台</h1>
+            
+            <div class="admin-tabs">
+                <div class="admin-tab active" onclick="switchAdminTab('users')">用户管理</div>
+                <div class="admin-tab" onclick="switchAdminTab('dolls')">娃娃管理</div>
+                <div class="admin-tab" onclick="switchAdminTab('transactions')">交易记录</div>
+                <div class="admin-tab" onclick="switchAdminTab('system')">系统设置</div>
+            </div>
+            
+            <div id="admin-users" class="admin-content active">
+                <h2>用户管理</h2>
+                <div class="admin-actions">
+                    <button class="btn" onclick="addUserPoints()">批量发放积分</button>
+                    <button class="btn btn-success" onclick="createUser()">创建用户</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>积分</th>
+                            <th>娃娃数量</th>
+                            <th>注册时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table">
+                        <!-- 用户数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="admin-dolls" class="admin-content">
+                <h2>娃娃管理</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>拥有者</th>
+                            <th>等级</th>
+                            <th>购买时间</th>
+                            <th>剩余天数</th>
+                            <th>每日收益</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dolls-table">
+                        <!-- 娃娃数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="admin-transactions" class="admin-content">
+                <h2>交易记录</h2>
+                <div class="admin-actions">
+                    <button class="btn" onclick="exportTransactions()">导出记录</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>用户</th>
+                            <th>类型</th>
+                            <th>金额</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-table">
+                        <!-- 交易数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="admin-system" class="admin-content">
+                <h2>系统设置</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">娃娃参数设置</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">一级娃娃价格</label>
+                            <input type="number" id="level1-price" class="form-control" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">二级娃娃价格</label>
+                            <input type="number" id="level2-price" class="form-control" value="200">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">三级娃娃价格</label>
+                            <input type="number" id="level3-price" class="form-control" value="500">
+                        </div>
+                        <button class="btn" onclick="updateDollPrices()">更新价格</button>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">系统维护</div>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-warning" onclick="calculateDailyIncome()">计算今日收益</button>
+                        <button class="btn btn-danger" onclick="resetSystem()" style="margin-left: 10px;">重置系统</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">用户登录</div>
+                <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">用户名</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-block">登录</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">
+                还没有账号? <a href="#" onclick="showRegisterModal()">立即注册</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">用户注册</div>
+                <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-username" class="form-label">用户名</label>
+                    <input type="text" id="reg-username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password" class="form-label">密码</label>
+                    <input type="password" id="reg-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email" class="form-label">邮箱</label>
+                    <input type="email" id="reg-email" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-block">注册</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">
+                已有账号? <a href="#" onclick="showLoginModal()">立即登录</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 天创娃娃收藏 - 版权所有</p>
+            <p>服务器: <span id="server-status">连接中...</span></p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
