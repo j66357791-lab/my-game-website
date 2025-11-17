@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 天创时代</title>
+    
+    <!-- 强制云端模式配置 -->
+    <meta name="force-cloud-mode" content="true">
+    <meta name="api-server" content="https://tianchuang.onrender.com">
+    
+    <!-- 优化字体加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* 这里保持您原有的所有CSS样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7043;
+            --secondary: #FFB74D;
+            --accent: #FFC107;
+            --bg-dark: #2C3E50;
+            --bg-light: #34495E;
+            --text-light: #ECF0F1;
+            --gradient: linear-gradient(135deg, #FF7043, #FFB74D, #FFC107);
+            --shadow: 0 8px 25px rgba(255, 112, 67, 0.3);
+            --transition: all 0.3s ease;
+            --border-radius: 20px;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            min-height: 100vh;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 登录容器 */
+        .login-container {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:disabled {
+            background: rgba(255, 112, 67, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .toggle-form {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .toggle-form a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toggle-form a:hover {
+            color: var(--accent);
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .message.success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .message.info {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 忘记密码按钮 */
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .forgot-password a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .forgot-password a:hover {
+            color: var(--accent);
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 2px solid rgba(255, 112, 67, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .modal-message {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .modal-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录容器 -->
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">🎮</div>
+            <div class="logo-text">天创时代</div>
+        </div>
+        
+        <h1>欢迎回来</h1>
+        
+        <div id="message"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名/手机号</label>
+                <div class="input-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名或手机号" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码</label>
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="loginBtn">
+                <span>登录</span>
+            </button>
+            
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">忘记密码？</a>
+            </div>
+        </form>
+        
+        <form id="registerForm" style="display: none;">
+            <div class="form-group">
+                <label for="regUsername">用户名</label>
+                <div class="input-container">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="regUsername" name="username" placeholder="请输入用户名" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPhone">手机号</label>
+                <div class="input-container">
+                    <i class="fas fa-phone input-icon"></i>
+                    <input type="tel" id="regPhone" name="phone" placeholder="请输入手机号" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regName">姓名</label>
+                <div class="input-container">
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" id="regName" name="name" placeholder="请输入真实姓名" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regPassword">密码</label>
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regPassword" name="password" placeholder="请输入密码（至少6位）" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="regConfirmPassword">确认密码</label>
+                <div class="input-container">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regConfirmPassword" name="confirmPassword" placeholder="请再次输入密码" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="registerBtn">
+                <span>注册</span>
+            </button>
+        </form>
+        
+        <div class="toggle-form">
+            <a href="#" id="toggleLink">
+                <i class="fas fa-user-plus"></i>
+                <span>没有账号？点击注册</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 忘记密码模态框 -->
+    <div class="modal" id="forgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-icon">🔒</div>
+            <h2 class="modal-title">忘记密码</h2>
+            <div class="modal-message">
+                如有需要修改密码请联系管理员<br>
+                管理员将协助您重置密码
+            </div>
+            <button class="modal-btn" onclick="closeForgotPasswordModal()">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 🔧 优化后的脚本加载 -->
+    <script>
+        // 🔒 防止重复初始化的全局标志
+        window.isSystemInitialized = false;
+        window.initInProgress = false;
+        
+        // 🔧 强制设置云端模式配置
+        window.API_CONFIG = {
+            BASE_URL: 'https://tianchuang.onrender.com/api',
+            ENDPOINTS: {
+                USER: {
+                    LOGIN: '/login',
+                    REGISTER: '/register',
+                    GET_INFO: '/user',
+                    UPDATE_INFO: '/user',
+                    LOGOUT: '/logout',
+                    GET_ALL: '/users',
+                    UPDATE_POINTS: '/user/points',
+                    GET_HISTORY: '/user/points/history',
+                    GET_STATS: '/user/stats',
+                    ADMIN_REGISTER: '/admin/register',
+                    ADMIN_UPDATE_USER: '/admin/user/:id'
+                },
+                POINTS: {
+                    GET_BALANCE: '/points/balance',
+                    GET_HISTORY: '/points/history',
+                    UPDATE_POINTS: '/points/update',
+                    GET_DASHBOARD: '/points/dashboard',
+                    GET_AUDIT_LOG: '/points/audit-log',
+                    GET_STATISTICS: '/points/statistics'
+                },
+                BACKPACK: {
+                    GET_ITEMS: '/backpack/items',
+                    ADD_ITEM: '/backpack/items',
+                    USE_ITEM: '/backpack/items/use',
+                    DELETE_ITEM: '/backpack/items/:id',
+                    GET_STATS: '/backpack/stats'
+                },
+                ORDERS: {
+                    GET_LIST: '/orders',
+                    CREATE: '/orders',
+                    GET_DETAIL: '/orders/:id',
+                    UPDATE_STATUS: '/orders/:id/status',
+                    CANCEL: '/orders/:id/cancel',
+                    GET_USER_ORDERS: '/orders/user'
+                },
+                GAMES: {
+                    DICE_PLAY: '/games/dice/new',
+                    DICE_LEADERBOARD: '/games/dice/leaderboard',
+                    GRANDMA_PLAY: '/games/grandma/play',
+                    DOLL_BUY: '/dolls/buy',
+                    DOLL_LIST: '/dolls'
+                },
+                COMMON: {
+                    HEALTH_CHECK: '/health',
+                    VERSION: '/version'
+                }
+            },
+            TIMEOUT: 15000,
+            VERSION: '1.0.0',
+            ENV: 'production'
+        };
+
+        // 🔧 强制设置云端模式
+        localStorage.setItem('forceCloudMode', 'true');
+        localStorage.removeItem('useLocalStorage');
+
+        // 🔧 优化后的脚本加载器
+        const SafeScriptLoader = {
+            scripts: [
+                'https://tianchuang.onrender.com/js/api-config.js',
+                'https://tianchuang.onrender.com/js/api-service.js',
+                'https://tianchuang.onrender.com/js/data-adapter.js',
+                'https://tianchuang.onrender.com/js/common.js',
+                'https://tianchuang.onrender.com/js/points-system.js',
+                'https://tianchuang.onrender.com/js/backpack-system.js',
+                'https://tianchuang.onrender.com/js/user-system.js'
+            ],
+            
+            loadedScripts: 0,
+            maxRetries: 2,
+            retryDelay: 1000,
+            timeout: 5000,
+            
+            // 🔧 安全的脚本加载
+            async loadScript(src) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.async = true;
+                    
+                    const timeoutId = setTimeout(() => {
+                        reject(new Error(`Script load timeout: ${src}`));
+                    }, this.timeout);
+                    
+                    script.onload = () => {
+                        clearTimeout(timeoutId);
+                        console.log(`✅ 脚本加载成功: ${src}`);
+                        resolve();
+                    };
+                    
+                    script.onerror = (error) => {
+                        clearTimeout(timeoutId);
+                        console.error(`❌ 脚本加载失败: ${src}`, error);
+                        reject(error);
+                    };
+                    
+                    document.head.appendChild(script);
+                });
+            },
+            
+            // 🔧 安全的批量加载
+            async loadAllScripts() {
+                console.log('🔧 === 开始安全加载脚本 ===');
+                
+                let actuallyLoaded = 0;
+                
+                for (let i = 0; i < this.scripts.length; i++) {
+                    const script = this.scripts[i];
+                    let retryCount = 0;
+                    let loaded = false;
+                    
+                    while (retryCount < this.maxRetries && !loaded) {
+                        try {
+                            await this.loadScript(script);
+                            loaded = true;
+                            actuallyLoaded++;
+                        } catch (error) {
+                            retryCount++;
+                            console.error(`脚本 ${i + 1} 加载失败 (重试 ${retryCount}):`, error);
+                            
+                            if (retryCount < this.maxRetries) {
+                                await new Promise(resolve => setTimeout(resolve, this.retryDelay));
+                            }
+                        }
+                    }
+                    
+                    if (!loaded) {
+                        console.error(`脚本 ${i + 1} 加载失败，跳过`);
+                    }
+                }
+                
+                console.log(`✅ 脚本加载完成: ${actuallyLoaded}/${this.scripts.length}`);
+                return actuallyLoaded === this.scripts.length;
+            },
+            
+            // 🔧 加载内联备用脚本
+            loadInlineScripts() {
+                console.log('🔄 === 使用内联备用脚本 ===');
+                
+                // 🔧 内联API服务
+                window.apiService = {
+                    async request(method, endpoint, data = null) {
+                        try {
+                            const url = window.API_CONFIG.BASE_URL + endpoint;
+                            const options = {
+                                method: method,
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            };
+                            
+                            if (data) {
+                                options.body = JSON.stringify(data);
+                            }
+                            
+                            const response = await fetch(url, options);
+                            const result = await response.json();
+                            
+                            return {
+                                success: response.ok,
+                                data: result,
+                                status: response.status
+                            };
+                        } catch (error) {
+                            console.error('API请求失败:', error);
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    },
+                    
+                    async healthCheck() {
+                        try {
+                            const result = await this.request('GET', '/health');
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    }
+                };
+                
+                // 🔧 内联数据适配器
+                window.dataAdapter = {
+                    async login(credentials) {
+                        try {
+                            const result = await window.apiService.request('POST', '/login', credentials);
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    },
+                    
+                    async register(userData) {
+                        try {
+                            const result = await window.apiService.request('POST', '/register', userData);
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    },
+                    
+                    async getUserInfo() {
+                        try {
+                            const token = localStorage.getItem('authToken');
+                            const result = await window.apiService.request('GET', '/user');
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    },
+                    
+                    // 🔧 管理员专用方法
+                    async adminRegister(userData) {
+                        try {
+                            const result = await window.apiService.request('POST', '/admin/register', userData);
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    },
+                    
+                    async adminUpdateUser(userId, userData) {
+                        try {
+                            const result = await window.apiService.request('PUT', `/admin/user/${userId}`, userData);
+                            return result;
+                        } catch (error) {
+                            return {
+                                success: false,
+                                error: error.message
+                            };
+                        }
+                    }
+                };
+                
+                // 🔧 内联用户系统
+                window.userSystem = {
+                    init() {
+                        console.log('用户系统初始化（内联版本）');
+                    },
+                    
+                    logout() {
+                        localStorage.removeItem('isLoggedIn');
+                        localStorage.removeItem('currentUser');
+                        localStorage.removeItem('authToken');
+                    }
+                };
+                
+                // 🔧 内联积分系统
+                window.pointsSystem = {
+                    init() {
+                        console.log('积分系统初始化（内联版本）');
+                    },
+                    
+                    getPoints() {
+                        try {
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            return user.points || 0;
+                        } catch (error) {
+                            return 0;
+                        }
+                    },
+                    
+                    updatePoints(points, reason) {
+                        try {
+                            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                            user.points = (user.points || 0) + points;
+                            localStorage.setItem('currentUser', JSON.stringify(user));
+                            
+                            // 触发积分更新事件
+                            window.dispatchEvent(new CustomEvent('pointsUpdated', {
+                                detail: {
+                                    newPoints: user.points,
+                                    change: points,
+                                    reason: reason
+                                }
+                            }));
+                        } catch (error) {
+                            console.error('更新积分失败:', error);
+                        }
+                    }
+                };
+                
+                // 🔧 内联背包系统
+                window.backpackSystem = {
+                    init() {
+                        console.log('背包系统初始化（内联版本）');
+                    }
+                };
+                
+                console.log('✅ 内联备用脚本加载完成');
+            }
+        };
+
+        // 🔧 统一的用户数据结构
+        const UserDataStructure = {
+            // 🔧 标准用户数据结构
+            createStandardUser(userData) {
+                return {
+                    id: userData.id || `user_${Date.now()}`,
+                    username: userData.username,
+                    phone: userData.phone,
+                    name: userData.name,
+                    password: userData.password,
+                    email: userData.email || '',
+                    role: userData.role || 'user',
+                    avatar: userData.avatar || '',
+                    registerTime: userData.registerTime || new Date().toISOString(),
+                    lastLoginTime: userData.lastLoginTime || null,
+                    isActive: userData.isActive !== false,
+                    points: userData.points || 0,
+                    level: userData.level || 1,
+                    experience: userData.experience || 0,
+                    achievements: userData.achievements || [],
+                    preferences: userData.preferences || {},
+                    statistics: userData.statistics || {
+                        loginCount: 0,
+                        totalPlayTime: 0,
+                        lastActiveTime: null
+                    }
+                };
+            },
+            
+            // 🔧 管理员数据结构
+            createAdminUser(userData) {
+                return {
+                    ...this.createStandardUser(userData),
+                    role: 'admin',
+                    permissions: userData.permissions || ['all'],
+                    adminLevel: userData.adminLevel || 1
+                };
+            },
+            
+            // 🔧 验证用户数据
+            validateUserData(userData) {
+                const errors = [];
+                
+                if (!userData.username || userData.username.length < 3) {
+                    errors.push('用户名长度至少3位');
+                }
+                
+                if (!userData.phone || !/^1[3-9]\d{9}$/.test(userData.phone)) {
+                    errors.push('请输入正确的手机号格式');
+                }
+                
+                if (!userData.name || userData.name.length < 2) {
+                    errors.push('姓名长度至少2位');
+                }
+                
+                if (!userData.password || userData.password.length < 6) {
+                    errors.push('密码长度至少6位');
+                }
+                
+                return {
+                    isValid: errors.length === 0,
+                    errors: errors
+                };
+            }
+        };
+
+        // 🔧 优化后的登录系统
+        const LoginSystem = {
+            // 🔧 安全的初始化
+            async init() {
+                // 🔒 防止重复初始化
+                if (window.isSystemInitialized || window.initInProgress) {
+                    console.log('⚠️ 系统已初始化或正在初始化中，跳过');
+                    return;
+                }
+                
+                window.initInProgress = true;
+                
+                console.log('🔧 === 登录系统安全初始化 ===');
+                
+                try {
+                    // 🔧 检查登录状态
+                    if (this.checkLoginStatus()) {
+                        console.log('🔧 用户已登录，跳转到首页');
+                        this.redirectToHome();
+                        return;
+                    }
+                    
+                    // 🔧 初始化管理员账号
+                    await this.initAdminAccount();
+                    
+                    // 🔧 绑定事件
+                    this.bindEvents();
+                    
+                    window.isSystemInitialized = true;
+                    console.log('✅ 登录系统初始化完成');
+                    
+                } catch (error) {
+                    console.error('❌ 登录系统初始化失败:', error);
+                    this.showMessage('系统初始化失败，请刷新页面重试', 'error');
+                } finally {
+                    window.initInProgress = false;
+                }
+            },
+            
+            // 🔧 安全的登录状态检查
+            checkLoginStatus() {
+                try {
+                    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                    const currentUser = localStorage.getItem('currentUser');
+                    
+                    if (!isLoggedIn || !currentUser) {
+                        return false;
+                    }
+                    
+                    const user = JSON.parse(currentUser);
+                    if (!user || !user.isActive) {
+                        return false;
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('🔧 检查登录状态失败:', error);
+                    return false;
+                }
+            },
+            
+            // 🔧 安全的跳转到首页
+            redirectToHome() {
+                try {
+                    console.log('🔧 正在跳转到首页...');
+                    
+                    // 🔧 防止无限循环跳转
+                    const currentUrl = window.location.href;
+                    const targetUrl = 'index.html';
+                    
+                    if (!currentUrl.includes(targetUrl)) {
+                        window.location.href = targetUrl;
+                    } else {
+                        console.log('⚠️ 已在首页，避免循环跳转');
+                    }
+                } catch (error) {
+                    console.error('🔧 跳转失败:', error);
+                    // 🔧 备用跳转方式，避免无限循环
+                    setTimeout(() => {
+                        if (!window.location.href.includes('index.html')) {
+                            window.location.href = 'index.html';
+                        }
+                    }, 100);
+                }
+            },
+            
+            // 🔧 初始化管理员账号
+            async initAdminAccount() {
+                try {
+                    console.log('🔧 === 初始化管理员账号 ===');
+                    
+                    const adminAccount = UserDataStructure.createAdminUser({
+                        id: 'admin',
+                        username: '18679012034',
+                        password: 'hjh628727',
+                        name: '管理员',
+                        role: 'admin',
+                        phone: '18679012034',
+                        email: 'admin@tianchuang.com',
+                        registerTime: new Date().toISOString(),
+                        lastLoginTime: null,
+                        isActive: true,
+                        points: 999999
+                    });
+                    
+                    // 🔧 检查云端是否已存在管理员账号
+                    if (window.dataAdapter) {
+                        try {
+                            const result = await window.dataAdapter.login({
+                                username: adminAccount.username,
+                                password: adminAccount.password
+                            });
+                            
+                            if (result.success) {
+                                console.log('✅ 云端管理员账号已存在');
+                                return;
+                            }
+                        } catch (error) {
+                            console.log('🔧 云端管理员账号不存在，将创建');
+                        }
+                    }
+                    
+                    // 🔧 尝试在云端创建管理员账号
+                    if (window.dataAdapter) {
+                        try {
+                            const result = await window.dataAdapter.adminRegister(adminAccount);
+                            if (result.success) {
+                                console.log('✅ 云端管理员账号创建成功');
+                            } else {
+                                console.log('🔧 云端管理员账号创建失败，使用本地账号');
+                            }
+                        } catch (error) {
+                            console.error('❌ 云端管理员账号初始化失败', error);
+                        }
+                    }
+                    
+                    // 🔧 降级到本地管理员账号
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    const adminExists = allUsers.find(u => u.username === adminAccount.username);
+                    
+                    if (!adminExists) {
+                        allUsers.push(adminAccount);
+                        localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                        console.log('🔧 本地管理员账号已创建');
+                    } else {
+                        console.log('🔧 本地管理员账号已存在');
+                    }
+                } catch (error) {
+                    console.error('初始化管理员账号失败:', error);
+                }
+            },
+            
+            // 🔧 绑定事件
+            bindEvents() {
+                try {
+                    // 🔧 切换登录/注册表单
+                    const toggleLink = document.getElementById('toggleLink');
+                    if (toggleLink) {
+                        // 🔧 移除现有事件监听器
+                        const newToggleLink = toggleLink.cloneNode(true);
+                        toggleLink.parentNode.replaceChild(newToggleLink, toggleLink);
+                        
+                        newToggleLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.switchForm();
+                        });
+                    }
+                    
+                    // 🔧 忘记密码链接
+                    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+                    if (forgotPasswordLink) {
+                        const newForgotPasswordLink = forgotPasswordLink.cloneNode(true);
+                        forgotPasswordLink.parentNode.replaceChild(newForgotPasswordLink, forgotPasswordLink);
+                        
+                        newForgotPasswordLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.showForgotPasswordModal();
+                        });
+                    }
+                    
+                    // 🔧 登录表单提交
+                    const loginForm = document.getElementById('loginForm');
+                    if (loginForm) {
+                        const newLoginForm = loginForm.cloneNode(true);
+                        loginForm.parentNode.replaceChild(newLoginForm, loginForm);
+                        
+                        newLoginForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            this.handleLogin();
+                        });
+                    }
+                    
+                    // 🔧 注册表单提交
+                    const registerForm = document.getElementById('registerForm');
+                    if (registerForm) {
+                        const newRegisterForm = registerForm.cloneNode(true);
+                        registerForm.parentNode.replaceChild(newRegisterForm, registerForm);
+                        
+                        newRegisterForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            this.handleRegister();
+                        });
+                    }
+                } catch (error) {
+                    console.error('🔧 绑定事件失败:', error);
+                }
+            },
+            
+            // 🔧 切换表单
+            switchForm() {
+                try {
+                    const loginForm = document.getElementById('loginForm');
+                    const registerForm = document.getElementById('registerForm');
+                    const toggleLink = document.getElementById('toggleLink');
+                    
+                    if (loginForm.style.display !== 'none') {
+                        // 切换到注册表单
+                        loginForm.style.display = 'none';
+                        registerForm.style.display = 'block';
+                        toggleLink.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>已有账号？点击登录</span>';
+                    } else {
+                        // 切换到登录表单
+                        loginForm.style.display = 'block';
+                        registerForm.style.display = 'none';
+                        toggleLink.innerHTML = '<i class="fas fa-user-plus"></i><span>没有账号？点击注册</span>';
+                    }
+                    
+                    // 隐藏消息
+                    this.hideMessage();
+                } catch (error) {
+                    console.error('🔧 切换表单失败:', error);
+                }
+            },
+            
+            // 🔧 处理登录
+            async handleLogin() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const loginBtn = document.getElementById('loginBtn');
+                
+                // 基本验证
+                if (!username || !password) {
+                    this.showMessage('请填写用户名和密码', 'error');
+                    return;
+                }
+                
+                // 设置按钮加载状态
+                this.setButtonLoading(loginBtn, true);
+                
+                try {
+                    console.log('🔧 === 开始登录验证 ===', { username });
+                    
+                    // 🔧 优先使用云端API
+                    if (window.dataAdapter) {
+                        try {
+                            const result = await window.dataAdapter.login({ username, password });
+                            
+                            if (result.success || result.user) {
+                                const user = result.user || result.data.user;
+                                
+                                // 🔧 标准化用户数据
+                                const standardUser = UserDataStructure.createStandardUser(user);
+                                
+                                // 保存登录信息
+                                localStorage.setItem('currentUser', JSON.stringify(standardUser));
+                                localStorage.setItem('isLoggedIn', 'true');
+                                
+                                // 保存token
+                                if (result.token) {
+                                    localStorage.setItem('authToken', result.token);
+                                }
+                                
+                                // 🔧 同步到管理后台
+                                await this.syncUserToAdmin(standardUser);
+                                
+                                this.showMessage('登录成功！正在跳转...', 'success');
+                                
+                                // 延迟跳转，确保消息显示
+                                setTimeout(() => {
+                                    this.redirectToHome();
+                                }, 1500);
+                                
+                                return;
+                            } else {
+                                this.showMessage('用户名或密码错误', 'error');
+                            }
+                        } catch (cloudError) {
+                            console.error('❌ 云端登录失败', cloudError);
+                            this.showMessage('云端登录失败，请检查网络', 'error');
+                        }
+                    } else {
+                        this.showMessage('云端服务不可用', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('登录失败:', error);
+                    this.showMessage('登录失败，请重试', 'error');
+                }
+                
+                this.setButtonLoading(loginBtn, false);
+            },
+            
+            // 🔧 处理注册
+            async handleRegister() {
+                const username = document.getElementById('regUsername').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const name = document.getElementById('regName').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+                const registerBtn = document.getElementById('registerBtn');
+                
+                // 基本验证
+                if (!username || !phone || !name || !password || !confirmPassword) {
+                    this.showMessage('请填写完整信息', 'error');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    this.showMessage('密码长度至少6位', 'error');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    this.showMessage('两次输入的密码不一致', 'error');
+                    return;
+                }
+                
+                // 🔧 验证手机号格式
+                const phoneRegex = /^1[3-9]\d{9}$/;
+                if (!phoneRegex.test(phone)) {
+                    this.showMessage('请输入正确的手机号格式', 'error');
+                    return;
+                }
+                
+                // 🔧 验证用户名格式
+                if (username.length < 3 || username.length > 20) {
+                    this.showMessage('用户名长度应在3-20个字符之间', 'error');
+                    return;
+                }
+                
+                // 设置按钮加载状态
+                this.setButtonLoading(registerBtn, true);
+                
+                try {
+                    console.log('🔧 === 开始注册 ===', { username, phone, name });
+                    
+                    // 🔧 创建标准用户数据
+                    const userData = UserDataStructure.createStandardUser({
+                        username,
+                        phone,
+                        name,
+                        password,
+                        registerTime: new Date().toISOString()
+                    });
+                    
+                    // 🔧 验证用户数据
+                    const validation = UserDataStructure.validateUserData(userData);
+                    if (!validation.isValid) {
+                        this.showMessage(validation.errors.join(', '), 'error');
+                        this.setButtonLoading(registerBtn, false);
+                        return;
+                    }
+                    
+                    // 🔧 优先使用云端API
+                    if (window.dataAdapter) {
+                        try {
+                            const result = await window.dataAdapter.register(userData);
+                            
+                            if (result.success || result.user) {
+                                const user = result.user || result.data.user;
+                                
+                                // 🔧 标准化用户数据
+                                const standardUser = UserDataStructure.createStandardUser(user);
+                                
+                                // 🔧 同步到管理后台
+                                await this.syncUserToAdmin(standardUser);
+                                
+                                this.showMessage('注册成功！请登录', 'success');
+                                
+                                // 切换到登录表单并填充用户名
+                                setTimeout(() => {
+                                    this.switchForm();
+                                    const usernameInput = document.getElementById('username');
+                                    if (usernameInput) usernameInput.value = username;
+                                }, 1500);
+                                
+                                return;
+                            } else {
+                                if (result.message && result.message.includes('已存在')) {
+                                    this.showMessage('用户名或手机号已被注册', 'error');
+                                } else {
+                                    this.showMessage('注册失败', 'error');
+                                }
+                            }
+                        } catch (cloudError) {
+                            console.error('❌ 云端注册失败', cloudError);
+                            this.showMessage('云端注册失败，请检查网络', 'error');
+                        }
+                    } else {
+                        this.showMessage('云端服务不可用', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('注册失败:', error);
+                    this.showMessage('注册失败，请重试', 'error');
+                }
+                
+                this.setButtonLoading(registerBtn, false);
+            },
+            
+            // 🔧 同步用户到管理后台
+            async syncUserToAdmin(user) {
+                try {
+                    console.log('🔧 === 同步用户到管理后台 ===', { username: user.username });
+                    
+                    // 🔧 获取本地用户列表
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    
+                    // 🔧 检查用户是否已存在
+                    const existingUserIndex = allUsers.findIndex(u => u.username === user.username);
+                    
+                    if (existingUserIndex >= 0) {
+                        // 🔧 更新现有用户
+                        allUsers[existingUserIndex] = user;
+                    } else {
+                        // 🔧 添加新用户
+                        allUsers.push(user);
+                    }
+                    
+                    // 🔧 保存到本地存储
+                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                    
+                    // 🔧 尝试同步到云端
+                    if (window.dataAdapter && window.dataAdapter.adminUpdateUser) {
+                        try {
+                            const result = await window.dataAdapter.adminUpdateUser(user.id, user);
+                            if (result.success) {
+                                console.log('✅ 用户已同步到云端管理后台');
+                            this.addSystemLog('info', '用户同步', `用户 ${user.username} 已同步到云端管理后台`);
+                            return true;
+                            }
+                        } catch (error) {
+                            console.error('❌ 云端同步失败:', error);
+                            this.addSystemLog('warning', '用户同步失败', `用户 ${user.username} 云端同步失败: ${error.message}`);
+                        }
+                    }
+                    
+                    console.log('✅ 用户已保存到本地管理后台');
+                    this.addSystemLog('info', '用户保存', `用户 ${user.username} 已保存到本地管理后台`);
+                    return true;
+                } catch (error) {
+                    console.error('🔧 同步用户到管理后台失败:', error);
+                    this.addSystemLog('error', '用户同步失败', `用户 ${user.username} 同步失败: ${error.message}`);
+                    return false;
+                }
+            },
+            
+            // 🔧 添加系统日志
+            addSystemLog(level, message, data = {}) {
+                try {
+                    const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
+                    const log = {
+                        id: Date.now(),
+                        level: level,
+                        message: message,
+                        data: data,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    logs.push(log);
+                    
+                    // 🔧 限制日志数量
+                    if (logs.length > 1000) {
+                        logs.splice(0, logs.length - 1000);
+                    }
+                    
+                    localStorage.setItem('systemLogs', JSON.stringify(logs));
+                } catch (error) {
+                    console.error('🔧 添加系统日志失败:', error);
+                }
+            },
+            
+            // 🔧 显示忘记密码模态框
+            showForgotPasswordModal() {
+                const modal = document.getElementById('forgotPasswordModal');
+                if (modal) modal.classList.add('active');
+            },
+            
+            // 🔧 关闭忘记密码模态框
+            closeForgotPasswordModal() {
+                const modal = document.getElementById('forgotPasswordModal');
+                if (modal) modal.classList.remove('active');
+            },
+            
+            // 🔧 显示消息
+            showMessage(text, type) {
+                try {
+                    const messageDiv = document.getElementById('message');
+                    if (messageDiv) {
+                        messageDiv.textContent = text;
+                        messageDiv.className = `message ${type}`;
+                        
+                        setTimeout(() => {
+                            this.hideMessage();
+                        }, 5000);
+                    }
+                } catch (error) {
+                    console.error('🔧 显示消息失败:', error);
+                }
+            },
+            
+            // 🔧 隐藏消息
+            hideMessage() {
+                try {
+                    const messageDiv = document.getElementById('message');
+                    if (messageDiv) {
+                        messageDiv.textContent = '';
+                        messageDiv.className = '';
+                    }
+                } catch (error) {
+                    console.error('🔧 隐藏消息失败:', error);
+                }
+            },
+            
+            // 🔧 设置按钮加载状态
+            setButtonLoading(button, isLoading) {
+                try {
+                    if (button) {
+                        if (isLoading) {
+                            button.disabled = true;
+                            button.innerHTML = '<div class="loading"></div>';
+                        } else {
+                            button.disabled = false;
+                            button.innerHTML = '<span>' + (button.id === 'loginBtn' ? '登录' : '注册') + '</span>';
+                        }
+                    }
+                } catch (error) {
+                    console.error('🔧 设置按钮加载状态失败:', error);
+                }
+            }
+        };
+        
+        // 🔧 全局函数
+        function switchForm() {
+            LoginSystem.switchForm();
+        }
+        
+        function showForgotPasswordModal() {
+            LoginSystem.showForgotPasswordModal();
+        }
+        
+        function closeForgotPasswordModal() {
+            LoginSystem.closeForgotPasswordModal();
+        }
+        
+        // 🔧 优化后的主初始化函数
+        async function main() {
+            // 🔒 防止重复初始化
+            if (window.isSystemInitialized || window.initInProgress) {
+                console.log('⚠️ 系统已初始化或正在初始化中，跳过');
+                return;
+            }
+            
+            window.initInProgress = true;
+            
+            console.log('🔧 === 登录页面主初始化 ===');
+            
+            try {
+                // 🔧 设置最大加载时间
+                const MAX_LOAD_TIME = 15000; // 15秒
+                
+                // 🔧 设置超时，防止无限加载
+                const timeoutId = setTimeout(() => {
+                    console.error('❌ 脚本加载超时，使用内联备用脚本');
+                    SafeScriptLoader.loadInlineScripts();
+                    
+                    // 🔧 加载内联脚本后也要初始化系统
+                    setTimeout(() => {
+                        LoginSystem.init();
+                    }, 1000);
+                }, MAX_LOAD_TIME);
+                
+                // 🔧 尝试加载外部脚本
+                const success = await SafeScriptLoader.loadAllScripts();
+                
+                if (success) {
+                    console.log('✅ 所有外部脚本加载成功');
+                } else {
+                    console.log('⚠️ 部分外部脚本加载失败，使用内联备用脚本');
+                    SafeScriptLoader.loadInlineScripts();
+                }
+                
+                // 🔧 清除超时
+                clearTimeout(timeoutId);
+                
+                // 🔧 初始化登录系统
+                setTimeout(() => {
+                    LoginSystem.init();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ 主初始化失败:', error);
+                SafeScriptLoader.loadInlineScripts();
+                
+                // 🔧 加载内联脚本后也要初始化系统
+                setTimeout(() => {
+                    LoginSystem.init();
+                }, 1000);
+            }
+        }
+        
+        // 🔧 优化后的页面加载事件
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔧 === DOM加载完成，开始安全初始化 ===');
+            
+            // 🔒 防止重复初始化
+            if (window.isSystemInitialized || window.initInProgress) {
+                console.log('⚠️ 系统已初始化或正在初始化中，跳过');
+                return;
+            }
+            
+            main();
+        });
+        
+        // 🔧 添加页面卸载时的清理
+        window.addEventListener('beforeunload', () => {
+            console.log('🔧 === 页面卸载，清理资源 ===');
+            window.isSystemInitialized = false;
+            window.initInProgress = false;
+        });
+    </script>
+</body>
+</html>
