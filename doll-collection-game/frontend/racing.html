@@ -1,0 +1,427 @@
+// 龟兔赛跑游戏前端逻辑
+let currentRace = null;
+let userBet = null;
+let raceInterval = null;
+let animationInterval = null;
+
+// DOM 元素
+const raceTrack = document.getElementById('raceTrack');
+const rabbit = document.getElementById('rabbit');
+const turtle = document.getElementById('turtle');
+const raceStatus = document.getElementById('raceStatus');
+const countdownElement = document.getElementById('countdown');
+const bettingSection = document.getElementById('bettingSection');
+const raceSection = document.getElementById('raceSection');
+const betAmountInput = document.getElementById('betAmount');
+const placeBetBtn = document.getElementById('placeBet');
+const betOptionRadios = document.querySelectorAll('input[name="betOption"]');
+const poolsElement = document.getElementById('pools');
+const userPointsElement = document.getElementById('userPoints');
+const raceHistoryElement = document.getElementById('raceHistory');
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+    if (raceTrack) {
+        loadRaceData();
+        setupEventListeners();
+        setInterval(loadRaceData, 2000); // 每2秒更新一次比赛数据
+    }
+});
+
+function setupEventListeners() {
+    if (placeBetBtn) {
+        placeBetBtn.addEventListener('click', placeBet);
+    }
+    
+    if (betAmountInput) {
+        betAmountInput.addEventListener('input', validateBetAmount);
+    }
+}
+
+async function loadRaceData() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('/api/racing/current', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            currentRace = data.race;
+            userBet = data.userBet;
+            
+            updateRaceDisplay();
+            updateUserInfo();
+            loadRaceHistory();
+        }
+    } catch (error) {
+        console.error('加载比赛数据错误:', error);
+    }
+}
+
+function updateRaceDisplay() {
+    if (!currentRace) return;
+
+    // 更新比赛状态
+    raceStatus.textContent = getRaceStatusText(currentRace.state);
+    
+    // 更新奖池信息
+    if (poolsElement) {
+        poolsElement.innerHTML = `
+            <div>兔子奖池: ${currentRace.rabbitPool} 积分</div>
+            <div>乌龟奖池: ${currentRace.turtlePool} 积分</div>
+            <div>平局奖池: ${currentRace.drawPool} 积分</div>
+            <div>总奖池: ${currentRace.totalPool} 积分</div>
+        `;
+    }
+
+    // 根据比赛状态更新界面
+    switch (currentRace.state) {
+        case 'waiting':
+            showBettingSection(false);
+            showRaceSection(false);
+            updateCountdown('等待比赛开始...');
+            break;
+            
+        case 'betting':
+            showBettingSection(true);
+            showRaceSection(false);
+            updateBettingCountdown();
+            break;
+            
+        case 'racing':
+            showBettingSection(false);
+            showRaceSection(true);
+            startRaceAnimation();
+            updateRacingCountdown();
+            break;
+            
+        case 'finished':
+            showBettingSection(false);
+            showRaceSection(true);
+            showRaceResult();
+            break;
+    }
+
+    // 更新用户下注信息
+    updateUserBetInfo();
+}
+
+function getRaceStatusText(state) {
+    switch (state) {
+        case 'waiting': return '等待比赛开始';
+        case 'betting': return '下注进行中';
+        case 'racing': return '比赛进行中';
+        case 'finished': return `比赛结束 - 结果: ${getResultText(currentRace.result)}`;
+        default: return '未知状态';
+    }
+}
+
+function getResultText(result) {
+    switch (result) {
+        case 'rabbit': return '兔子获胜';
+        case 'turtle': return '乌龟获胜';
+        case 'draw': return '平局';
+        default: return '未知';
+    }
+}
+
+function updateBettingCountdown() {
+    if (!currentRace.bettingEndTime) return;
+    
+    const now = new Date();
+    const endTime = new Date(currentRace.bettingEndTime);
+    const timeLeft = Math.max(0, endTime - now);
+    const secondsLeft = Math.ceil(timeLeft / 1000);
+    
+    countdownElement.textContent = `下注剩余时间: ${secondsLeft}秒`;
+    
+    if (secondsLeft === 0) {
+        countdownElement.textContent = '下注结束，比赛即将开始';
+    }
+}
+
+function updateRacingCountdown() {
+    if (!currentRace.raceEndTime) return;
+    
+    const now = new Date();
+    const endTime = new Date(currentRace.raceEndTime);
+    const timeLeft = Math.max(0, endTime - now);
+    const secondsLeft = Math.ceil(timeLeft / 1000);
+    
+    countdownElement.textContent = `比赛剩余时间: ${secondsLeft}秒`;
+    
+    if (secondsLeft === 0 && currentRace.state === 'racing') {
+        countdownElement.textContent = '比赛结束，计算结果中...';
+    }
+}
+
+function updateCountdown(text) {
+    countdownElement.textContent = text;
+}
+
+function showBettingSection(show) {
+    if (bettingSection) {
+        bettingSection.style.display = show ? 'block' : 'none';
+    }
+}
+
+function showRaceSection(show) {
+    if (raceSection) {
+        raceSection.style.display = show ? 'block' : 'none';
+    }
+}
+
+function validateBetAmount() {
+    const amount = parseInt(betAmountInput.value) || 0;
+    const userPoints = parseInt(userPointsElement.textContent) || 0;
+    
+    if (amount > userPoints) {
+        betAmountInput.style.borderColor = 'red';
+        placeBetBtn.disabled = true;
+    } else {
+        betAmountInput.style.borderColor = '';
+        placeBetBtn.disabled = amount <= 0 || !getSelectedBetOption();
+    }
+}
+
+function getSelectedBetOption() {
+    for (const radio of betOptionRadios) {
+        if (radio.checked) {
+            return radio.value;
+        }
+    }
+    return null;
+}
+
+async function placeBet() {
+    try {
+        const option = getSelectedBetOption();
+        const amount = parseInt(betAmountInput.value);
+        
+        if (!option || amount <= 0) {
+            alert('请选择下注选项并输入正确的下注金额');
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/racing/bet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ option, amount })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert('下注成功！');
+            userBet = result.bet;
+            updateUserInfo();
+            updateUserBetInfo();
+            loadRaceData(); // 刷新比赛数据
+        } else {
+            const error = await response.json();
+            alert(error.message || '下注失败');
+        }
+    } catch (error) {
+        console.error('下注错误:', error);
+        alert('下注失败，请重试');
+    }
+}
+
+function updateUserInfo() {
+    const userPoints = parseInt(userPointsElement.textContent) || 0;
+    // 可以从localStorage或其他地方获取用户积分
+}
+
+function updateUserBetInfo() {
+    const userBetInfo = document.getElementById('userBetInfo');
+    if (!userBetInfo) return;
+    
+    if (userBet) {
+        userBetInfo.innerHTML = `
+            <div>您的下注: ${getBetOptionText(userBet.option)}</div>
+            <div>下注金额: ${userBet.amount} 积分</div>
+            ${userBet.winnings ? `<div>赢得: ${userBet.winnings} 积分</div>` : ''}
+        `;
+    } else {
+        userBetInfo.innerHTML = '<div>您尚未下注</div>';
+    }
+}
+
+function getBetOptionText(option) {
+    switch (option) {
+        case 'rabbit': return '兔子';
+        case 'turtle': return '乌龟';
+        case 'draw': return '平局';
+        default: return '未知';
+    }
+}
+
+// 修复赛跑动画 - 完整显示10秒
+function startRaceAnimation() {
+    // 清除之前的动画
+    if (animationInterval) {
+        clearInterval(animationInterval);
+    }
+    
+    // 重置位置
+    if (rabbit) rabbit.style.left = '0%';
+    if (turtle) turtle.style.left = '0%';
+    
+    const startTime = Date.now();
+    const duration = 10000; // 10秒动画
+    
+    animationInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 更新位置 - 使用缓动函数让动画更自然
+        if (rabbit) {
+            const rabbitProgress = easeInOut(progress) * 85; // 兔子到85%
+            rabbit.style.left = `${rabbitProgress}%`;
+        }
+        
+        if (turtle) {
+            const turtleProgress = easeInOut(progress) * 80; // 乌龟到80%
+            turtle.style.left = `${turtleProgress}%`;
+        }
+        
+        // 动画结束
+        if (progress >= 1) {
+            clearInterval(animationInterval);
+            // 等待后端计算结果
+            setTimeout(() => {
+                loadRaceData(); // 刷新获取比赛结果
+            }, 1000);
+        }
+    }, 50); // 每50ms更新一次，保证流畅动画
+}
+
+// 缓动函数 - 让动画更自然
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+function showRaceResult() {
+    if (!currentRace || currentRace.state !== 'finished') return;
+    
+    // 显示比赛结果
+    const resultText = getResultText(currentRace.result);
+    raceStatus.textContent = `比赛结束 - ${resultText}`;
+    
+    // 根据结果显示胜利者动画
+    if (rabbit && turtle) {
+        if (currentRace.result === 'rabbit') {
+            rabbit.style.left = '100%';
+            turtle.style.left = '80%';
+        } else if (currentRace.result === 'turtle') {
+            rabbit.style.left = '85%';
+            turtle.style.left = '100%';
+        } else {
+            // 平局，两者都到终点
+            rabbit.style.left = '95%';
+            turtle.style.left = '95%';
+        }
+    }
+    
+    // 更新用户下注信息，显示赢得的奖金
+    updateUserBetInfo();
+}
+
+async function loadRaceHistory() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/racing/history?limit=5', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            displayRaceHistory(data.history);
+        }
+    } catch (error) {
+        console.error('加载比赛历史错误:', error);
+    }
+}
+
+function displayRaceHistory(history) {
+    if (!raceHistoryElement) return;
+    
+    if (history.length === 0) {
+        raceHistoryElement.innerHTML = '<div>暂无比赛历史</div>';
+        return;
+    }
+    
+    const historyHTML = history.map(race => `
+        <div class="race-history-item">
+            <div>比赛 #${race.raceId}</div>
+            <div>结果: ${getResultText(race.result)}</div>
+            <div>总奖池: ${race.totalPool} 积分</div>
+            <div>时间: ${new Date(race.createdAt).toLocaleTimeString()}</div>
+        </div>
+    `).join('');
+    
+    raceHistoryElement.innerHTML = historyHTML;
+}
+
+// 添加CSS动画类
+function addAnimationStyles() {
+    if (!document.getElementById('raceAnimationStyles')) {
+        const style = document.createElement('style');
+        style.id = 'raceAnimationStyles';
+        style.textContent = `
+            #rabbit, #turtle {
+                transition: left 0.1s linear;
+            }
+            
+            .race-history-item {
+                border: 1px solid #ddd;
+                padding: 8px;
+                margin: 5px 0;
+                border-radius: 4px;
+                background: #f9f9f9;
+            }
+            
+            #raceTrack {
+                position: relative;
+                height: 100px;
+                background: linear-gradient(to bottom, #8BC34A, #4CAF50);
+                border-radius: 8px;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            
+            #rabbit, #turtle {
+                position: absolute;
+                top: 20px;
+                width: 60px;
+                height: 60px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                transition: left 0.05s linear;
+            }
+            
+            #rabbit {
+                background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23FF6B6B"/><circle cx="35" cy="35" r="8" fill="white"/><circle cx="65" cy="35" r="8" fill="white"/><circle cx="35" cy="35" r="4" fill="black"/><circle cx="65" cy="35" r="4" fill="black"/><path d="M40 65 Q50 75 60 65" stroke="black" stroke-width="3" fill="none"/></svg>');
+            }
+            
+            #turtle {
+                background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="60" r="30" fill="%238BC34A"/><circle cx="35" cy="45" r="6" fill="black"/><circle cx="65" cy="45" r="6" fill="black"/><path d="M40 70 Q50 80 60 70" stroke="black" stroke-width="2" fill="none"/></svg>');
+                top: 60px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// 初始化动画样式
+addAnimationStyles();

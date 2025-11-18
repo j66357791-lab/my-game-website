@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人资料 - 天创娃娃收藏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-dice"></i>
+                天创娃娃收藏
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">我的娃娃</a></li>
+                <li><a href="index.html" class="nav-link">娃娃合成</a></li>
+                <!-- 龟兔赛跑入口 -->
+                <li><a href="racing.html" class="nav-link">龟兔赛跑</a></li>
+                <!-- 个人资料入口 -->
+                <li><a href="profile.html" class="nav-link active">个人资料</a></li>
+                <li><a href="#" class="nav-link" id="admin-link" data-panel="admin-panel" style="display:none;">管理后台</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-points" id="user-points">0.00 积分</div>
+                <div class="avatar" id="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-menu">
+                    <button id="logout-btn" class="btn btn-sm">退出</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container main-content">
+        <div class="profile-container">
+            <h1>个人资料</h1>
+            
+            <div class="profile-grid">
+                <!-- 基本信息卡片 -->
+                <div class="profile-card" id="basic-info">
+                    <div class="profile-header">
+                        <h2>基本信息</h2>
+                        <button class="btn btn-sm" onclick="toggleEditMode('basic-info')">编辑</button>
+                    </div>
+                    <div class="profile-body">
+                        <div class="profile-avatar">
+                            <div class="avatar-large" id="profile-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <button class="btn btn-sm" onclick="changeAvatar()">更换头像</button>
+                        </div>
+                        <div class="profile-info">
+                            <div class="form-group">
+                                <label class="form-label">用户名</label>
+                                <div class="form-static" id="static-username">user123</div>
+                                <input type="text" id="edit-username" class="form-control" style="display: none;" value="user123">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">邮箱</label>
+                                <div class="form-static" id="static-email">user@example.com</div>
+                                <input type="email" id="edit-email" class="form-control" style="display: none;" value="user@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">昵称</label>
+                                <div class="form-static" id="static-nickname">娃娃收藏家</div>
+                                <input type="text" id="edit-nickname" class="form-control" style="display: none;" value="娃娃收藏家">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">注册时间</label>
+                                <div class="form-static" id="static-register-date">2023-05-15</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">最后登录</label>
+                                <div class="form-static" id="static-last-login">2023-10-20 14:30</div>
+                            </div>
+                        </div>
+                        <div class="profile-actions" id="basic-info-actions" style="display: none;">
+                            <button class="btn btn-success" onclick="saveBasicInfo()">保存</button>
+                            <button class="btn btn-secondary" onclick="cancelEditMode('basic-info')">取消</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 账户统计卡片 -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <h2>账户统计</h2>
+                    </div>
+                    <div class="profile-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="profile-total-dolls">12</div>
+                                <div class="stat-label">娃娃总数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profile-total-income">156.75</div>
+                                <div class="stat-label">总收益(积分)</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profile-account-age">158</div>
+                                <div class="stat-label">账户天数</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="profile-synthesis-count">3</div>
+                                <div class="stat-label">合成次数</div>
+                            </div>
+                        </div>
+                        <div class="profile-chart">
+                            <canvas id="income-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 安全设置卡片 -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <h2>安全设置</h2>
+                    </div>
+                    <div class="profile-body">
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h3>修改密码</h3>
+                                <p>定期更改密码可以提高账户安全性</p>
+                            </div>
+                            <button class="btn" onclick="showChangePasswordModal()">修改密码</button>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h3>登录记录</h3>
+                                <p>查看最近的登录活动</p>
+                            </div>
+                            <button class="btn" onclick="showLoginHistory()">查看记录</button>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-info">
+                                <h3>账户状态</h3>
+                                <p>账户正常，无异常活动</p>
+                            </div>
+                            <div class="status-badge status-active">正常</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 娃娃收藏统计卡片 -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <h2>娃娃收藏统计</h2>
+                    </div>
+                    <div class="profile-body">
+                        <div class="doll-stats">
+                            <div class="doll-stat-item">
+                                <div class="doll-stat-level">一级娃娃</div>
+                                <div class="doll-stat-count">8</div>
+                                <div class="doll-stat-bar">
+                                    <div class="doll-stat-progress" style="width: 66%"></div>
+                                </div>
+                            </div>
+                            <div class="doll-stat-item">
+                                <div class="doll-stat-level">二级娃娃</div>
+                                <div class="doll-stat-count">3</div>
+                                <div class="doll-stat-bar">
+                                    <div class="doll-stat-progress" style="width: 25%"></div>
+                                </div>
+                            </div>
+                            <div class="doll-stat-item">
+                                <div class="doll-stat-level">三级娃娃</div>
+                                <div class="doll-stat-count">1</div>
+                                <div class="doll-stat-bar">
+                                    <div class="doll-stat-progress" style="width: 8%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="doll-collection-goal">
+                            <h3>收藏目标</h3>
+                            <div class="goal-progress">
+                                <div class="goal-text">完成度: <span id="goal-percentage">60%</span></div>
+                                <div class="goal-bar">
+                                    <div class="goal-progress-fill" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <div id="change-password-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">修改密码</div>
+                <span class="close" onclick="closeModal('change-password-modal')">&times;</span>
+            </div>
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="current-password" class="form-label">当前密码</label>
+                    <input type="password" id="current-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password" class="form-label">新密码</label>
+                    <input type="password" id="new-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">确认新密码</label>
+                    <input type="password" id="confirm-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <div id="password-strength" class="password-strength">
+                        <div class="password-strength-text">密码强度: 无</div>
+                        <div class="password-strength-bar">
+                            <div class="password-strength-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-block">修改密码</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 登录历史模态框 -->
+    <div id="login-history-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">登录历史</div>
+                <span class="close" onclick="closeModal('login-history-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>IP地址</th>
+                            <th>地点</th>
+                            <th>设备</th>
+                        </tr>
+                    </thead>
+                    <tbody id="login-history-table">
+                        <tr>
+                            <td>2023-10-20 14:30</td>
+                            <td>192.168.1.100</td>
+                            <td>北京</td>
+                            <td>Chrome/Windows</td>
+                        </tr>
+                        <tr>
+                            <td>2023-10-19 09:15</td>
+                            <td>192.168.1.100</td>
+                            <td>北京</td>
+                            <td>Chrome/Windows</td>
+                        </tr>
+                        <tr>
+                            <td>2023-10-18 20:45</td>
+                            <td>192.168.1.100</td>
+                            <td>北京</td>
+                            <td>Firefox/Windows</td>
+                        </tr>
+                        <tr>
+                            <td>2023-10-17 16:20</td>
+                            <td>192.168.1.100</td>
+                            <td>北京</td>
+                            <td>Chrome/Windows</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 天创娃娃收藏 - 版权所有</p>
+            <p>服务器: <span id="server-status">连接中...</span></p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>
