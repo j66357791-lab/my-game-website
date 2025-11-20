@@ -1,4 +1,4 @@
-// 娃娃收藏游戏 - 前端JavaScript - 修复版
+// 娃娃收藏游戏 - 前端JavaScript - 完整修复版
 // 全局变量
 let currentUser = null;
 let userDolls = [];
@@ -25,8 +25,8 @@ const getApiBase = () => {
 };
 
 const API_BASE = getApiBase();
-console.log('🌐 API基础地址:', API_BASE);
-console.log('🚀 当前环境:', window.location.hostname);
+console.log('🌐 主页API基础地址:', API_BASE);
+console.log('🚀 主页当前环境:', window.location.hostname);
 
 // DOM加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -93,7 +93,7 @@ function initEventListeners() {
     console.log('事件监听器初始化完成');
 }
 
-// 处理导航点击 - 新增函数
+// 处理导航点击 - 修复版本
 function handleNavClick(e) {
     e.preventDefault();
     
@@ -101,14 +101,26 @@ function handleNavClick(e) {
     const href = this.getAttribute('href');
     const linkText = this.textContent.trim();
     
-    console.log('🔗 导航点击详情:');
+    console.log('🔗 主页导航点击详情:');
     console.log('- 链接文本:', linkText);
     console.log('- href:', href);
     console.log('- data-panel:', panelId);
     
-    // 如果是外部链接（如家庭乐园），直接跳转
-    if (href && href.includes('family乐园')) {
-        console.log('🏠 跳转到家庭乐园:', href);
+    // 如果是家庭乐园链接，特殊处理
+    if (href && (href.includes('family乐园') || href.includes('family'))) {
+        console.log('🏠 检测到家庭乐园链接');
+        
+        // 检查用户是否已登录
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('❌ 用户未登录，显示登录提示');
+            alert('请先登录后再访问家庭乐园');
+            return;
+        }
+        
+        console.log('✅ 用户已登录，跳转到家庭乐园');
+        
+        // 直接跳转，让家庭乐园页面自己处理token验证
         window.location.href = href;
         return;
     }
@@ -122,7 +134,7 @@ function handleNavClick(e) {
     
     // 如果是面板切换
     if (panelId) {
-        console.log('🔄 执行面板切换:', panelId);
+        console.log('🔄 执行主页面板切换:', panelId);
         showPanel(panelId);
     } else {
         console.error('❌ 无法处理导航点击 - 缺少href和data-panel');
@@ -1308,7 +1320,7 @@ async function handleTransfer(e) {
         
         if (response.ok) {
             alert('转账成功');
-            currentUser.points = data.user.points;
+            currentUser = data.user;
             updateUI();
             updateTransferInfo();
             
@@ -1838,3 +1850,5 @@ function createUser() {
 function addUserPoints() {
     alert('批量发放积分功能开发中...');
 }
+
+console.log('🎮 主页面完整修复版加载完成');
