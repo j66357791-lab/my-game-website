@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭乐园 - 天创娃娃收藏</title>
+    <!-- 引用家庭乐园专用CSS + 原系统CSS -->
+    <link rel="stylesheet" href="css/family.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                家庭乐园
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link" id="back-to-main">返回主页</a></li>
+                <li><a href="#" class="nav-link active" data-panel="family-home">我的家园</a></li>
+                <li><a href="#" class="nav-link" data-panel="chicken-coop">养鸡场</a></li>
+                <li><a href="#" class="nav-link" data-panel="feed-shop">饲料商城</a></li>
+                <li><a href="#" class="nav-link" data-panel="egg-storage">鸡蛋仓库</a></li>
+                <li><a href="#" class="nav-link" data-panel="friends-panel">好友系统</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-points" id="user-points">0.00 积分</div>
+                <div class="avatar" id="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-menu">
+                    <button id="logout-btn" class="btn btn-sm">退出</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container main-content">
+        <!-- 我的家园面板 -->
+        <div id="family-home" class="panel active">
+            <h1>我的家园</h1>
+            
+            <div class="family-info-card">
+                <div class="card-header">
+                    <div class="card-title">家庭信息</div>
+                    <button class="btn btn-primary" onclick="FamilyPark.showInviteModal()">邀请好友</button>
+                </div>
+                <div class="card-body">
+                    <div class="family-details" id="family-details">
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="family-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-chickens">0</div>
+                    <div class="stat-label">小鸡总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="adult-chickens">0</div>
+                    <div class="stat-label">成年小鸡</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-eggs">0</div>
+                    <div class="stat-label">鸡蛋总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="coop-level">1</div>
+                    <div class="stat-label">养鸡场等级</div>
+                </div>
+            </div>
+            
+            <div class="family-members">
+                <h2>家庭成员</h2>
+                <div id="family-members-list" class="members-grid">
+                    <!-- 成员列表将在这里显示 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 养鸡场面板 -->
+        <div id="chicken-coop" class="panel">
+            <h1>养鸡场</h1>
+            
+            <div class="coop-info">
+                <div class="coop-status">
+                    <span>养鸡场等级: <strong id="coop-level-display">1</strong></span>
+                    <span>容量: <strong id="coop-capacity">0/2</strong></span>
+                </div>
+                <button class="btn btn-success" onclick="FamilyPark.showDrawModal()" id="draw-btn" style="display:none;">
+                    <i class="fas fa-dice"></i> 抽取小鸡 (500积分)
+                </button>
+                <button class="btn btn-warning" onclick="FamilyPark.showUpgradeModal()">
+                    <i class="fas fa-arrow-up"></i> 升级养鸡场
+                </button>
+            </div>
+            
+            <div class="chickens-grid" id="chickens-container">
+                <!-- 小鸡列表将在这里显示 -->
+            </div>
+        </div>
+        
+        <!-- 饲料商城面板 -->
+        <div id="feed-shop" class="panel">
+            <h1>饲料商城</h1>
+            
+            <div class="shop-grid" id="feed-shop-container">
+                <!-- 饲料商品将在这里显示 -->
+            </div>
+        </div>
+        
+        <!-- 鸡蛋仓库面板 -->
+        <div id="egg-storage" class="panel">
+            <h1>鸡蛋仓库</h1>
+            
+            <div class="egg-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="available-eggs">0</div>
+                    <div class="stat-label">可收集鸡蛋</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="exchange-rate">100</div>
+                    <div class="stat-label">兑换比例(个/积分)</div>
+                </div>
+            </div>
+            
+            <div class="egg-actions">
+                <button class="btn btn-success" onclick="FamilyPark.collectAllEggs()">
+                    <i class="fas fa-coins"></i> 收集所有鸡蛋
+                </button>
+            </div>
+            
+            <div class="eggs-grid" id="eggs-container">
+                <!-- 鸡蛋列表将在这里显示 -->
+            </div>
+        </div>
+
+        <!-- 好友系统面板 - 集成原系统 -->
+        <div id="friends-panel" class="panel">
+            <h1>好友系统</h1>
+            
+            <div class="friends-tabs">
+                <div class="friends-tab active" onclick="FamilyPark.switchFriendsTab('search')">搜索好友</div>
+                <div class="friends-tab" onclick="FamilyPark.switchFriendsTab('list')">我的好友</div>
+                <div class="friends-tab" onclick="FamilyPark.switchFriendsTab('requests')">好友请求</div>
+            </div>
+            
+            <!-- 搜索好友 -->
+            <div id="friends-search" class="friends-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">搜索用户</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="text" id="search-username" class="form-control" placeholder="输入用户名搜索">
+                        </div>
+                        <button class="btn" onclick="FamilyPark.searchUsers()">搜索</button>
+                    </div>
+                </div>
+                
+                <div id="search-results" class="user-list">
+                    <!-- 搜索结果将在这里显示 -->
+                </div>
+            </div>
+            
+            <!-- 我的好友 -->
+            <div id="friends-list" class="friends-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">我的好友</div>
+                    </div>
+                    <div id="my-friends" class="user-list">
+                        <!-- 好友列表将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 好友请求 -->
+            <div id="friends-requests" class="friends-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">好友请求</div>
+                    </div>
+                    <div id="friend-requests" class="user-list">
+                        <!-- 好友请求将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 邀请好友模态框 -->
+    <div id="invite-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">邀请好友</div>
+                <span class="close" onclick="FamilyPark.closeModal('invite-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择好友</label>
+                    <select id="invite-friend-select" class="form-control">
+                        <option value="">请选择好友</option>
+                    </select>
+                </div>
+                <div class="invite-benefits">
+                    <h4>邀请奖励</h4>
+                    <p>好友将获得一只0岁小鸡，存活180天</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="FamilyPark.inviteFriend()">
+                    发送邀请
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 抽取小鸡模态框 -->
+    <div id="draw-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">抽取小鸡</div>
+                <span class="close" onclick="FamilyPark.closeModal('draw-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="draw-info">
+                    <h4>抽取小鸡</h4>
+                    <p>消耗500积分，随机获得不同品质的小鸡</p>
+                    <div class="quality-rates">
+                        <div class="quality-item">
+                            <span class="quality-badge normal">普通</span>
+                            <span class="quality-rate">75%</span>
+                        </div>
+                        <div class="quality-item">
+                            <span class="quality-badge elite">精英</span>
+                            <span class="quality-rate">15%</span>
+                        </div>
+                        <div class="quality-item">
+                            <span class="quality-badge legend">传说</span>
+                            <span class="quality-rate">8%</span>
+                        </div>
+                        <div class="quality-item">
+                            <span class="quality-badge myth">神话</span>
+                            <span class="quality-rate">2%</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-warning btn-block" onclick="FamilyPark.drawChicken()">
+                    <i class="fas fa-dice"></i> 消耗500积分抽取
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 升级养鸡场模态框 -->
+    <div id="upgrade-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">升级养鸡场</div>
+                <span class="close" onclick="FamilyPark.closeModal('upgrade-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="upgrade-options">
+                    <div class="upgrade-option">
+                        <h4>二级养鸡场</h4>
+                        <p>容量: 10只小鸡</p>
+                        <p>花费: 5000积分</p>
+                        <p>条件: 需要一只5级小鸡</p>
+                        <button class="btn btn-primary" onclick="FamilyPark.upgradeCoop(2)">升级到二级</button>
+                    </div>
+                    <div class="upgrade-option">
+                        <h4>三级养鸡场</h4>
+                        <p>容量: 25只小鸡</p>
+                        <p>花费: 10000积分</p>
+                        <p>条件: 需要一只6级小鸡</p>
+                        <button class="btn btn-success" onclick="FamilyPark.upgradeCoop(3)">升级到三级</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 天创娃娃收藏 - 家庭乐园 - 版权所有</p>
+        </div>
+    </footer>
+
+    <!-- 引用家庭乐园专用JS -->
+    <script src="js/family.js"></script>
+</body>
+</html>
