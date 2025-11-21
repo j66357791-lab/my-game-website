@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天创娃娃收藏系统</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 🔥 动物大冒险导航特殊样式 */
+        .nav-adventure {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-left: 5px;
+        }
+
+        .nav-adventure:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+        }
+
+        .nav-adventure::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-adventure:hover::before {
+            left: 100%;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-adventure {
+                padding: 6px 12px;
+                font-size: 0.9em;
+                margin: 5px 0;
+            }
+        }
+
+        /* 欢迎页面特殊样式 */
+        .welcome-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .welcome-hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .feature-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* 动物大冒险特殊卡片 */
+        .feature-card.adventure {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .feature-card.adventure .feature-icon {
+            animation: bounce 2s infinite;
+        }
+
+        .feature-card.adventure .feature-title {
+            color: white;
+        }
+
+        .feature-card.adventure .feature-description {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .feature-card.adventure .feature-btn {
+            background: white;
+            color: #667eea;
+        }
+
+        .feature-card.adventure .feature-btn:hover {
+            background: #f0f0f0;
+            color: #764ba2;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* 快速访问按钮 */
+        .quick-access {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .quick-access h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .quick-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-btn.home {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quick-btn.family {
+            background: var(--success);
+            color: white;
+        }
+
+        .quick-btn.adventure {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .quick-btn.admin {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .quick-btn.home:hover {
+            background: var(--secondary);
+        }
+
+        .quick-btn.family:hover {
+            background: #218838;
+        }
+
+        .quick-btn.adventure:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .quick-btn.admin:hover {
+            background: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i>🎮</i>
+                <span>天创娃娃收藏</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link active">🏠 首页</a></li>
+                <li><a href="/family乐园" class="nav-link">🏡 家庭乐园</a></li>
+                <li><a href="/adventure" class="nav-link nav-adventure">🎮 动物大冒险</a></li>
+                <li><a href="/admin" class="nav-link">⚙️ 管理后台</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-points" id="userPoints">
+                    💰 <span id="pointsAmount">0</span> 积分
+                </div>
+                <div class="avatar" id="userAvatar">
+                    <span id="userInitial">?</span>
+                </div>
+                <div class="user-menu">
+                    <span id="userName">未登录</span>
+                    <button class="btn btn-sm" onclick="toggleUserMenu()">▼</button>
+                    <div class="dropdown-menu" id="dropdownMenu" style="display: none;">
+                        <a href="#" onclick="showProfile()">👤 个人资料</a>
+                        <a href="#" onclick="showSettings()">⚙️ 设置</a>
+                        <a href="#" onclick="logout()">🚪 退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- 欢迎横幅 -->
+        <div class="welcome-hero">
+            <h1>🎮 欢迎来到天创娃娃收藏系统</h1>
+            <p>体验娃娃收藏、家庭乐园和动物大冒险的乐趣！</p>
+            <div class="quick-buttons">
+                <a href="/adventure" class="quick-btn adventure">
+                    🎮 立即开始动物大冒险
+                </a>
+            </div>
+        </div>
+
+        <!-- 功能卡片 -->
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🏠</span>
+                <h3 class="feature-title">娃娃收藏</h3>
+                <p class="feature-description">
+                    收集各种等级的娃娃，享受每日收益，体验合成的乐趣。娃娃会为你带来持续的积分收益！
+                </p>
+                <a href="#" class="feature-btn" onclick="showDolls()">开始收藏</a>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🏡</span>
+                <h3 class="feature-title">家庭乐园</h3>
+                <p class="feature-description">
+                    创建家庭，邀请好友，一起养小鸡、收集鸡蛋、升级养鸡场。享受家庭协作的乐趣！
+                </p>
+                <a href="/family乐园" class="feature-btn">进入乐园</a>
+            </div>
+
+            <div class="feature-card adventure">
+                <span class="feature-icon">🎮</span>
+                <h3 class="feature-title">动物大冒险</h3>
+                <p class="feature-description">
+                    刺激的投注游戏！选择房间，躲避猎人，赢取积分。支持普通模式和狂暴模式，快来挑战吧！
+                </p>
+                <a href="/adventure" class="feature-btn">开始冒险</a>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">⚙️</span>
+                <h3 class="feature-title">管理后台</h3>
+                <p class="feature-description">
+                    系统管理员专用，管理用户、娃娃、交易记录，监控系统运行状态。
+                </p>
+                <a href="/admin" class="feature-btn">进入后台</a>
+            </div>
+        </div>
+
+        <!-- 快速访问 -->
+        <div class="quick-access">
+            <h3>🚀 快速访问</h3>
+            <div class="quick-buttons">
+                <a href="/" class="quick-btn home">
+                    🏠 返回首页
+                </a>
+                <a href="/family乐园" class="quick-btn family">
+                    🏡 家庭乐园
+                </a>
+                <a href="/adventure" class="quick-btn adventure">
+                    🎮 动物大冒险
+                </a>
+                <a href="/admin" class="quick-btn admin">
+                    ⚙️ 管理后台
+                </a>
+            </div>
+        </div>
+
+        <!-- 系统状态 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📊 系统状态</h3>
+                <button class="btn btn-sm" onclick="refreshStats()">刷新</button>
+            </div>
+            <div class="card-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUsers">-</div>
+                        <div class="stat-label">总用户数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalDolls">-</div>
+                        <div class="stat-label">娃娃总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalFamilies">-</div>
+                        <div class="stat-label">家庭总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalChickens">-</div>
+                        <div class="stat-label">小鸡总数</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最新消息 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📢 最新消息</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <strong>🎮 动物大冒险已上线！</strong><br>
+                    快来体验刺激的投注游戏，赢取丰厚积分奖励！
+                </div>
+                <div class="alert alert-info">
+                    <strong>🏡 家庭乐园新功能！</strong><br>
+                    支持协作喂养、积分池系统，快来体验吧！
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 天创娃娃收藏系统. All rights reserved.</p>
+            <p>
+                <a href="/">首页</a> |
+                <a href="/family乐园">家庭乐园</a> |
+                <a href="/adventure">动物大冒险</a> |
+                <a href="/admin">管理后台</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- 模态框 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🔐 用户登录</h3>
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">登录</button>
+                    <p style="text-align: center; margin-top: 15px;">
+                        没有账户？<a href="#" onclick="showRegister()">立即注册</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 用户注册</h3>
+                <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="regUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-control" id="regPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱</label>
+                        <input type="email" class="form-control" id="regEmail" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">注册</button>
+                    <p style="text-align: center; margin-top: 15px;">
+                        已有账户？<a href="#" onclick="showLogin()">立即登录</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentUser = null;
+        let authToken = null;
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadSystemStats();
+            highlightCurrentPage();
+        });
+
+        // 检查认证状态
+        async function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                try {
+                    const response = await fetch('/api/auth/validate', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        currentUser = data.user;
+                        authToken = token;
+                        updateUserUI();
+                    } else {
+                        localStorage.removeItem('authToken');
+                    }
+                } catch (error) {
+                    console.error('认证验证失败:', error);
+                    localStorage.removeItem('authToken');
+                }
+            }
+        }
+
+        // 更新用户界面
+        function updateUserUI() {
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.username;
+                document.getElementById('pointsAmount').textContent = currentUser.points;
+                document.getElementById('userInitial').textContent = currentUser.username.charAt(0).toUpperCase();
+            } else {
+                document.getElementById('userName').textContent = '未登录';
+                document.getElementById('pointsAmount').textContent = '0';
+                document.getElementById('userInitial').textContent = '?';
+            }
+        }
+
+        // 高亮当前页面
+        function highlightCurrentPage() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // 加载系统统计
+        async function loadSystemStats() {
+            try {
+                const response = await fetch('/api/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('totalUsers').textContent = data.stats.users || 0;
+                    document.getElementById('totalDolls').textContent = data.stats.dolls || 0;
+                    document.getElementById('totalFamilies').textContent = data.stats.families || 0;
+                    document.getElementById('totalChickens').textContent = data.stats.chickens || 0;
+                }
+            } catch (error) {
+                console.error('加载系统统计失败:', error);
+            }
+        }
+
+        // 刷新统计
+        function refreshStats() {
+            loadSystemStats();
+        }
+
+        // 显示登录模态框
+        function showLogin() {
+            closeModal('registerModal');
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        // 显示注册模态框
+        function showRegister() {
+            closeModal('loginModal');
+            document.getElementById('registerModal').style.display = 'flex';
+        }
+
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('authToken', authToken);
+                    updateUserUI();
+                    closeModal('loginModal');
+                    showAlert('登录成功！', 'success');
+                } else {
+                    showAlert(data.message || '登录失败', 'error');
+                }
+            } catch (error) {
+                showAlert('登录失败：' + error.message, 'error');
+            }
+        });
+
+        // 注册表单提交
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const email = document.getElementById('regEmail').value;
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('注册成功！请登录', 'success');
+                    closeModal('registerModal');
+                    showLogin();
+                } else {
+                    showAlert(data.message || '注册失败', 'error');
+                }
+            } catch (error) {
+                showAlert('注册失败：' + error.message, 'error');
+            }
+        });
+
+        // 切换用户菜单
+        function toggleUserMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // 显示个人资料
+        function showProfile() {
+            if (currentUser) {
+                showAlert(`用户名: ${currentUser.username}\n邮箱: ${currentUser.email}\n积分: ${currentUser.points}`, 'info');
+            } else {
+                showAlert('请先登录', 'warning');
+            }
+        }
+
+        // 显示设置
+        function showSettings() {
+            showAlert('设置功能开发中...', 'info');
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('authToken');
+            authToken = null;
+            currentUser = null;
+            updateUserUI();
+            showAlert('已退出登录', 'success');
+        }
+
+        // 显示娃娃页面
+        function showDolls() {
+            if (currentUser) {
+                window.location.href = '/family乐园';
+            } else {
+                showAlert('请先登录', 'warning');
+                showLogin();
+            }
+        }
+
+        // 显示提示消息
+        function showAlert(message, type = 'info') {
+            // 创建提示元素
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.maxWidth = '300px';
+            
+            document.body.appendChild(alertDiv);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 3000);
+        }
+
+        // 点击页面其他地方关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('dropdownMenu');
+            const userMenu = document.querySelector('.user-menu');
+            
+            if (!userMenu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // 处理模态框外部点击
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
