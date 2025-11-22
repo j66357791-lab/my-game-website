@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动物大冒险 - 生存游戏</title>
+    <link rel="stylesheet" href="css/animal-game.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <!-- 添加错误处理和用户认证检查 -->
+    <script>
+        // 全局错误处理
+        window.addEventListener('error', function(e) {
+            console.error('全局错误:', e.error);
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('未处理的Promise拒绝:', e.reason);
+        });
+        
+        // 检查用户登录状态
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('currentUser');
+            
+            if (!token || !user) {
+                console.warn('用户未登录，准备跳转...');
+                document.body.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                            <h2 style="margin-bottom: 20px;">🎮 动物大冒险</h2>
+                            <p style="margin-bottom: 20px;">请先登录后再进行游戏</p>
+                            <div style="margin-top: 20px;">
+                                <a href="../" style="color: white; text-decoration: none; padding: 12px 24px; border: 2px solid white; border-radius: 25px; display: inline-block; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='transparent'">
+                                    返回登录
+                                </a>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <a href="../" style="color: white; text-decoration: none; font-size: 14px; opacity: 0.8;">← 返回主页</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 延迟跳转，让用户看到提示
+                setTimeout(() => {
+                    window.location.href = '../';
+                }, 3000);
+                return false;
+            }
+            return true;
+        }
+        
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkLoginStatus()) {
+                return;
+            }
+            console.log('✅ 用户登录验证通过');
+        });
+        
+        // 立即检查（防止页面内容闪烁）
+        if (!checkLoginStatus()) {
+            throw new Error('用户未登录');
+        }
+    </script>
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- 游戏头部 -->
+        <header class="game-header">
+            <div class="header-left">
+                <h1 class="game-title">🎮 动物大冒险</h1>
+                <div class="round-info">
+                    <span class="round-number">第 <span id="roundNumber">1</span> 轮</span>
+                    <span class="game-mode" id="gameMode">普通模式</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="balance-display">
+                    <span class="balance-label">💰 积分余额</span>
+                    <span class="balance-amount" id="userBalance">0</span>
+                </div>
+                <div class="candy-display">
+                    <span class="candy-label">🍬 糖果</span>
+                    <span class="candy-amount" id="userCandies">0</span>
+                </div>
+                <!-- 添加返回主页按钮 -->
+                <div class="nav-back">
+                    <a href="../" class="back-btn" title="返回主页">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 游戏主体 -->
+        <main class="game-main">
+            <!-- 倒计时区域 -->
+            <section class="timer-section">
+                <div class="timer-container">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle class="timer-bg" cx="100" cy="100" r="90"></circle>
+                            <circle class="timer-progress" id="timerProgress" cx="100" cy="100" r="90"></circle>
+                        </svg>
+                        <div class="timer-text">
+                            <span class="timer-value" id="timerValue">40</span>
+                            <span class="timer-label">秒</span>
+                        </div>
+                    </div>
+                    <div class="timer-status" id="timerStatus">游戏进行中</div>
+                </div>
+            </section>
+
+            <!-- 房间选择区域 -->
+            <section class="rooms-section">
+                <h2 class="section-title">选择你的藏身之处</h2>
+                <div class="rooms-grid" id="roomsGrid">
+                    <button class="room-card" data-room="草丛地">
+                        <div class="room-icon">🌿</div>
+                        <div class="room-name">草丛地</div>
+                        <div class="room-stats">
+                            <span class="player-count">0 人</span>
+                            <span class="total-bet">0 积分</span>
+                        </div>
+                    </button>
+                    <button class="room-card" data-room="灌木丛">
+                        <div class="room-icon">🌳</div>
+                        <div class="room-name">灌木丛</div>
+                        <div class="room-stats">
+                            <span class="player-count">0 人</span>
+                            <span class="total-bet">0 积分</span>
+                        </div>
+                    </button>
+                    <button class="room-card" data-room="森林">
+                        <div class="room-icon">🌲</div>
+                        <div class="room-name">森林</div>
+                        <div class="room-stats">
+                            <span class="player-count">0 人</span>
+                            <span class="total-bet">0 积分</span>
+                        </div>
+                    </button>
+                    <button class="room-card" data-room="湖泊">
+                        <div class="room-icon">💧</div>
+                        <div class="room-name">湖泊</div>
+                        <div class="room-stats">
+                            <span class="player-count">0 人</span>
+                            <span class="total-bet">0 积分</span>
+                        </div>
+                    </button>
+                    <button class="room-card" data-room="洞穴">
+                        <div class="room-icon">🕳️</div>
+                        <div class="room-name">洞穴</div>
+                        <div class="room-stats">
+                            <span class="player-count">0 人</span>
+                            <span class="total-bet">0 积分</span>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 投注区域 -->
+            <section class="bet-section">
+                <div class="bet-container">
+                    <div class="bet-input-group">
+                        <label for="betAmount">投注积分</label>
+                        <div class="bet-input-wrapper">
+                            <input type="number" id="betAmount" min="1" placeholder="输入投注金额">
+                            <div class="quick-bet-buttons">
+                                <button class="quick-bet" data-amount="10">10</button>
+                                <button class="quick-bet" data-amount="50">50</button>
+                                <button class="quick-bet" data-amount="100">100</button>
+                                <button class="quick-bet" data-amount="500">500</button>
+                                <button class="quick-bet" data-amount="1000">1K</button>
+                                <button class="quick-bet" data-amount="all">ALL</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bet-actions">
+                        <button class="bet-btn" id="confirmBet" disabled>
+                            <span class="btn-text">确认投注</span>
+                            <span class="btn-loader"></span>
+                        </button>
+                        <button class="cancel-btn" id="cancelBet" style="display: none;">取消投注</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 游戏结果展示 -->
+            <section class="result-section" id="resultSection" style="display: none;">
+                <div class="result-container">
+                    <h2 class="result-title" id="resultTitle">游戏结束</h2>
+                    <div class="result-content">
+                        <div class="hunter-info">
+                            <span class="hunter-icon">🏹</span>
+                            <span class="hunter-text">猎人袭击了</span>
+                            <span class="target-rooms" id="targetRooms"></span>
+                        </div>
+                        <div class="player-result" id="playerResult"></div>
+                        <div class="prize-info" id="prizeInfo"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 侧边栏 -->
+        <aside class="game-sidebar">
+            <!-- 统计信息 -->
+            <section class="stats-section">
+                <h3 class="sidebar-title">📊 我的统计</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">总局数</span>
+                        <span class="stat-value" id="totalGames">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">胜利</span>
+                        <span class="stat-value" id="wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">失败</span>
+                        <span class="stat-value" id="losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">胜率</span>
+                        <span class="stat-value" id="winRate">0%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 历史记录 -->
+            <section class="history-section">
+                <h3 class="sidebar-title">📜 最近记录</h3>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">暂无记录</div>
+                </div>
+            </section>
+
+            <!-- 游戏说明 -->
+            <section class="help-section">
+                <h3 class="sidebar-title">❓ 游戏规则</h3>
+                <div class="help-content">
+                    <p>🎯 选择一个房间藏身，躲避猎人的追捕</p>
+                    <p>⏱️ 每轮40秒，倒计时结束前可更换房间</p>
+                    <p>🏹 猎人会随机袭击1个房间（5%概率狂暴模式袭击多个）</p>
+                    <p>💎 幸存者瓜分失败者的积分（扣除5%手续费）</p>
+                    <p>🍬 失败者按比例获得糖果奖励</p>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <!-- 消息提示 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts - 修复Socket.io加载问题 -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // 验证Socket.io加载
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof io === 'undefined') {
+                console.error('❌ Socket.io未能正确加载，尝试备用方案...');
+                // 备用方案：使用CDN
+                const script = document.createElement('script');
+                script.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
+                script.onload = function() {
+                    console.log('✅ 备用Socket.io加载成功');
+                };
+                script.onerror = function() {
+                    console.error('❌ 备用Socket.io也加载失败');
+                };
+                document.head.appendChild(script);
+            } else {
+                console.log('✅ Socket.io客户端加载成功');
+            }
+        });
+    </script>
+    <script src="js/animal-game.js"></script>
+    <script>
+        // 页面加载完成后的检查
+        window.addEventListener('load', function() {
+            console.log('🎮 动物大冒险页面完全加载完成');
+            
+            // 延迟检查，确保DOM完全就绪
+            setTimeout(function() {
+                const requiredElements = [
+                    'userBalance', 'userCandies', 'roundNumber', 'timerValue',
+                    'roomsGrid', 'betAmount', 'confirmBet', 'toastContainer'
+                ];
+                
+                const missingElements = requiredElements.filter(id => !document.getElementById(id));
+                
+                if (missingElements.length > 0) {
+                    console.error('❌ 缺少关键DOM元素:', missingElements);
+                } else {
+                    console.log('✅ 所有关键DOM元素已就绪');
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
