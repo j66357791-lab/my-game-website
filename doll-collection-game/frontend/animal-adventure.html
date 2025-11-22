@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动物大冒险</title>
+    <link rel="stylesheet" href="css/animal-adventure.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🎮 动物大冒险</h1>
+            <div class="user-info">
+                <span class="balance">积分: <span id="userBalance">0</span></span>
+                <span class="candies">糖果: <span id="userCandies">0</span></span>
+                <a href="/" class="back-btn">返回主页</a>
+            </div>
+        </header>
+
+        <main class="game-main">
+            <section class="game-status">
+                <div class="round-info">
+                    <span>第 <span id="roundId">1</span> 轮</span>
+                    <span class="timer" id="timer">40</span>
+                </div>
+                <div class="game-message" id="gameMessage">选择一个房间进行躲避！</div>
+            </section>
+
+            <section class="rooms-section">
+                <div class="rooms-grid">
+                    <button class="room-btn" data-room="grassland">
+                        <div class="room-icon">🌿</div>
+                        <div class="room-name">草丛地</div>
+                        <div class="room-status"></div>
+                    </button>
+                    <button class="room-btn" data-room="bushes">
+                        <div class="room-icon">🌳</div>
+                        <div class="room-name">灌木丛</div>
+                        <div class="room-status"></div>
+                    </button>
+                    <button class="room-btn" data-room="forest">
+                        <div class="room-icon">🌲</div>
+                        <div class="room-name">森林</div>
+                        <div class="room-status"></div>
+                    </button>
+                    <button class="room-btn" data-room="lake">
+                        <div class="room-icon">💧</div>
+                        <div class="room-name">湖泊</div>
+                        <div class="room-status"></div>
+                    </button>
+                    <button class="room-btn" data-room="cave">
+                        <div class="room-icon">🕳️</div>
+                        <div class="room-name">洞穴</div>
+                        <div class="room-status"></div>
+                    </button>
+                </div>
+            </section>
+
+            <section class="bet-section">
+                <div class="bet-controls">
+                    <input type="number" id="betAmount" placeholder="输入投注积分" min="1">
+                    <button id="confirmBet" class="bet-btn">确认投注</button>
+                </div>
+                <div class="quick-bet">
+                    <button class="quick-bet-btn" data-amount="10">10</button>
+                    <button class="quick-bet-btn" data-amount="50">50</button>
+                    <button class="quick-bet-btn" data-amount="100">100</button>
+                    <button class="quick-bet-btn" data-amount="500">500</button>
+                    <button class="quick-bet-btn" data-amount="all">全部</button>
+                </div>
+            </section>
+
+            <section class="history-section">
+                <h3>历史记录</h3>
+                <div id="historyList" class="history-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="roundResultModal" class="modal">
+        <div class="modal-content">
+            <h2 id="resultTitle">轮次结束</h2>
+            <div id="resultDetails"></div>
+            <button id="closeModal" class="close-btn">确定</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/animal-adventure.js"></script>
+</body>
+</html>
