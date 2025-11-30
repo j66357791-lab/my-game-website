@@ -1,0 +1,388 @@
+/* frontend/space-challenge/css/space-challenge.css */
+
+/* 引入Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+/* --- 整体风格与背景 --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #0a0a0f;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 219, 98, 0.2) 0%, transparent 50%);
+    color: #e0e0e0;
+    font-family: 'Orbitron', 'Arial', sans-serif;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+/* 使用Flexbox布局 */
+.game-header {
+    background: rgba(22, 33, 62, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    text-align: center;
+}
+
+.game-content {
+    display: flex;
+    gap: 25px;
+    flex: 1;
+}
+
+.game-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.bet-control-panel {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+/* --- 卡片设计升级 --- */
+.boss-section, .fighters-section, .bet-control-panel, .info-feed {
+    background: rgba(22, 33, 62, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.boss-container { 
+    text-align: center;
+    position: relative;
+}
+
+/* --- 战机模型动画 --- */
+.fighter-model {
+    width: 80px; 
+    height: 80px;
+    background: #0f3460;
+    margin: 10px auto;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 2em; 
+    font-weight: bold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 战机搭建动画 */
+.fighter-model::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: fighter-build 30s linear infinite;
+}
+
+@keyframes fighter-build {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* 战机内部结构 */
+.fighter-model::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    top: 20%;
+    left: 20%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+.boss-model {
+    width: 120px; 
+    height: 120px;
+    background: #e94560;
+    animation: boss-pulse 2s ease-in-out infinite;
+}
+
+@keyframes boss-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 0 40px rgba(233, 69, 96, 0.8);
+    }
+}
+
+.fighter-slot:hover .fighter-model {
+    transform: translateY(-15px) scale(1.1);
+    box-shadow: 0 10px 20px rgba(83, 52, 131, 0.6);
+    cursor: pointer;
+}
+
+.fighter-slot.selected .fighter-model {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 25px #ffd700;
+    animation: selected-glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes selected-glow {
+    from { box-shadow: 0 0 25px #ffd700; }
+    to { box-shadow: 0 0 35px #ffd700, 0 0 45px #ffd700; }
+}
+
+.fighters-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.fighter-slot { 
+    text-align: center; 
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(15, 52, 96, 0.3);
+    transition: background 0.3s ease;
+    position: relative;
+}
+
+.fighter-slot:hover {
+    background: rgba(15, 52, 96, 0.5);
+}
+
+/* --- 时间进度条 --- */
+.time-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+.time-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4fc3f7, #29b6f6, #0288d1);
+    transition: width 1s linear;
+    border-radius: 0 0 10px 10px;
+}
+
+/* --- 星级显示升级 --- */
+.star-rating {
+    font-size: 1.5em;
+    color: #ffd700;
+    text-shadow: 0 0 10px #ffd700;
+    margin: 10px 0;
+    min-height: 30px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.5s ease;
+}
+
+.star-rating.revealed {
+    opacity: 1;
+    transform: scale(1);
+    animation: star-reveal 0.8s ease-out;
+}
+
+@keyframes star-reveal {
+    0% { transform: scale(0) rotate(180deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(90deg); opacity: 0.8; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* 星级逐个显示动画 */
+.star {
+    display: inline-block;
+    opacity: 0;
+    transform: scale(0);
+    animation: star-pop 0.5s ease-out forwards;
+}
+
+.star:nth-child(1) { animation-delay: 0.1s; }
+.star:nth-child(2) { animation-delay: 0.2s; }
+.star:nth-child(3) { animation-delay: 0.3s; }
+.star:nth-child(4) { animation-delay: 0.4s; }
+.star:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes star-pop {
+    0% { transform: scale(0) rotate(180deg); opacity: 0; }
+    50% { transform: scale(1.3) rotate(90deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* --- 按钮升级 --- */
+.bet-button, .quick-bet-buttons button, #confirm-bet {
+    background: linear-gradient(45deg, #533483, #6b4b9a);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px 0 rgba(83, 52, 131, 0.5);
+}
+
+.bet-button:hover, .quick-bet-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(83, 52, 131, 0.7);
+}
+
+.bet-button:disabled { 
+    background: #555; 
+    cursor: not-allowed; 
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- 热度条升级 --- */
+.heat-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.heat-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #8bc34a, #cddc39, #ffc107, #ff9800, #f44336);
+    width: 0%;
+    transition: width 0.8s ease-out;
+    border-radius: 4px;
+}
+
+/* --- 下注面板样式 --- */
+.bet-control-panel h3 { margin-top: 0; }
+.quick-bet-buttons { display: flex; gap: 10px; margin-bottom: 10px; }
+.quick-bet-buttons button { flex: 1; padding: 10px; }
+#bet-amount {
+    width: 100%; 
+    padding: 10px; 
+    margin-bottom: 10px;
+    border-radius: 5px; 
+    border: 1px solid #555;
+    background: rgba(255,255,255,0.1); 
+    color: #fff;
+    box-sizing: border-box;
+}
+#confirm-bet {
+    width: 100%; 
+    padding: 10px;
+    background: linear-gradient(45deg, #e94560, #c23652);
+    font-size: 1.2em;
+}
+
+/* --- 实时信息流 --- */
+.info-feed { 
+    margin-top: 20px;
+}
+.info-feed h4 { margin-top: 0; }
+.feed-container {
+    max-height: 100px; 
+    overflow-y: auto;
+    font-size: 0.9em; 
+    color: #bbb;
+}
+.feed-item { padding: 2px 0; }
+
+/* --- 倒计时 --- */
+.timer-display {
+    position: fixed; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5em; 
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.1);
+    pointer-events: none; 
+    z-index: -1;
+}
+
+/* --- 投注动效 --- */
+.flying-points {
+    position: fixed;
+    font-size: 1.5em; 
+    font-weight: bold;
+    color: #ffd700;
+    pointer-events: none; 
+    z-index: 1000;
+    animation: fly-to-fighter 0.8s ease-out forwards;
+}
+
+@keyframes fly-to-fighter {
+    to {
+        transform: translate(var(--target-x), var(--target-y)) scale(0);
+        opacity: 0;
+    }
+}
+
+.points-updated {
+    animation: points-change 0.5s ease-out;
+}
+
+@keyframes points-change {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); color: #e94560; }
+    100% { transform: scale(1); }
+}
+
+/* Boss揭晓动画 */
+.boss-reveal {
+    animation: boss-reveal-animation 2s ease-out;
+}
+
+@keyframes boss-reveal-animation {
+    0% { transform: scale(0) rotate(360deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-content {
+        flex-direction: column;
+    }
+    
+    .bet-control-panel {
+        width: 100%;
+    }
+    
+    .fighters-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
