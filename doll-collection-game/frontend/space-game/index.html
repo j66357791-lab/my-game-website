@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太空挑战 - Space Challenge</title>
+    <link rel="stylesheet" href="css/space-game.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🏠 返回首页</a>
+            <div class="nav-user">
+                <span id="navUsername">加载中...</span>
+                <span id="navPoints">💰 0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 游戏容器 -->
+    <div class="main-container">
+        <!-- 游戏内容 -->
+        <div class="game-container">
+            <!-- 游戏标题 -->
+            <div class="game-header">
+                <h1 class="game-title">🚀 太空挑战 🚀</h1>
+                <button class="exit-button" id="exitButton">退出游戏</button>
+            </div>
+
+            <!-- 倒计时 -->
+            <div class="countdown">
+                <div class="countdown-timer" id="countdownTimer">准备开始...</div>
+            </div>
+
+            <!-- 用户信息 -->
+            <div class="user-info">
+                <div class="user-points">💰 积分: <span id="userPoints">0</span></div>
+                <div class="current-bets">本轮投注: <span id="currentBets">0</span></div>
+                <div class="user-id">用户: <span id="userId">加载中...</span></div>
+            </div>
+
+            <!-- 战舰区域 -->
+            <div class="battlefield">
+                <div class="spaceship red" id="redSpaceship">
+                    <div class="spaceship-icon">🚀</div>
+                    <h3>红方战舰</h3>
+                    <div class="stars-display" id="redStars"></div>
+                    <div class="bet-amount-input">
+                        <input type="number" id="redBetAmount" placeholder="投注金额" min="10" step="10">
+                        <div class="quick-bet-buttons">
+                            <button class="quick-bet" data-amount="100">100</button>
+                            <button class="quick-bet" data-amount="500">500</button>
+                            <button class="quick-bet" data-amount="1000">1K</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spaceship blue" id="blueSpaceship">
+                    <div class="spaceship-icon">🛸</div>
+                    <h3>蓝方战舰</h3>
+                    <div class="stars-display" id="blueStars"></div>
+                    <div class="bet-amount-input">
+                        <input type="number" id="blueBetAmount" placeholder="投注金额" min="10" step="10">
+                        <div class="quick-bet-buttons">
+                            <button class="quick-bet" data-amount="100">100</button>
+                            <button class="quick-bet" data-amount="500">500</button>
+                            <button class="quick-bet" data-amount="1000">1K</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 投注区域 -->
+            <div class="betting-area">
+                <div class="betting-options">
+                    <button class="bet-button red" id="redBet">
+                        🔴 红方获胜<br>
+                        <small>赔率: 0.95</small>
+                    </button>
+                    <button class="bet-button blue" id="blueBet">
+                        🔵 蓝方获胜<br>
+                        <small>赔率: 0.95</small>
+                    </button>
+                    <button class="bet-button draw" id="drawBet">
+                        🤝 平局<br>
+                        <small>赔率: 9.5</small>
+                    </button>
+                </div>
+
+                <!-- 星级投注分区 -->
+                <div class="star-betting-sections">
+                    <div class="star-betting-section red">
+                        <div class="star-betting-title">🔴 红方星级投注</div>
+                        <div class="star-bet-grid" id="redStarBetGrid">
+                            <!-- 动态生成1-10星投注按钮 -->
+                        </div>
+                    </div>
+                    <div class="star-betting-section blue">
+                        <div class="star-betting-title">🔵 蓝方星级投注</div>
+                        <div class="star-bet-grid" id="blueStarBetGrid">
+                            <!-- 动态生成1-10星投注按钮 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <button class="trend-button" id="trendButton" title="查看趋势">
+                📊
+            </button>
+            <button class="music-control" id="musicControl" title="音乐控制">
+                🎵
+            </button>
+        </div>
+    </div>
+
+    <!-- 趋势弹窗 -->
+    <div class="trend-modal" id="trendModal">
+        <div class="trend-content">
+            <div class="trend-header">
+                <h2 class="trend-title">📈 游戏趋势分析</h2>
+                <button class="close-trend" id="closeTrend">关闭</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="trendChart" width="700" height="350"></canvas>
+            </div>
+            <div class="statistics" id="statistics">
+                <!-- 动态生成统计信息 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果弹窗 -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <h2 class="result-title" id="resultTitle">游戏结果</h2>
+            <div class="result-details" id="resultDetails"></div>
+            <div class="result-profit" id="resultProfit"></div>
+            <button class="close-result" id="closeResult">确定</button>
+        </div>
+    </div>
+
+    <!-- 音乐控制面板 -->
+    <div class="music-panel" id="musicPanel">
+        <div class="volume-control">
+            <label>音量: <span id="volumeValue">70</span>%</label>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+        </div>
+        <div class="music-options">
+            <div class="music-option active" data-music="electronic">电子</div>
+            <div class="music-option" data-music="orchestral">管弦</div>
+            <div class="music-option" data-music="mixed">混合</div>
+        </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <h2>请先登录</h2>
+            <p>太空挑战需要登录后才能游玩</p>
+            <button class="login-button" onclick="location.href='../index.html'">前往登录</button>
+        </div>
+    </div>
+
+    <script src="js/space-game.js"></script>
+</body>
+</html>
