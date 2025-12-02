@@ -631,8 +631,8 @@
         </div>
     </main>
 
-    <!-- 底部导航栏 -->
-    <nav class="bottom-nav">
+    <!-- 底部导航栏 - 普通用户 -->
+    <nav id="user-nav" class="bottom-nav">
         <a href="#" class="nav-item active" data-panel="home-panel">
             <i class="fas fa-home"></i>
             <span>首页</span>
@@ -648,6 +648,26 @@
         <a href="#" class="nav-item" data-panel="profile-panel">
             <i class="fas fa-user-circle"></i>
             <span>个人中心</span>
+        </a>
+    </nav>
+
+    <!-- 底部导航栏 - 管理员 -->
+    <nav id="admin-nav" class="bottom-nav" style="display: none;">
+        <a href="#" class="nav-item active" data-panel="home-panel">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="nav-item" data-panel="dolls-panel">
+            <i class="fas fa-gem"></i>
+            <span>娃娃版块</span>
+        </a>
+        <a href="#" class="nav-item" data-panel="games-panel">
+            <i class="fas fa-gamepad"></i>
+            <span>游戏专区</span>
+        </a>
+        <a href="#" class="nav-item" data-panel="admin-panel">
+            <i class="fas fa-cog"></i>
+            <span>管理后台</span>
         </a>
     </nav>
 
