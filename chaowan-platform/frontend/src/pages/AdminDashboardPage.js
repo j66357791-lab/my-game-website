@@ -85,7 +85,7 @@ const AdminDashboardPage = ({ user }) => {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!confirm('确定要删除这个用户吗？')) return;
+    if (!window.confirm('确定要删除这个用户吗？')) return;
     
     try {
       const token = localStorage.getItem('token');
@@ -451,3 +451,4 @@ const AdminDashboardPage = ({ user }) => {
 };
 
 export default AdminDashboardPage;
+
