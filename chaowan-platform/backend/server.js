@@ -9,43 +9,46 @@ dotenv.config();
 
 const app = express();
 
-// 🔧 超级强力CORS配置 - 解决所有CORS问题
-app.use(express.json());
-
-// 处理所有OPTIONS预检请求
-app.options('*', cors());
-
-// 主要CORS中间件 - 最宽松配置
-app.use(cors({
-  origin: '*',  // 允许所有域名
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  exposedHeaders: ['X-Total-Count'],
-  maxAge: 86400 // 24小时预检缓存
-}));
-
-// 额外的CORS头部 - 双重保险
+// 🔧 CORS配置必须在最前面 - 修复中间件顺序
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  res.header('Access-Control-Allow-Origin', origin || '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Max-Age', '86400');
   res.header('Vary', 'Origin');
   
-  // 如果是OPTIONS请求，直接返回200
+  // 处理OPTIONS预检请求
   if (req.method === 'OPTIONS') {
-    console.log('🔧 处理OPTIONS预检请求:', req.url);
+    console.log('🔧 处理OPTIONS预检请求:', req.url, 'from', origin);
     return res.status(200).json({
       message: 'CORS preflight successful',
       method: req.method,
-      url: req.url
+      url: req.url,
+      origin: origin
     });
   }
   
+  console.log('📡 收到请求:', req.method, req.url, 'from', origin);
   next();
 });
+
+// 然后才是cors中间件
+app.use(cors({
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['X-Total-Count'],
+  maxAge: 86400
+}));
+
+// 处理所有OPTIONS预检请求
+app.options('*', cors());
+
+// 最后才是其他中间件
+app.use(express.json());
 
 // 🔧 云端数据库连接
 const connectDB = async () => {
