@@ -129,7 +129,7 @@ const LoginPage = ({ onLogin }) => {
     
     try {
       // ✅ 使用正确的后端域名
-      const response = await fetch('https://chaowan-backend.onrender.com/');
+      const response = await fetch('https://tianchuang.onrender.com/') ;
       const data = await response.json();
       console.log('✅ API连接成功:', data);
       setDebugInfo(`API连接成功: ${data.message}`);
@@ -146,13 +146,13 @@ const LoginPage = ({ onLogin }) => {
     
     try {
       // 测试OPTIONS预检请求
-      const optionsResponse = await fetch('https://chaowan-backend.onrender.com/api/auth/login', {
+      const optionsResponse = await fetch('https://tianchuang.onrender.com/api/auth/login' , {
         method: 'OPTIONS'
       });
       console.log('📡 OPTIONS响应:', optionsResponse.status, optionsResponse.statusText);
       
       // 测试POST请求（会失败，但能确认路径存在）
-      const postResponse = await fetch('https://chaowan-backend.onrender.com/api/auth/login', {
+      const postResponse = await fetch('https://tianchuang.onrender.com/api/auth/login' , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'test@test.com', password: 'test' })
