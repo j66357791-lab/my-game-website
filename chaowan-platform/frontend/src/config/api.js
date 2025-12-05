@@ -9,8 +9,29 @@ console.log('🔧 使用API地址:', API_BASE_URL);
 // 请求锁机制，防止重复请求
 const requestLocks = new Map();
 
+// 🔧 获取当前用户token的辅助函数
+const getCurrentToken = () => {
+  try {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      console.warn('⚠️ 未找到用户信息，请先登录');
+      return null;
+    }
+    const user = JSON.parse(userStr);
+    if (!user.token) {
+      console.warn('⚠️ 用户token不存在，请重新登录');
+      return null;
+    }
+    console.log('✅ 获取到用户token:', user.token.substring(0, 20) + '...');
+    return user.token;
+  } catch (error) {
+    console.error('❌ 获取用户token失败:', error);
+    return null;
+  }
+};
+
 // 带超时和防重复的fetch请求
-const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
+const fetchWithTimeout = async (url, options = {}, timeout = 15000) => {
   const requestKey = `${options.method || 'GET'}:${url}`;
   
   if (requestLocks.has(requestKey)) {
@@ -36,6 +57,19 @@ const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
 
       clearTimeout(timeoutId);
       console.log('📡 收到响应:', response.status, response.statusText);
+
+      // 专门处理401和403错误
+      if (response.status === 401) {
+        console.error('🔒 认证失败，请重新登录');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        throw new Error('认证失败，请重新登录');
+      }
+
+      if (response.status === 403) {
+        console.error('🚫 权限不足，需要管理员权限');
+        throw new Error('权限不足，需要管理员权限');
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -64,14 +98,41 @@ const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
   return requestPromise;
 };
 
+// 🔧 带认证的fetch请求
+const fetchWithAuth = async (url, options = {}) => {
+  const token = getCurrentToken();
+  if (!token) {
+    throw new Error('用户未登录或token已失效');
+  }
+
+  return fetchWithTimeout(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};
+
 export const api = {
   // 登录
   login: async (email, password) => {
     console.log('🔐 开始登录API调用');
-    return fetchWithTimeout(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      const result = await fetchWithTimeout(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (result.success && result.data?.user?.role === 'admin') {
+        console.log('👑 管理员登录成功');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('❌ 登录失败:', error);
+      throw error;
+    }
   },
 
   // 注册
@@ -84,167 +145,116 @@ export const api = {
   },
 
   // 获取用户信息
-  getUser: async (token) => {
+  getUser: async () => {
     console.log('👤 开始获取用户信息');
-    return fetchWithTimeout(`${API_BASE_URL}/auth/user`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    return fetchWithAuth(`${API_BASE_URL}/auth/user`);
   },
 
   // 签到状态
-  getCheckinStatus: async (token) => {
+  getCheckinStatus: async () => {
     console.log('📅 开始获取签到状态');
-    return fetchWithTimeout(`${API_BASE_URL}/checkin/status`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    return fetchWithAuth(`${API_BASE_URL}/checkin/status`);
   },
 
   // 签到
-  checkin: async (token) => {
+  checkin: async () => {
     console.log('✅ 开始签到');
-    return fetchWithTimeout(`${API_BASE_URL}/checkin`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+    return fetchWithAuth(`${API_BASE_URL}/checkin`, {
+      method: 'POST'
     });
   },
 
   // 积分历史
-  getPointsHistory: async (token) => {
+  getPointsHistory: async () => {
     console.log('💰 开始获取积分历史');
-    return fetchWithTimeout(`${API_BASE_URL}/points/history`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-  },
-
-  // 获取用户完整数据
-  getUserProfile: async (token) => {
-    console.log('👤 开始获取用户完整数据');
-    return fetchWithTimeout(`${API_BASE_URL}/user/profile`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-  },
-
-  // 获取我的娃娃
-  getMyDolls: async (token) => {
-    console.log('🧸 开始获取我的娃娃');
-    return fetchWithTimeout(`${API_BASE_URL}/dolls/my-dolls`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-  },
-
-  // 购买娃娃
-  purchaseDoll: async (dollId, token) => {
-    console.log('🛒 开始购买娃娃');
-    return fetchWithTimeout(`${API_BASE_URL}/dolls/purchase`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ dollId })
-    });
-  },
-
-  // 回收娃娃
-  recycleDoll: async (dollId, token) => {
-    console.log('♻️ 开始回收娃娃');
-    return fetchWithTimeout(`${API_BASE_URL}/dolls/recycle`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ dollId })
-    });
+    return fetchWithAuth(`${API_BASE_URL}/points/history`);
   },
 
   // ==================== 管理员API ====================
 
   // 📊 获取管理员仪表板数据
-  getAdminDashboard: async (token) => {
+  getAdminDashboard: async () => {
     console.log('📊 获取管理员仪表板数据');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/dashboard`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    try {
+      const result = await fetchWithAuth(`${API_BASE_URL}/admin/dashboard`);
+      console.log('📊 仪表板数据获取成功:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ 获取仪表板数据失败:', error);
+      throw error;
+    }
   },
 
   // 👥 用户管理
-  getAdminUsers: async (token, page = 1, limit = 20, search = '', sortBy = 'createdAt') => {
+  getAdminUsers: async (page = 1, limit = 20, search = '', sortBy = 'createdAt') => {
     console.log('👥 获取用户列表');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/users?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const params = new URLSearchParams({ page: page.toString(), limit: limit.toString(), search, sortBy });
+    return fetchWithAuth(`${API_BASE_URL}/admin/users?${params}`);
   },
 
-  updateAdminUser: async (userId, userData, token) => {
-    console.log('✏️ 更新用户信息');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/users/${userId}`, {
+  updateAdminUser: async (userId, userData) => {
+    console.log('✏️ 更新用户信息:', userId, userData);
+    return fetchWithAuth(`${API_BASE_URL}/admin/users/${userId}`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(userData)
     });
   },
 
-  deleteAdminUser: async (userId, token) => {
-    console.log('🗑️ 删除用户');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/users/${userId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+  deleteAdminUser: async (userId) => {
+    console.log('🗑️ 删除用户:', userId);
+    return fetchWithAuth(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: 'DELETE'
     });
   },
 
   // 💰 积分管理
-  getAdminPoints: async (token, page = 1, limit = 20, userId = '', type = '') => {
+  getAdminPoints: async (page = 1, limit = 20, userId = '', type = '') => {
     console.log('💰 获取积分记录');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/points?page=${page}&limit=${limit}&userId=${userId}&type=${type}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+    const params = new URLSearchParams({ 
+      page: page.toString(), 
+      limit: limit.toString(), 
+      userId, 
+      type 
     });
+    return fetchWithAuth(`${API_BASE_URL}/admin/points?${params}`);
   },
 
-  adjustUserPoints: async (userId, amount, description, token) => {
-    console.log('💰 调整用户积分');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/points/adjust`, {
+  adjustUserPoints: async (userId, amount, description) => {
+    console.log('💰 调整用户积分:', userId, amount);
+    return fetchWithAuth(`${API_BASE_URL}/admin/points/adjust`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({ userId, amount, description })
     });
   },
 
   // 💳 交易管理
-  getAdminTransactions: async (token, page = 1, limit = 20, userId = '', type = '', startDate = '', endDate = '') => {
+  getAdminTransactions: async (page = 1, limit = 20, userId = '', type = '', startDate = '', endDate = '') => {
     console.log('💳 获取交易记录');
-    let url = `${API_BASE_URL}/admin/transactions?page=${page}&limit=${limit}`;
-    if (userId) url += `&userId=${userId}`;
-    if (type) url += `&type=${type}`;
-    if (startDate) url += `&startDate=${startDate}`;
-    if (endDate) url += `&endDate=${endDate}`;
-    
-    return fetchWithTimeout(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
+    const params = new URLSearchParams({ 
+      page: page.toString(), 
+      limit: limit.toString() 
     });
+    
+    if (userId) params.append('userId', userId);
+    if (type) params.append('type', type);
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    
+    return fetchWithAuth(`${API_BASE_URL}/admin/transactions?${params}`);
   },
 
   // 📊 数据分析
-  getAdminAnalytics: async (token, period = '7d') => {
-    console.log('📊 获取分析数据');
-    return fetchWithTimeout(`${API_BASE_URL}/admin/analytics?period=${period}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+  getAdminAnalytics: async (period = '7d') => {
+    console.log('📊 获取分析数据, 周期:', period);
+    return fetchWithAuth(`${API_BASE_URL}/admin/analytics?period=${period}`);
+  },
+
+  // 🔧 修复管理员权限
+  fixAdminPermissions: async (email) => {
+    console.log('🔧 修复管理员权限:', email);
+    return fetchWithTimeout(`${API_BASE_URL}/fix-admin`, {
+      method: 'POST',
+      body: JSON.stringify({ email })
     });
   },
 
@@ -264,5 +274,25 @@ export const api = {
       console.error('❌ 连接测试失败:', error);
       return { success: false, error: error.message };
     }
+  },
+
+  // 🔧 检查当前用户状态
+  checkUserStatus: async () => {
+    console.log('🔍 检查当前用户状态');
+    const token = getCurrentToken();
+    if (!token) {
+      return { success: false, message: '用户未登录' };
+    }
+
+    try {
+      const user = await api.getUser();
+      console.log('👤 当前用户状态:', user);
+      return { success: true, user: user.data };
+    } catch (error) {
+      console.error('❌ 检查用户状态失败:', error);
+      return { success: false, error: error.message };
+    }
   }
 };
+
+export default api;
