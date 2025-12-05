@@ -11,10 +11,8 @@ const requestLocks = new Map();
 
 // 带超时和防重复的fetch请求
 const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
-  // 生成请求唯一标识
   const requestKey = `${options.method || 'GET'}:${url}`;
   
-  // 检查是否有相同请求正在进行
   if (requestLocks.has(requestKey)) {
     console.log('⏸️ 请求已在进行中，等待结果:', requestKey);
     return requestLocks.get(requestKey);
@@ -23,7 +21,6 @@ const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-  // 创建请求Promise
   const requestPromise = (async () => {
     try {
       console.log('🌐 发起请求:', url, options);
@@ -59,14 +56,11 @@ const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
       console.error('❌ 请求失败:', error);
       throw error;
     } finally {
-      // 清理请求锁
       requestLocks.delete(requestKey);
     }
   })();
 
-  // 添加到请求锁
   requestLocks.set(requestKey, requestPromise);
-
   return requestPromise;
 };
 
@@ -174,12 +168,91 @@ export const api = {
     });
   },
 
+  // ==================== 管理员API ====================
+
+  // 📊 获取管理员仪表板数据
+  getAdminDashboard: async (token) => {
+    console.log('📊 获取管理员仪表板数据');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/dashboard`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
+  // 👥 用户管理
+  getAdminUsers: async (token, page = 1, limit = 20, search = '', sortBy = 'createdAt') => {
+    console.log('👥 获取用户列表');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/users?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
+  updateAdminUser: async (userId, userData, token) => {
+    console.log('✏️ 更新用户信息');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    });
+  },
+
+  deleteAdminUser: async (userId, token) => {
+    console.log('🗑️ 删除用户');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
+  // 💰 积分管理
+  getAdminPoints: async (token, page = 1, limit = 20, userId = '', type = '') => {
+    console.log('💰 获取积分记录');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/points?page=${page}&limit=${limit}&userId=${userId}&type=${type}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
+  adjustUserPoints: async (userId, amount, description, token) => {
+    console.log('💰 调整用户积分');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/points/adjust`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userId, amount, description })
+    });
+  },
+
+  // 💳 交易管理
+  getAdminTransactions: async (token, page = 1, limit = 20, userId = '', type = '', startDate = '', endDate = '') => {
+    console.log('💳 获取交易记录');
+    let url = `${API_BASE_URL}/admin/transactions?page=${page}&limit=${limit}`;
+    if (userId) url += `&userId=${userId}`;
+    if (type) url += `&type=${type}`;
+    if (startDate) url += `&startDate=${startDate}`;
+    if (endDate) url += `&endDate=${endDate}`;
+    
+    return fetchWithTimeout(url, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
+  // 📊 数据分析
+  getAdminAnalytics: async (token, period = '7d') => {
+    console.log('📊 获取分析数据');
+    return fetchWithTimeout(`${API_BASE_URL}/admin/analytics?period=${period}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  },
+
   // 测试连接
   testConnection: async () => {
     console.log('🔍 测试API连接');
     
     try {
-      // 测试基础URL
       const baseUrl = API_BASE_URL.replace('/api', '');
       console.log('🔧 测试的基础URL:', baseUrl);
       
