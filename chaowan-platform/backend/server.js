@@ -9,19 +9,43 @@ dotenv.config();
 
 const app = express();
 
-// 🌐 生产环境CORS配置（修复版）
+// 🔧 超级强力CORS配置 - 解决所有CORS问题
 app.use(express.json());
+
+// 处理所有OPTIONS预检请求
+app.options('*', cors());
+
+// 主要CORS中间件 - 最宽松配置
 app.use(cors({
-  origin: [
-    'https://chaowan-frontend.onrender.com',  // ✅ 生产环境前端
-    'http://localhost:3000',                  // ✅ 本地开发
-    'http://127.0.0.1:3000',                 // ✅ 本地备用
-    'http://localhost:3001'                   // ✅ 备用端口
-  ],
+  origin: '*',  // 允许所有域名
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['X-Total-Count'],
+  maxAge: 86400 // 24小时预检缓存
 }));
+
+// 额外的CORS头部 - 双重保险
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  res.header('Vary', 'Origin');
+  
+  // 如果是OPTIONS请求，直接返回200
+  if (req.method === 'OPTIONS') {
+    console.log('🔧 处理OPTIONS预检请求:', req.url);
+    return res.status(200).json({
+      message: 'CORS preflight successful',
+      method: req.method,
+      url: req.url
+    });
+  }
+  
+  next();
+});
 
 // 🔧 云端数据库连接
 const connectDB = async () => {
@@ -153,6 +177,10 @@ app.post('/api/auth/register', async (req, res) => {
 
 // 登录API（云端数据库）
 app.post('/api/auth/login', async (req, res) => {
+  console.log('🔧 收到登录请求:', req.method, req.url);
+  console.log('🔧 请求头:', req.headers);
+  console.log('🔧 请求体:', req.body);
+  
   const { email, password } = req.body;
   
   try {
@@ -162,6 +190,10 @@ app.post('/api/auth/login', async (req, res) => {
       const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
       
       console.log(`🔐 用户登录: ${user.username}, 积分: ${user.points}, 等级: ${user.level}`);
+      
+      // 🔧 确保CORS头部被正确设置
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Credentials', 'true');
       
       res.json({ 
         success: true, 
@@ -550,17 +582,18 @@ app.get('/api/points/history', async (req, res) => {
   }
 });
 
+// 🔧 根路径 - 增强版，包含CORS头部
 app.get('/', (req, res) => {
+  // 确保CORS头部
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
   res.json({ 
     message: '🎮 潮玩虚拟生态平台API服务正在运行',
     environment: process.env.NODE_ENV || 'development',
     database: 'MongoDB Atlas (云端)',
-    cors_origins: [
-      'https://chaowan-frontend.onrender.com',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:3001'
-    ],
+    cors_config: '超级宽松模式 - 允许所有域名',
+    cors_origins: ['*'],
     apis: [
       'POST /api/auth/register - 注册',
       'POST /api/auth/login - 登录',
@@ -581,5 +614,5 @@ app.listen(PORT, () => {
   console.log(`🚀 API服务器运行在端口 ${PORT}`);
   console.log(`🔐 测试账号: admin@example.com / 123456`);
   console.log(`💾 连接到云端数据库`);
-  console.log(`🌐 允许前端访问: https://chaowan-frontend.onrender.com`);
+  console.log(`🌐 CORS配置: 超级宽松模式 - 允许所有域名`);
 });
