@@ -2,6 +2,13 @@
 import React, { createContext, useContext, useReducer, useEffect, useRef, useCallback } from 'react';
 import { APP_CONSTANTS } from '../utils/constants';
 
+// 🎯 添加DOLL_CONSTANTS定义
+const DOLL_CONSTANTS = {
+  RECYCLE_RATE: 0.5, // 回收比例：50%的剩余天数价值
+  DEFAULT_DAYS: 60,  // 默认天数
+  MIN_RECYCLE_POINTS: 10 // 最小回收积分
+};
+
 // 🔧 V7.4.2 修复版 - 解决循环更新问题
 const initialState = {
   // 用户基本信息
@@ -470,7 +477,7 @@ export const UserProvider = ({ children }) => {
           id: Date.now(),
           purchaseDate: new Date().toISOString(),
           status: 'active',
-          daysLeft: doll.totalDays || 60
+          daysLeft: doll.totalDays || DOLL_CONSTANTS.DEFAULT_DAYS
         };
         actions.addDoll(newDoll);
         
@@ -498,15 +505,16 @@ export const UserProvider = ({ children }) => {
         
         // 计算回收积分
         const recyclePoints = Math.floor(DOLL_CONSTANTS.RECYCLE_RATE * doll.daysLeft);
+        const finalRecyclePoints = Math.max(recyclePoints, DOLL_CONSTANTS.MIN_RECYCLE_POINTS);
         
         // 增加积分
-        actions.updatePoints(recyclePoints, `回收娃娃: ${doll.name}`);
+        actions.updatePoints(finalRecyclePoints, `回收娃娃: ${doll.name}`);
         
         // 移除娃娃
         actions.removeDoll(dollId);
         
-        console.log('✅ 娃娃回收成功:', { dollId, recyclePoints });
-        return { success: true, recyclePoints };
+        console.log('✅ 娃娃回收成功:', { dollId, recyclePoints: finalRecyclePoints });
+        return { success: true, recyclePoints: finalRecyclePoints };
       } catch (error) {
         console.error('❌ 回收娃娃失败:', error);
         actions.setError('回收娃娃失败: ' + error.message);
@@ -537,3 +545,4 @@ export const useUser = () => {
 export { UserContext };
 
 export default UserContext;
+
