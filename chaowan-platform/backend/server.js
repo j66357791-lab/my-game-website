@@ -5,11 +5,15 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
+// 导入模型
+const User = require('./models/User');
+const Transaction = require('./models/Transaction');
+
 dotenv.config();
 
 const app = express();
 
-// 🔧 CORS配置必须在最前面 - 修复中间件顺序
+// 🔧 CORS配置必须在最前面
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   res.header('Access-Control-Allow-Origin', origin || '*');
@@ -19,7 +23,6 @@ app.use((req, res, next) => {
   res.header('Access-Control-Max-Age', '86400');
   res.header('Vary', 'Origin');
   
-  // 处理OPTIONS预检请求
   if (req.method === 'OPTIONS') {
     console.log('🔧 处理OPTIONS预检请求:', req.url, 'from', origin);
     return res.status(200).json({
@@ -34,7 +37,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// 然后才是cors中间件
 app.use(cors({
   origin: '*',
   credentials: true,
@@ -44,10 +46,7 @@ app.use(cors({
   maxAge: 86400
 }));
 
-// 处理所有OPTIONS预检请求
 app.options('*', cors());
-
-// 最后才是其他中间件
 app.use(express.json());
 
 // 🔧 云端数据库连接
@@ -66,19 +65,7 @@ const connectDB = async () => {
 
 connectDB();
 
-// 🔧 用户数据模型（云端数据库）
-const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  level: { type: Number, default: 1 },
-  points: { type: Number, default: 0 },
-  experience: { type: Number, default: 0 },
-  role: { type: String, default: 'user' },
-  createdAt: { type: Date, default: Date.now }
-});
-
-// 🔧 签到记录模型（云端数据库）
+// 🔧 签到记录模型（内联定义，避免重复）
 const CheckinSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   lastCheckinDate: Date,
@@ -87,10 +74,9 @@ const CheckinSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const User = mongoose.model('User', UserSchema);
 const Checkin = mongoose.model('Checkin', CheckinSchema);
 
-// 🔧 初始化测试用户（云端数据库）
+// 🔧 初始化测试用户
 const initializeTestUser = async () => {
   try {
     const existingUser = await User.findOne({ email: 'admin@example.com' });
@@ -105,52 +91,80 @@ const initializeTestUser = async () => {
         role: 'admin'
       });
       await testUser.save();
-      console.log('✅ 测试用户创建成功（云端数据库）- 积分:30');
+      console.log('✅ 测试用户创建成功 - 积分:30');
     }
   } catch (error) {
     console.error('❌ 创建测试用户失败:', error);
   }
 };
 
-// 等待数据库连接后初始化
 mongoose.connection.once('open', () => {
   initializeTestUser();
 });
 
-// 🆕 注册API（云端数据库）
+// 🔧 管理员权限验证中间件
+const adminAuth = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      return res.status(401).json({ success: false, message: '未提供token' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    User.findById(decoded.userId).then(user => {
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: '需要管理员权限' });
+      }
+      req.adminId = decoded.userId;
+      next();
+    }).catch(error => {
+      res.status(401).json({ success: false, message: '无效的token' });
+    });
+  } catch (error) {
+    res.status(401).json({ success: false, message: '无效的token' });
+  }
+};
+
+// 🆕 注册API
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
-    // 验证输入
     if (!username || !email || !password) {
       return res.status(400).json({ success: false, message: '请填写所有必填字段' });
     }
 
-    // 检查用户是否已存在
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ success: false, message: '该邮箱已被注册' });
     }
 
-    // 检查用户名是否已存在
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
       return res.status(400).json({ success: false, message: '该用户名已被使用' });
     }
 
-    // 创建新用户
     const newUser = new User({
       username,
       email,
       password,
       level: 1,
-      points: 50, // 新用户赠送50积分
+      points: 50,
       experience: 0,
       role: email === 'admin@example.com' ? 'admin' : 'user'
     });
 
     await newUser.save();
+    
+    // 记录注册奖励
+    const transaction = new Transaction({
+      userId: newUser._id,
+      type: 'register',
+      amount: 50,
+      balance: newUser.points,
+      description: '注册奖励'
+    });
+    await transaction.save();
     
     const token = jwt.sign({ userId: newUser._id, email: newUser.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
     
@@ -178,25 +192,21 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// 登录API（云端数据库）
+// 登录API
 app.post('/api/auth/login', async (req, res) => {
-  console.log('🔧 收到登录请求:', req.method, req.url);
-  console.log('🔧 请求头:', req.headers);
-  console.log('🔧 请求体:', req.body);
-  
   const { email, password } = req.body;
   
   try {
     const user = await User.findOne({ email, password });
     
     if (user) {
+      // 更新最后登录时间
+      user.lastLogin = new Date();
+      await user.save();
+      
       const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
       
       console.log(`🔐 用户登录: ${user.username}, 积分: ${user.points}, 等级: ${user.level}`);
-      
-      // 🔧 确保CORS头部被正确设置
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Credentials', 'true');
       
       res.json({ 
         success: true, 
@@ -223,52 +233,8 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// 获取用户信息API（云端数据库）
+// 获取用户信息API
 app.get('/api/auth/user', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ success: false, message: '未提供token' });
-    }
-
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-      const user = await User.findById(decoded.userId);
-      
-      if (!user) {
-        return res.status(404).json({ success: false, message: '用户不存在' });
-      }
-      
-      console.log(`📋 获取用户信息: ${user.username}, 积分: ${user.points}, 等级: ${user.level}`);
-      
-      res.json({ 
-        success: true, 
-        data: { 
-          user: { 
-            id: user._id,
-            username: user.username, 
-            email: user.email,
-            level: user.level,
-            points: user.points,
-            experience: user.experience,
-            role: user.role
-          } 
-        } 
-      });
-    } catch (jwtError) {
-      return res.status(401).json({ success: false, message: '无效的token' });
-    }
-  } catch (error) {
-    console.error('❌ 获取用户信息失败:', error);
-    res.status(500).json({ success: false, message: '服务器错误' });
-  }
-});
-
-// 签到状态API（云端数据库）
-app.get('/api/checkin/status', async (req, res) => {
-  console.log('📡 收到签到状态请求（云端数据库）');
-  
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     
@@ -283,7 +249,42 @@ app.get('/api/checkin/status', async (req, res) => {
       return res.status(404).json({ success: false, message: '用户不存在' });
     }
     
-    // 从云端数据库获取签到记录
+    res.json({ 
+      success: true, 
+      data: { 
+        user: { 
+          id: user._id,
+          username: user.username, 
+          email: user.email,
+          level: user.level,
+          points: user.points,
+          experience: user.experience,
+          role: user.role
+        } 
+      } 
+    });
+  } catch (error) {
+    console.error('❌ 获取用户信息失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+
+// 签到状态API
+app.get('/api/checkin/status', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ success: false, message: '未提供token' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    const user = await User.findById(decoded.userId);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
+    }
+    
     let checkin = await Checkin.findOne({ userId: user._id });
     
     if (!checkin) {
@@ -291,18 +292,13 @@ app.get('/api/checkin/status', async (req, res) => {
       await checkin.save();
     }
     
-    // 检查今天是否已签到
     const today = new Date().toDateString();
     const hasCheckedInToday = checkin.lastCheckinDate ? 
       checkin.lastCheckinDate.toDateString() === today : false;
     
-    // 计算今日奖励
     const baseReward = 1;
     const levelBonus = Math.floor(user.level / 5);
     const todayReward = baseReward + levelBonus;
-    
-    console.log(`📊 用户 ${user.username} 签到状态: 今日已签到=${hasCheckedInToday}, 连续=${checkin.streak}天`);
-    console.log(`💰 当前积分: ${user.points}, 等级: ${user.level}`);
     
     res.json({ 
       success: true, 
@@ -321,10 +317,8 @@ app.get('/api/checkin/status', async (req, res) => {
   }
 });
 
-// 签到API（云端数据库）
+// 签到API
 app.post('/api/checkin', async (req, res) => {
-  console.log('📡 ===== 开始签到请求 =====');
-  
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     
@@ -339,28 +333,22 @@ app.post('/api/checkin', async (req, res) => {
       return res.status(404).json({ success: false, message: '用户不存在' });
     }
     
-    console.log(`👤 签到用户: ${user.username}, 当前积分: ${user.points}`);
-    
-    // 从云端数据库获取签到记录
     let checkin = await Checkin.findOne({ userId: user._id });
     
     if (!checkin) {
       checkin = new Checkin({ userId: user._id });
     }
     
-    // 检查今天是否已签到
     const today = new Date();
     const todayString = today.toDateString();
     
     if (checkin.lastCheckinDate && checkin.lastCheckinDate.toDateString() === todayString) {
-      console.log('❌ 今日已签到，拒绝重复签到');
       return res.status(400).json({ 
         success: false, 
         message: '今日已签到，请明天再来' 
       });
     }
     
-    // 计算连续签到天数
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     
@@ -370,39 +358,56 @@ app.post('/api/checkin', async (req, res) => {
       checkin.streak = 1;
     }
     
-    // 计算奖励
     const baseReward = 1;
     const levelBonus = Math.floor(user.level / 5);
     const totalReward = baseReward + levelBonus;
     
-    console.log(`🎁 计算奖励: 基础${baseReward} + 等级加成${levelBonus} = ${totalReward}`);
-    
-    // 更新签到记录（保存到云端数据库）
     checkin.lastCheckinDate = today;
     checkin.totalCheckins += 1;
     await checkin.save();
     
-    // 更新用户积分和经验（保存到云端数据库）
     const oldPoints = user.points;
     const oldLevel = user.level;
     
     user.points += totalReward;
     user.experience += 5;
     
-    // 检查升级
     const expNeeded = user.level * 50;
     if (user.experience >= expNeeded) {
       user.level += 1;
       user.experience -= expNeeded;
-      console.log(`⭐ 恭喜升级！等级: ${oldLevel} → ${user.level}`);
+      
+      // 记录升级奖励
+      const levelUpTransaction = new Transaction({
+        userId: user._id,
+        type: 'level_up',
+        amount: 10,
+        balance: user.points,
+        description: `升级到Lv.${user.level}奖励`,
+        metadata: {
+          oldLevel,
+          newLevel: user.level
+        }
+      });
+      await levelUpTransaction.save();
     }
     
     await user.save();
     
-    const levelUp = user.level > oldLevel;
+    // 记录签到奖励
+    const checkinTransaction = new Transaction({
+      userId: user._id,
+      type: 'checkin',
+      amount: totalReward,
+      balance: user.points,
+      description: `每日签到奖励 (连续${checkin.streak}天)`,
+      metadata: {
+        streak: checkin.streak
+      }
+    });
+    await checkinTransaction.save();
     
-    console.log(`✅ 签到成功！积分: ${oldPoints} → ${user.points} (+${totalReward})`);
-    console.log(`📡 ===== 签到请求完成 =====`);
+    const levelUp = user.level > oldLevel;
     
     res.json({ 
       success: true, 
@@ -418,134 +423,11 @@ app.post('/api/checkin', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ 签到失败:', error);
-    console.log('📡 ===== 签到请求失败 =====');
     res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-// 🔍 检查用户实际数据API
-app.get('/api/check-user-data', async (req, res) => {
-  try {
-    console.log('🔍 ===== 检查用户实际数据 =====');
-    
-    // 查找测试用户
-    const user = await User.findOne({ email: 'admin@example.com' });
-    console.log('👤 数据库中的用户:', user);
-    
-    // 查找签到记录
-    const checkin = await Checkin.findOne({ userId: user._id });
-    console.log('📅 数据库中的签到记录:', checkin);
-    
-    // 检查是否有重复用户
-    const allUsers = await User.find({ email: 'admin@example.com' });
-    console.log('🔢 同邮箱用户数量:', allUsers.length);
-    
-    res.json({
-      success: true,
-      data: {
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          points: user.points,
-          level: user.level,
-          experience: user.experience
-        },
-        checkin: checkin,
-        duplicateUsers: allUsers.length
-      }
-    });
-  } catch (error) {
-    console.error('❌ 检查数据失败:', error);
-    res.status(500).json({ success: false, message: '检查失败' });
-  }
-});
-
-// 🔄 强制同步数据API
-app.post('/api/sync-data', async (req, res) => {
-  try {
-    console.log('🔄 ===== 强制数据同步 =====');
-    
-    // 删除重复用户（如果存在）
-    const duplicateUsers = await User.find({ email: 'admin@example.com' });
-    
-    if (duplicateUsers.length > 1) {
-      console.log(`🗑️ 发现 ${duplicateUsers.length} 个重复用户，保留第一个，删除其他`);
-      
-      for (let i = 1; i < duplicateUsers.length; i++) {
-        await Checkin.deleteMany({ userId: duplicateUsers[i]._id });
-        await User.findByIdAndDelete(duplicateUsers[i]._id);
-        console.log(`🗑️ 删除重复用户: ${duplicateUsers[i]._id}`);
-      }
-    }
-    
-    // 获取唯一用户
-    const user = await User.findOne({ email: 'admin@example.com' });
-    
-    // 重置为正确数据
-    user.points = 30;
-    user.level = 1;
-    user.experience = 0;
-    await user.save();
-    
-    // 删除所有签到记录
-    await Checkin.deleteMany({ userId: user._id });
-    
-    console.log('✅ 数据同步完成');
-    console.log(`💰 积分设置为: ${user.points}`);
-    console.log(`⭐ 等级设置为: ${user.level}`);
-    
-    res.json({
-      success: true,
-      message: '数据同步成功',
-      data: {
-        points: user.points,
-        level: user.level,
-        experience: user.experience
-      }
-    });
-  } catch (error) {
-    console.error('❌ 数据同步失败:', error);
-    res.status(500).json({ success: false, message: '同步失败' });
-  }
-});
-
-// 🔄 简单重置API
-app.post('/api/simple-reset', async (req, res) => {
-  try {
-    console.log('🔄 ===== 简单重置开始 =====');
-    
-    // 删除所有admin用户
-    await User.deleteMany({ email: 'admin@example.com' });
-    await Checkin.deleteMany({}); // 删除所有签到记录
-    
-    // 重新创建干净的测试用户
-    const newUser = new User({
-      username: 'admin',
-      email: 'admin@example.com',
-      password: '123456',
-      level: 1,
-      points: 30,
-      experience: 0,
-      role: 'admin'
-    });
-    await newUser.save();
-    
-    console.log('✅ 简单重置完成，积分设置为30');
-    console.log('🔄 ===== 简单重置完成 =====');
-    
-    res.json({ 
-      success: true, 
-      message: '重置成功，积分设置为30',
-      data: { points: 30, level: 1 }
-    });
-  } catch (error) {
-    console.error('❌ 简单重置失败:', error);
-    res.status(500).json({ success: false, message: '重置失败' });
-  }
-});
-
-// 获取积分历史API（云端数据库）
+// 获取积分历史API
 app.get('/api/points/history', async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
@@ -556,27 +438,20 @@ app.get('/api/points/history', async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
     const user = await User.findById(decoded.userId);
-    const checkin = await Checkin.findOne({ userId: user._id });
     
-    // 模拟积分历史记录（实际应用中应该有专门的积分记录表）
-    const history = [];
-    for (let i = 0; i < Math.min(checkin.totalCheckins || 0, 10); i++) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      history.push({
-        id: i + 1,
-        type: 'checkin',
-        amount: 1,
-        description: '每日签到奖励',
-        createdAt: date.toISOString()
-      });
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
     }
+    
+    const transactions = await Transaction.find({ userId: user._id })
+      .sort({ createdAt: -1 })
+      .limit(20);
     
     res.json({ 
       success: true, 
       data: { 
-        history,
-        total: checkin.totalCheckins || 0
+        history: transactions,
+        total: transactions.length
       }
     });
   } catch (error) {
@@ -585,28 +460,405 @@ app.get('/api/points/history', async (req, res) => {
   }
 });
 
-// 🔧 根路径 - 增强版，包含CORS头部
+// ==================== 管理员API ====================
+
+// 📊 管理员仪表板数据
+app.get('/api/admin/dashboard', adminAuth, async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalTransactions = await Transaction.countDocuments();
+    const todayTransactions = await Transaction.countDocuments({
+      createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+    });
+    
+    const totalPointsInSystem = await User.aggregate([
+      { $group: { _id: null, total: { $sum: "$points" } } }
+    ]);
+    
+    const todayRevenue = await Transaction.aggregate([
+      {
+        $match: {
+          type: 'purchase',
+          createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+        }
+      },
+      { $group: { _id: null, total: { $sum: { $abs: "$amount" } } } }
+    ]);
+
+    const recentTransactions = await Transaction.find()
+      .populate('userId', 'username')
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.json({
+      success: true,
+      data: {
+        stats: {
+          totalUsers,
+          totalTransactions,
+          todayTransactions,
+          totalPointsInSystem: totalPointsInSystem[0]?.total || 0,
+          todayRevenue: todayRevenue[0]?.total || 0
+        },
+        recentTransactions
+      }
+    });
+  } catch (error) {
+    console.error('❌ 获取仪表板数据失败:', error);
+    res.status(500).json({ success: false, message: '获取数据失败' });
+  }
+});
+
+// 👥 用户管理 - 获取所有用户
+app.get('/api/admin/users', adminAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, search = '', sortBy = 'createdAt' } = req.query;
+    
+    let searchQuery = {};
+    if (search) {
+      searchQuery = {
+        $or: [
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      };
+    }
+    
+    const users = await User.find(searchQuery)
+      .sort({ [sortBy]: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .select('-password');
+    
+    const total = await User.countDocuments(searchQuery);
+    
+    res.json({
+      success: true,
+      data: {
+        users,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('❌ 获取用户列表失败:', error);
+    res.status(500).json({ success: false, message: '获取用户列表失败' });
+  }
+});
+
+// ✏️ 用户管理 - 编辑用户
+app.put('/api/admin/users/:userId', adminAuth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { username, email, level, points, experience, role } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
+    }
+    
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: '该邮箱已被使用' });
+      }
+    }
+    
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (email) updateData.email = email;
+    if (level !== undefined) updateData.level = level;
+    if (points !== undefined) updateData.points = points;
+    if (experience !== undefined) updateData.experience = experience;
+    if (role) updateData.role = role;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    ).select('-password');
+    
+    console.log(`📝 管理员编辑用户: ${updatedUser.username}`);
+    
+    res.json({
+      success: true,
+      message: '用户信息更新成功',
+      data: { user: updatedUser }
+    });
+  } catch (error) {
+    console.error('❌ 编辑用户失败:', error);
+    res.status(500).json({ success: false, message: '编辑用户失败' });
+  }
+});
+
+// 🗑️ 用户管理 - 删除用户
+app.delete('/api/admin/users/:userId', adminAuth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
+    }
+    
+    await User.findByIdAndDelete(userId);
+    await Checkin.deleteMany({ userId });
+    await Transaction.deleteMany({ userId });
+    
+    console.log(`🗑️ 管理员删除用户: ${user.username}`);
+    
+    res.json({
+      success: true,
+      message: '用户删除成功'
+    });
+  } catch (error) {
+    console.error('❌ 删除用户失败:', error);
+    res.status(500).json({ success: false, message: '删除用户失败' });
+  }
+});
+
+// 💰 积分管理 - 获取积分记录
+app.get('/api/admin/points', adminAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, userId, type } = req.query;
+    
+    let query = {};
+    if (userId) query.userId = userId;
+    if (type) query.type = type;
+    
+    const transactions = await Transaction.find(query)
+      .populate('userId', 'username email')
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    
+    const total = await Transaction.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        transactions,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('❌ 获取积分记录失败:', error);
+    res.status(500).json({ success: false, message: '获取积分记录失败' });
+  }
+});
+
+// 💰 积分管理 - 调整用户积分
+app.post('/api/admin/points/adjust', adminAuth, async (req, res) => {
+  try {
+    const { userId, amount, description } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
+    }
+    
+    const oldPoints = user.points;
+    user.points += amount;
+    await user.save();
+    
+    // 记录交易
+    const transaction = new Transaction({
+      userId,
+      type: amount > 0 ? 'admin_add' : 'admin_deduct',
+      amount,
+      description: description || (amount > 0 ? '管理员奖励' : '管理员扣除'),
+      balance: user.points
+    });
+    await transaction.save();
+    
+    console.log(`💰 管理员调整用户积分: ${user.username}, ${oldPoints} → ${user.points} (${amount > 0 ? '+' : ''}${amount})`);
+    
+    res.json({
+      success: true,
+      message: '积分调整成功',
+      data: {
+        oldPoints,
+        newPoints: user.points,
+        adjustment: amount
+      }
+    });
+  } catch (error) {
+    console.error('❌ 调整积分失败:', error);
+    res.status(500).json({ success: false, message: '调整积分失败' });
+  }
+});
+
+// 💳 交易管理 - 获取交易记录
+app.get('/api/admin/transactions', adminAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, userId, type, startDate, endDate } = req.query;
+    
+    let query = {};
+    if (userId) query.userId = userId;
+    if (type) query.type = type;
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    
+    const transactions = await Transaction.find(query)
+      .populate('userId', 'username email')
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    
+    const total = await Transaction.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        transactions,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('❌ 获取交易记录失败:', error);
+    res.status(500).json({ success: false, message: '获取交易记录失败' });
+  }
+});
+
+// 📊 数据分析 - 获取统计数据
+app.get('/api/admin/analytics', adminAuth, async (req, res) => {
+  try {
+    const { period = '7d' } = req.query;
+    
+    let startDate;
+    switch (period) {
+      case '1d':
+        startDate = new Date(new Date().setHours(0, 0, 0, 0));
+        break;
+      case '7d':
+        startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case '30d':
+        startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    }
+    
+    // 用户注册趋势
+    const userRegistrationTrend = await User.aggregate([
+      { $match: { createdAt: { $gte: startDate } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    
+    // 交易趋势
+    const transactionTrend = await Transaction.aggregate([
+      { $match: { createdAt: { $gte: startDate } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          total: { $sum: "$amount" },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    
+    // 用户等级分布
+    const levelDistribution = await User.aggregate([
+      {
+        $group: {
+          _id: '$level',
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    
+    // 积分分布统计
+    const pointsDistribution = await User.aggregate([
+      {
+        $bucket: {
+          groupBy: '$points',
+          boundaries: [0, 50, 100, 200, 500, 1000, Infinity],
+          default: '1000+',
+          output: {
+            count: { $sum: 1 }
+          }
+        }
+      }
+    ]);
+    
+    // 交易类型统计
+    const transactionTypeStats = await Transaction.aggregate([
+      { $match: { createdAt: { $gte: startDate } } },
+      {
+        $group: {
+          _id: '$type',
+          count: { $sum: 1 },
+          total: { $sum: { $abs: '$amount' } }
+        }
+      },
+      { $sort: { count: -1 } }
+    ]);
+    
+    res.json({
+      success: true,
+      data: {
+        userRegistrationTrend,
+        transactionTrend,
+        levelDistribution,
+        pointsDistribution,
+        transactionTypeStats,
+        period
+      }
+    });
+  } catch (error) {
+    console.error('❌ 获取分析数据失败:', error);
+    res.status(500).json({ success: false, message: '获取分析数据失败' });
+  }
+});
+
+// 根路径
 app.get('/', (req, res) => {
-  // 确保CORS头部
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
   res.json({ 
     message: '🎮 潮玩虚拟生态平台API服务正在运行',
     environment: process.env.NODE_ENV || 'development',
     database: 'MongoDB Atlas (云端)',
-    cors_config: '超级宽松模式 - 允许所有域名',
-    cors_origins: ['*'],
+    version: '2.0.0 - 管理员增强版',
     apis: [
-      'POST /api/auth/register - 注册',
       'POST /api/auth/login - 登录',
+      'POST /api/auth/register - 注册',
       'GET /api/auth/user - 获取用户信息',
       'GET /api/checkin/status - 签到状态',
       'POST /api/checkin - 签到',
-      'GET /api/check-user-data - 检查数据',
-      'POST /api/sync-data - 同步数据',
-      'POST /api/simple-reset - 简单重置',
-      'GET /api/points/history - 积分历史'
+      'GET /api/points/history - 积分历史',
+      'GET /api/admin/dashboard - 仪表板',
+      'GET /api/admin/users - 用户管理',
+      'PUT /api/admin/users/:userId - 编辑用户',
+      'DELETE /api/admin/users/:userId - 删除用户',
+      'GET /api/admin/points - 积分管理',
+      'POST /api/admin/points/adjust - 调整积分',
+      'GET /api/admin/transactions - 交易记录',
+      'GET /api/admin/analytics - 数据分析'
     ]
   });
 });
@@ -617,5 +869,5 @@ app.listen(PORT, () => {
   console.log(`🚀 API服务器运行在端口 ${PORT}`);
   console.log(`🔐 测试账号: admin@example.com / 123456`);
   console.log(`💾 连接到云端数据库`);
-  console.log(`🌐 CORS配置: 超级宽松模式 - 允许所有域名`);
+  console.log(`🌐 管理员API已启用`);
 });
