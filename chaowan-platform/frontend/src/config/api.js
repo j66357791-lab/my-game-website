@@ -1,27 +1,10 @@
 // src/config/api.js
 import { APP_CONSTANTS } from '../utils/constants';
 
-// 根据环境自动选择API地址
-const getApiBaseUrl = () => {
-  // 优先使用环境变量
-  if (process.env.REACT_APP_API_URL) {
-    console.log('🔧 使用环境变量API地址:', process.env.REACT_APP_API_URL);
-    return process.env.REACT_APP_API_URL;
-  }
-  
-  // 开发环境使用本地API
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔧 使用开发环境API地址: http://localhost:5000/api');
-    return 'http://localhost:5000/api';
-  }
-  
-  // 🔧 修复：生产环境使用云端API
-  const productionUrl = 'https://tianchuang.onrender.com/api';
-  console.log('🔧 使用生产环境API地址:', productionUrl);
-  return productionUrl;
-};
+// 🔧 固定使用正确的API地址
+const API_BASE_URL = 'https://tianchuang.onrender.com/api';
 
-const API_BASE_URL = getApiBaseUrl();
+console.log('🔧 使用API地址:', API_BASE_URL);
 
 // 请求锁机制，防止重复请求
 const requestLocks = new Map();
@@ -191,13 +174,12 @@ export const api = {
     });
   },
 
-  // 🔧 修复：测试连接方法
+  // 测试连接
   testConnection: async () => {
     console.log('🔍 测试API连接');
-    console.log('🔧 当前API_BASE_URL:', API_BASE_URL);
     
     try {
-      // 修复：直接使用正确的基础URL
+      // 测试基础URL
       const baseUrl = API_BASE_URL.replace('/api', '');
       console.log('🔧 测试的基础URL:', baseUrl);
       
