@@ -79,8 +79,9 @@ const Checkin = mongoose.model('Checkin', CheckinSchema);
 // 🔧 初始化测试用户
 const initializeTestUser = async () => {
   try {
-    const existingUser = await User.findOne({ email: 'admin@example.com' });
-    if (!existingUser) {
+    // 确保默认管理员账号存在且角色正确
+    const existingAdmin = await User.findOne({ email: 'admin@example.com' });
+    if (!existingAdmin) {
       const testUser = new User({
         username: 'admin',
         email: 'admin@example.com',
@@ -91,10 +92,15 @@ const initializeTestUser = async () => {
         role: 'admin'
       });
       await testUser.save();
-      console.log('✅ 测试用户创建成功 - 积分:30');
+      console.log('✅ 测试管理员创建成功 - 积分:30, 角色:admin');
+    } else if (existingAdmin.role !== 'admin') {
+      // 修复现有管理员的角色
+      existingAdmin.role = 'admin';
+      await existingAdmin.save();
+      console.log('🔧 修复管理员角色成功');
     }
   } catch (error) {
-    console.error('❌ 创建测试用户失败:', error);
+    console.error('❌ 创建/修复测试用户失败:', error);
   }
 };
 
@@ -125,7 +131,43 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-// 🆕 注册API - 修改了管理员权限逻辑
+// 🔧 临时修复管理员权限API
+app.post('/api/fix-admin', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ success: false, message: '请提供邮箱' });
+    }
+    
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: '用户不存在' });
+    }
+    
+    const oldRole = user.role;
+    user.role = 'admin';
+    await user.save();
+    
+    console.log(`🔧 修复管理员权限: ${email} ${oldRole} -> admin`);
+    
+    res.json({
+      success: true,
+      message: '管理员权限修复成功',
+      data: {
+        email: user.email,
+        username: user.username,
+        oldRole,
+        newRole: user.role
+      }
+    });
+  } catch (error) {
+    console.error('❌ 修复管理员权限失败:', error);
+    res.status(500).json({ success: false, message: '修复失败' });
+  }
+});
+
+// 🆕 注册API - 支持新管理员账号
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -144,7 +186,12 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ success: false, message: '该用户名已被使用' });
     }
 
-    // 🔥 关键修改：支持新的管理员邮箱
+    // 🔥 支持多个管理员邮箱
+    const isAdminEmail = [
+      'admin@example.com',
+      'admin@18679012034.com'
+    ].includes(email);
+
     const newUser = new User({
       username,
       email,
@@ -152,7 +199,7 @@ app.post('/api/auth/register', async (req, res) => {
       level: 1,
       points: 50,
       experience: 0,
-      role: (email === 'admin@example.com' || email === 'admin@18679012034.com') ? 'admin' : 'user'
+      role: isAdminEmail ? 'admin' : 'user'
     });
 
     await newUser.save();
@@ -844,10 +891,16 @@ app.get('/', (req, res) => {
     message: '🎮 潮玩虚拟生态平台API服务正在运行',
     environment: process.env.NODE_ENV || 'development',
     database: 'MongoDB Atlas (云端)',
-    version: '2.1.0 - 新管理员账号支持',
+    version: '2.2.0 - 管理员权限修复版',
     admin_accounts: [
-      'admin@example.com / 123456',
-      'admin@18679012034.com / hjh628727'
+      'admin@example.com / 123456 (默认)',
+      'admin@18679012034.com / hjh628727 (私密)'
+    ],
+    features: [
+      '✅ 自动修复管理员权限',
+      '✅ 支持多个管理员账号',
+      '✅ 完整的管理员功能',
+      '🔧 /api/fix-admin - 权限修复API'
     ],
     apis: [
       'POST /api/auth/login - 登录',
@@ -856,6 +909,7 @@ app.get('/', (req, res) => {
       'GET /api/checkin/status - 签到状态',
       'POST /api/checkin - 签到',
       'GET /api/points/history - 积分历史',
+      'POST /api/fix-admin - 修复管理员权限',
       'GET /api/admin/dashboard - 仪表板',
       'GET /api/admin/users - 用户管理',
       'PUT /api/admin/users/:userId - 编辑用户',
@@ -872,8 +926,9 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 API服务器运行在端口 ${PORT}`);
-  console.log(`🔐 测试账号: admin@example.com / 123456`);
-  console.log(`🔐 新管理员账号: admin@18679012034.com / hjh628727`);
+  console.log(`🔐 默认管理员: admin@example.com / 123456`);
+  console.log(`🔐 私密管理员: admin@18679012034.com / hjh628727`);
+  console.log(`🔧 权限修复API: POST /api/fix-admin`);
   console.log(`💾 连接到云端数据库`);
   console.log(`🌐 管理员API已启用`);
 });
