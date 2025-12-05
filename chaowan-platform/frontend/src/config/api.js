@@ -15,8 +15,8 @@ const getApiBaseUrl = () => {
     return 'http://localhost:5000/api';
   }
   
-  // 生产环境使用云端API
-  const productionUrl = APP_CONSTANTS.API_BASE_URL + '/api';
+  // 🔧 修复：生产环境使用云端API
+  const productionUrl = 'https://tianchuang.onrender.com/api';
   console.log('🔧 使用生产环境API地址:', productionUrl);
   return productionUrl;
 };
