@@ -9,10 +9,15 @@ dotenv.config();
 
 const app = express();
 
-// 🌐 本地开发CORS配置
+// 🌐 生产环境CORS配置（修复版）
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: [
+    'https://chaowan-frontend.onrender.com',  // ✅ 生产环境前端
+    'http://localhost:3000',                  // ✅ 本地开发
+    'http://127.0.0.1:3000',                 // ✅ 本地备用
+    'http://localhost:3001'                   // ✅ 备用端口
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -547,9 +552,15 @@ app.get('/api/points/history', async (req, res) => {
 
 app.get('/', (req, res) => {
   res.json({ 
-    message: '🎮 潮玩虚拟生态平台本地API服务正在运行',
-    environment: 'development',
+    message: '🎮 潮玩虚拟生态平台API服务正在运行',
+    environment: process.env.NODE_ENV || 'development',
     database: 'MongoDB Atlas (云端)',
+    cors_origins: [
+      'https://chaowan-frontend.onrender.com',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://localhost:3001'
+    ],
     apis: [
       'POST /api/auth/register - 注册',
       'POST /api/auth/login - 登录',
@@ -567,9 +578,8 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 本地API服务器运行在 http://localhost:${PORT}`);
+  console.log(`🚀 API服务器运行在端口 ${PORT}`);
   console.log(`🔐 测试账号: admin@example.com / 123456`);
   console.log(`💾 连接到云端数据库`);
-  console.log(`🌐 允许前端访问: http://localhost:3000`);
+  console.log(`🌐 允许前端访问: https://chaowan-frontend.onrender.com`);
 });
-
