@@ -125,7 +125,7 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-// 🆕 注册API
+// 🆕 注册API - 修改了管理员权限逻辑
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -144,6 +144,7 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ success: false, message: '该用户名已被使用' });
     }
 
+    // 🔥 关键修改：支持新的管理员邮箱
     const newUser = new User({
       username,
       email,
@@ -151,7 +152,7 @@ app.post('/api/auth/register', async (req, res) => {
       level: 1,
       points: 50,
       experience: 0,
-      role: email === 'admin@example.com' ? 'admin' : 'user'
+      role: (email === 'admin@example.com' || email === 'admin@18679012034.com') ? 'admin' : 'user'
     });
 
     await newUser.save();
@@ -168,7 +169,7 @@ app.post('/api/auth/register', async (req, res) => {
     
     const token = jwt.sign({ userId: newUser._id, email: newUser.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
     
-    console.log(`🆕 新用户注册: ${username} (${email}), 积分: ${newUser.points}`);
+    console.log(`🆕 新用户注册: ${username} (${email}), 积分: ${newUser.points}, 角色: ${newUser.role}`);
     
     res.status(201).json({
       success: true,
@@ -206,7 +207,7 @@ app.post('/api/auth/login', async (req, res) => {
       
       const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
       
-      console.log(`🔐 用户登录: ${user.username}, 积分: ${user.points}, 等级: ${user.level}`);
+      console.log(`🔐 用户登录: ${user.username}, 积分: ${user.points}, 等级: ${user.level}, 角色: ${user.role}`);
       
       res.json({ 
         success: true, 
@@ -843,7 +844,11 @@ app.get('/', (req, res) => {
     message: '🎮 潮玩虚拟生态平台API服务正在运行',
     environment: process.env.NODE_ENV || 'development',
     database: 'MongoDB Atlas (云端)',
-    version: '2.0.0 - 管理员增强版',
+    version: '2.1.0 - 新管理员账号支持',
+    admin_accounts: [
+      'admin@example.com / 123456',
+      'admin@18679012034.com / hjh628727'
+    ],
     apis: [
       'POST /api/auth/login - 登录',
       'POST /api/auth/register - 注册',
@@ -868,6 +873,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 API服务器运行在端口 ${PORT}`);
   console.log(`🔐 测试账号: admin@example.com / 123456`);
+  console.log(`🔐 新管理员账号: admin@18679012034.com / hjh628727`);
   console.log(`💾 连接到云端数据库`);
   console.log(`🌐 管理员API已启用`);
 });
