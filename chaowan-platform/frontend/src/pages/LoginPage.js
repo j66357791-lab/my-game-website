@@ -122,19 +122,48 @@ const LoginPage = ({ onLogin }) => {
     setDebugInfo(`已填充${type === 'admin' ? '管理员' : '测试用户'}账号`);
   };
 
-  // 测试API连接
+  // 🔧 修复：测试API连接 - 使用正确的后端域名
   const testApiConnection = async () => {
     console.log('🔍 测试API连接');
     setDebugInfo('正在测试API连接...');
     
     try {
-      const response = await fetch('https://tianchuang.onrender.com/');
+      // ✅ 使用正确的后端域名
+      const response = await fetch('https://chaowan-backend.onrender.com/');
       const data = await response.json();
       console.log('✅ API连接成功:', data);
       setDebugInfo(`API连接成功: ${data.message}`);
     } catch (error) {
       console.error('❌ API连接失败:', error);
       setDebugInfo(`API连接失败: ${error.message}`);
+    }
+  };
+
+  // 🔧 新增：测试登录API路径
+  const testLoginPath = async () => {
+    console.log('🔍 测试登录API路径');
+    setDebugInfo('正在测试登录API路径...');
+    
+    try {
+      // 测试OPTIONS预检请求
+      const optionsResponse = await fetch('https://chaowan-backend.onrender.com/api/auth/login', {
+        method: 'OPTIONS'
+      });
+      console.log('📡 OPTIONS响应:', optionsResponse.status, optionsResponse.statusText);
+      
+      // 测试POST请求（会失败，但能确认路径存在）
+      const postResponse = await fetch('https://chaowan-backend.onrender.com/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'test@test.com', password: 'test' })
+      });
+      
+      const data = await postResponse.json();
+      console.log('📡 POST响应:', data);
+      setDebugInfo(`登录API路径正常: ${postResponse.status} - ${data.message || 'OK'}`);
+    } catch (error) {
+      console.error('❌ 登录API路径测试失败:', error);
+      setDebugInfo(`登录API路径测试失败: ${error.message}`);
     }
   };
 
@@ -150,13 +179,22 @@ const LoginPage = ({ onLogin }) => {
         <div className="api-status">
           <div className="api-notice">
             <span>🌐 云端API服务</span>
-            <button 
-              type="button" 
-              className="test-api-btn"
-              onClick={testApiConnection}
-            >
-              测试连接
-            </button>
+            <div className="test-buttons">
+              <button 
+                type="button" 
+                className="test-api-btn"
+                onClick={testApiConnection}
+              >
+                测试连接
+              </button>
+              <button 
+                type="button" 
+                className="test-api-btn"
+                onClick={testLoginPath}
+              >
+                测试登录
+              </button>
+            </div>
           </div>
           {debugInfo && (
             <div className="debug-info">
@@ -217,6 +255,7 @@ const LoginPage = ({ onLogin }) => {
               onChange={handleInputChange}
               placeholder="请输入密码"
               required
+              autoComplete="current-password"
             />
           </div>
 
@@ -230,6 +269,7 @@ const LoginPage = ({ onLogin }) => {
                 onChange={handleInputChange}
                 placeholder="请再次输入密码"
                 required={!isLogin}
+                autoComplete="new-password"
               />
             </div>
           )}
@@ -300,4 +340,3 @@ const LoginPage = ({ onLogin }) => {
 };
 
 export default LoginPage;
-
