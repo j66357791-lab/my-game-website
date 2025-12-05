@@ -4,8 +4,8 @@
 export const APP_CONSTANTS = {
   APP_NAME: '娃娃养成平台',
   VERSION: 'V7.4.1',
-  // 🔧 修复：使用正确的后端域名
-  API_BASE_URL: process.env.REACT_APP_API_URL || 'https://chaowan-backend.onrender.com',
+  // 🔧 修复：使用实际的后端域名
+  API_BASE_URL: process.env.REACT_APP_API_URL || 'https://tianchuang.onrender.com',
   
   // 本地存储键名
   STORAGE_KEYS: {
