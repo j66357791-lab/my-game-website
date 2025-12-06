@@ -1,7 +1,7 @@
 // frontend/src/pages/admin/AdminUsersPage.js
 import React, { useState, useEffect } from 'react';
-import { getUsers, adjustUserPoints } from '../../services/adminService';
-import './AdminPage.css'; // 建议创建一个通用的管理员页面样式
+import { getUsers, adjustUserPoints, deleteUser } from '../../services/adminService';
+import './AdminPage.css';
 
 const AdminUsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -36,9 +36,23 @@ const AdminUsersPage = () => {
         try {
             await adjustUserPoints(userId, parseInt(amount, 10), description);
             alert('积分调整成功！');
-            fetchUsers(pagination.page); // 刷新当前页
+            fetchUsers(pagination.page);
         } catch (err) {
             alert('积分调整失败');
+            console.error(err);
+        }
+    };
+    
+    const handleDeleteUser = async (userId, username) => {
+        if (!window.confirm(`确定要删除用户 ${username} 吗？此操作不可恢复！`)) {
+            return;
+        }
+        try {
+            await deleteUser(userId);
+            alert('用户删除成功！');
+            fetchUsers(pagination.page);
+        } catch (err) {
+            alert('用户删除失败');
             console.error(err);
         }
     };
@@ -72,25 +86,20 @@ const AdminUsersPage = () => {
                                 <button onClick={() => handleAdjustPoints(user._id, user.points)}>
                                     调整积分
                                 </button>
-                                {/* 后续可以添加编辑、删除按钮 */}
+                                <button onClick={() => handleDeleteUser(user._id, user.username)}>
+                                    删除
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            {/* 分页控件 */}
             <div className="pagination-controls">
-                <button 
-                    onClick={() => fetchUsers(pagination.page - 1)} 
-                    disabled={pagination.page <= 1}
-                >
+                <button onClick={() => fetchUsers(pagination.page - 1)} disabled={pagination.page <= 1}>
                     上一页
                 </button>
                 <span>第 {pagination.page} 页 / 共 {pagination.pages} 页</span>
-                <button 
-                    onClick={() => fetchUsers(pagination.page + 1)} 
-                    disabled={pagination.page >= pagination.pages}
-                >
+                <button onClick={() => fetchUsers(pagination.page + 1)} disabled={pagination.page >= pagination.pages}>
                     下一页
                 </button>
             </div>
