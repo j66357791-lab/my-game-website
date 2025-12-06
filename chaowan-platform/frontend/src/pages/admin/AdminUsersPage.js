@@ -1,8 +1,8 @@
 // frontend/src/pages/admin/AdminUsersPage.js
 import React, { useState, useEffect } from 'react';
-// 👇 关键：导入名为 getUsers (不是 getAllUsers)
+// 👇【最关键】这里必须是 getUsers (没有 all)
 import { getUsers, adjustUserPoints, deleteUser } from '../../services/adminService';
-import './AdminPage.css'; // 确保这个样式文件存在
+import './AdminPage.css';
 
 const AdminUsersPage = () => {
     const [users, setUsers] = useState([]);
