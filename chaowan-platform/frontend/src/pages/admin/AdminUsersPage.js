@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 // 👇 关键：导入名为 getUsers (不是 getAllUsers)
 import { getUsers, adjustUserPoints, deleteUser } from '../../services/adminService';
-import './AdminPage.css';
+import './AdminPage.css'; // 确保这个样式文件存在
 
 const AdminUsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -76,4 +76,5 @@ const AdminUsersPage = () => {
         </div>
     );
 };
+
 export default AdminUsersPage;
