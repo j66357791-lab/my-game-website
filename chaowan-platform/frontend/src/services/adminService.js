@@ -4,7 +4,7 @@ import api from '../config/api';
 // 获取仪表盘数据
 export const getDashboardData = () => api.get('/admin/dashboard');
 
-// 获取用户列表 (支持分页和搜索)
+// 👇 关键：导出名为 getUsers (不是 getAllUsers)
 export const getUsers = (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return api.get(`/admin/users?${query}`);
@@ -26,5 +26,5 @@ export const getTransactions = (params = {}) => {
     return api.get(`/admin/transactions?${query}`);
 };
 
-// 🌟 关键修复：确保这个函数被正确导出 🌟
+// 🌟 关键修复：确保这个函数被正确导出
 export const getAnalytics = (period) => api.get(`/admin/analytics?period=${period}`);
