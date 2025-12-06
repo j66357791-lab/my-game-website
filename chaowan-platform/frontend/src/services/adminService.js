@@ -1,18 +1,30 @@
 // frontend/src/services/adminService.js
+import api from '../config/api';
 
-import api from '../config/api'; // 假设你有一个配置好的axios实例
+// 获取仪表盘数据
+export const getDashboardData = () => api.get('/admin/dashboard');
 
-// 获取所有用户
-export const getAllUsers = () => {
-    return api.get('/admin/users');
+// 获取用户列表 (支持分页和搜索)
+export const getUsers = (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return api.get(`/admin/users?${query}`);
 };
 
-// 更新用户积分
-export const updateUserPoints = (userId, points) => {
-    return api.put(`/admin/users/${userId}/points`, { points });
+// 编辑用户信息
+export const updateUser = (userId, userData) => api.put(`/admin/users/${userId}`, userData);
+
+// 删除用户
+export const deleteUser = (userId) => api.delete(`/admin/users/${userId}`);
+
+// 调整用户积分
+export const adjustUserPoints = (userId, amount, description) => 
+    api.post('/admin/points/adjust', { userId, amount, description });
+
+// 获取交易记录
+export const getTransactions = (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return api.get(`/admin/transactions?${query}`);
 };
 
-// 获取用户娃娃
-export const getUserDolls = (userId) => {
-    return api.get(`/admin/users/${userId}/dolls`);
-};
+// 🌟 关键修复：确保这个函数被正确导出 🌟
+export const getAnalytics = (period) => api.get(`/admin/analytics?period=${period}`);
