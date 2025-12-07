@@ -1,0 +1,531 @@
+/* src/pages/MallPage.css - V7.3.2 现代化商城设计 */
+.mall-page {
+  padding: 12px;
+  padding-bottom: 86px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* ===== 第一：今日推荐版块 ===== */
+.recommendation-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.recommendation-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ddd;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 16px;
+  border-radius: 3px;
+  background: #ff6b6b;
+}
+
+.recommendation-carousel {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+}
+
+.recommendation-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  border-radius: 12px;
+  padding: 16px;
+  color: white;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
+}
+
+.recommendation-card.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.recommendation-emoji {
+  font-size: 48px;
+}
+
+.recommendation-info {
+  flex: 1;
+}
+
+.recommendation-tag {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.recommendation-name {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.recommendation-rarity {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.recommendation-output {
+  margin: 0;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.recommendation-price {
+  text-align: center;
+}
+
+.price-amount {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.quick-buy-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quick-buy-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== 第二：两个小方块版块 ===== */
+.platform-entrances {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.entrance-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.entrance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.doll-shop {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.shopping-platform {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.entrance-icon {
+  font-size: 32px;
+}
+
+.entrance-content {
+  flex: 1;
+}
+
+.entrance-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.entrance-content p {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.entrance-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* ===== 第三：娃娃商城版块 ===== */
+.doll-shop-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.view-more-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.view-more-btn:hover {
+  background: #f0f0f0;
+}
+
+.doll-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.doll-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.doll-card.available {
+  border: 2px solid transparent;
+  background: white;
+}
+
+.doll-card.available:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.doll-card.coming-soon {
+  opacity: 0.7;
+  background: #e9ecef;
+}
+
+.doll-emoji {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.doll-info {
+  flex: 1;
+  margin-bottom: 12px;
+}
+
+.doll-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.doll-rarity {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  color: #ff6b6b;
+}
+
+.doll-output {
+  margin: 0 0 4px 0;
+  font-size: 11px;
+  color: #666;
+}
+
+.doll-days {
+  margin: 0;
+  font-size: 11px;
+  color: #28a745;
+  font-weight: 600;
+}
+
+.doll-price {
+  text-align: center;
+}
+
+.price {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.buy-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.buy-btn:hover:not(:disabled) {
+  background: #ff5252;
+  transform: translateY(-1px);
+}
+
+.buy-btn.locked {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.lock-icon {
+  font-size: 12px;
+}
+
+/* ===== 第四：购物平台版块 ===== */
+.shopping-platform-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.product-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  position: relative;
+  height: 120px;
+  background: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #ff6b6b;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.product-info {
+  padding: 12px;
+}
+
+.product-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+}
+
+.product-desc {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.3;
+}
+
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.current-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.original-price {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.product-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #666;
+}
+
+/* ===== 第五：留空待定版块 ===== */
+.reserved-section {
+  margin-bottom: 16px;
+}
+
+.placeholder-box {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  border: 2px dashed #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.placeholder-icon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  font-size: 14px;
+  color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .mall-page {
+    padding: 8px;
+  }
+  
+  .platform-entrances {
+    gap: 8px;
+  }
+  
+  .entrance-card {
+    padding: 16px;
+  }
+  
+  .entrance-icon {
+    font-size: 28px;
+  }
+  
+  .doll-grid,
+  .product-grid {
+    gap: 8px;
+  }
+  
+  .doll-card,
+  .product-card {
+    padding: 10px;
+  }
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendation-section,
+.platform-entrances,
+.doll-shop-section,
+.shopping-platform-section {
+  animation: slideIn 0.5s ease-out;
+}
+
+.recommendation-section { animation-delay: 0.1s; }
+.platform-entrances { animation-delay: 0.2s; }
+.doll-shop-section { animation-delay: 0.3s; }
+.shopping-platform-section { animation-delay: 0.4s; }
+
