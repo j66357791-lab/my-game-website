@@ -1,0 +1,268 @@
+/* src/pages/DollShopPage.css */
+.doll-shop-page {
+  padding: 16px;
+  padding-bottom: 86px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 页面头部 */
+.shop-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #667eea;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #f0f0f0;
+}
+
+.shop-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.user-points {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 分类筛选 */
+.category-filter {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.category-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.category-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 60px;
+}
+
+.category-tab.active {
+  background: #667eea;
+  color: white;
+}
+
+.category-tab:hover:not(.active) {
+  background: #e9ecef;
+}
+
+.category-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.category-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* 排序选项 */
+.sort-options {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sort-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+/* 娃娃列表 */
+.doll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doll-item {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.doll-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.doll-emoji {
+  font-size: 40px;
+  text-align: center;
+  min-width: 60px;
+}
+
+.doll-info {
+  flex: 1;
+}
+
+.doll-name {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.doll-rarity {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #ff6b6b;
+}
+
+.doll-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.stock-info {
+  font-size: 11px;
+  color: #28a745;
+}
+
+.purchase-section {
+  text-align: center;
+  min-width: 80px;
+}
+
+.price-display {
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.buy-button {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buy-button.available {
+  background: #ff6b6b;
+  color: white;
+}
+
+.buy-button.available:hover {
+  background: #ff5252;
+  transform: translateY(-1px);
+}
+
+.buy-button.insufficient {
+  background: #e9ecef;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.bottom-spacer {
+  height: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .doll-shop-page {
+    padding: 12px;
+  }
+  
+  .shop-header {
+    padding: 12px;
+  }
+  
+  .category-tab {
+    padding: 10px 12px;
+    min-width: 50px;
+  }
+  
+  .doll-item {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .doll-emoji {
+    font-size: 32px;
+    min-width: 50px;
+  }
+}
+
