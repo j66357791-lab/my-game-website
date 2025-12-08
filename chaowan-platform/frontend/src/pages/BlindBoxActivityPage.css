@@ -1,0 +1,420 @@
+/* 盲盒活动页面样式 */
+.blindbox-activity-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  color: white;
+}
+
+/* 活动头部 */
+.activity-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.activity-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #fff, #e0e0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+  margin: 0 0 10px 0;
+}
+
+@keyframes glow {
+  from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)); }
+  to { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); }
+}
+
+.activity-period {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* 加载状态 */
+.blindbox-activity-page.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 活动状态页面 */
+.blindbox-activity-page.not-started,
+.blindbox-activity-page.ended {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.activity-status {
+  margin-top: 40px;
+}
+
+.status-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.activity-status h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.activity-status p {
+  opacity: 0.8;
+  font-size: 1.1rem;
+}
+
+/* 漂浮盲盒背景 */
+.floating-boxes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-box {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  animation: float 6s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.floating-box.box-0 { top: 10%; left: 10%; animation-delay: 0s; }
+.floating-box.box-1 { top: 20%; right: 15%; animation-delay: 1s; }
+.floating-box.box-2 { top: 60%; left: 5%; animation-delay: 2s; }
+.floating-box.box-3 { top: 70%; right: 10%; animation-delay: 3s; }
+.floating-box.box-4 { top: 40%; left: 20%; animation-delay: 4s; }
+.floating-box.box-5 { top: 50%; right: 25%; animation-delay: 5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* 主盲盒 */
+.main-blindbox {
+  position: relative;
+  z-index: 10;
+  max-width: 400px;
+  margin: 0 auto 30px;
+}
+
+.blindbox-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 20px;
+}
+
+.blindbox-main {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 30px;
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.blindbox-image {
+  font-size: 80px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 抽取结果 */
+.draw-result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 180px;
+}
+
+.char-display {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px 15px;
+  border-radius: 10px;
+  animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* 按钮样式 */
+.draw-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.single-draw-btn, .ten-draw-btn, .exchange-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.single-draw-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.ten-draw-btn {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.exchange-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  margin-top: 10px;
+}
+
+.single-draw-btn:hover:not(:disabled),
+.ten-draw-btn:hover:not(:disabled),
+.exchange-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.single-draw-btn:disabled,
+.ten-draw-btn:disabled,
+.exchange-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 收集的字符展示 */
+.collected-chars {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 20px;
+}
+
+.collected-chars h3 {
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.chars-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  min-height: 40px;
+}
+
+.collected-char {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.no-chars {
+  text-align: center;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* 规则说明 */
+.activity-rules {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.activity-rules h3 {
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.rules-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rule-item:last-child {
+  border-bottom: none;
+}
+
+.rule-title {
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.rule-desc {
+  text-align: right;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+/* 提示信息 */
+.error-message, .success-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  max-width: 90%;
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-message {
+  background: rgba(220, 53, 69, 0.9);
+}
+
+.success-message {
+  background: rgba(40, 167, 69, 0.9);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.error-message button,
+.success-message button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .blindbox-activity-page {
+    padding: 15px;
+  }
+  
+  .activity-title {
+    font-size: 2rem;
+  }
+  
+  .blindbox-main {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .blindbox-image {
+    font-size: 60px;
+  }
+  
+  .draw-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .rule-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .rule-desc {
+    text-align: left;
+  }
+}
