@@ -1,0 +1,68 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    
+    "🎮 游戏开发相关": "---",
+    "framer-motion": "^10.16.4",
+    "react-spring": "^9.7.3",
+    "react-use-gesture": "^9.1.3",
+    
+    "🎨 UI组件库": "---",
+    "antd": "^5.12.8",
+    "@ant-design/icons": "^5.2.6",
+    "styled-components": "^6.1.6",
+    
+    "📊 状态管理": "---",
+    "@reduxjs/toolkit": "^1.9.7",
+    "react-redux": "^8.1.3",
+    
+    "🔧 工具库": "---",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "classnames": "^2.3.2",
+    
+    "📱 移动端优化": "---",
+    "react-swipeable": "^7.0.1",
+    "react-hammerjs": "^1.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "analyze": "npm run build && npx bundle-analyzer build/static/js/*.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "bundle-analyzer": "^0.1.0"
+  },
+  "proxy": "https://tianchuang.onrender.com"
+}
