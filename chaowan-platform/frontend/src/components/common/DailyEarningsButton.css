@@ -1,0 +1,51 @@
+/* src/components/common/DailyEarningsButton.css */
+.daily-earnings-button {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.claim-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.claim-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.claim-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.claimed-info {
+  background: #f8f9fa;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.claimed-text {
+  display: block;
+  color: #28a745;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.next-time {
+  display: block;
+  color: #6c757d;
+  font-size: 14px;
+}
