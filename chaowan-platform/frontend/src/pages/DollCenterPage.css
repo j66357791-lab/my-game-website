@@ -1,0 +1,990 @@
+/* src/pages/DollCenter.css - 现代化美观设计 */
+.doll-center-modern {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0;
+  padding-bottom: 70px;
+}
+
+/* 现代化Tab导航 */
+.tab-navigation-modern {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 12px 0;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tab-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-item-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 70px;
+  position: relative;
+}
+
+.tab-item-modern:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.tab-item-modern.active {
+  background: white;
+  border-color: var(--tab-color, #667eea);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.tab-icon-modern {
+  font-size: 20px;
+  margin-bottom: 4px;
+  filter: grayscale(1);
+  transition: filter 0.3s ease;
+}
+
+.tab-item-modern.active .tab-icon-modern {
+  filter: grayscale(0);
+}
+
+.tab-name-modern {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.tab-item-modern.active .tab-name-modern {
+  color: var(--tab-color, #667eea);
+}
+
+/* 内容区域 */
+.content-area-modern {
+  padding: 16px;
+}
+
+.modern-tab-content {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 统计卡片 */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card.primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.stat-card.success {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  color: white;
+}
+
+.stat-card.warning {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.stat-icon {
+  font-size: 24px;
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+/* 娃娃网格 */
+.dolls-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.doll-card-modern {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.doll-card-modern:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.doll-card-modern.deployed {
+  border: 2px solid #4ecdc4;
+}
+
+.doll-header {
+  position: relative;
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.doll-emoji-large {
+  font-size: 48px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.deployed-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #4ecdc4;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.doll-body {
+  padding: 16px;
+}
+
+.doll-name-modern {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.doll-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.doll-level {
+  background: #667eea;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.doll-output {
+  font-size: 12px;
+  color: #4ecdc4;
+  font-weight: 600;
+}
+
+.doll-remaining, .doll-status {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.doll-actions {
+  padding: 0 16px 16px;
+}
+
+.action-btn-modern {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn-modern.deploy {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  color: white;
+}
+
+.action-btn-modern.deploy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+}
+
+.action-btn-modern.recall {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.action-btn-modern.recall:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+/* Boss卡片 */
+.boss-section {
+  display: flex;
+  justify-content: center;
+}
+
+.boss-card-modern {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.boss-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.boss-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.boss-level {
+  background: #ff6b6b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.boss-reward {
+  text-align: right;
+}
+
+.boss-reward span {
+  font-size: 12px;
+  color: #666;
+}
+
+.reward-amount {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.boss-hp-section {
+  margin-bottom: 20px;
+}
+
+.hp-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.hp-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hp-bar {
+  flex: 1;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+  transition: width 0.3s ease;
+}
+
+.hp-text {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+}
+
+.boss-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.boss-stat {
+  text-align: center;
+}
+
+.boss-stat span {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.boss-stat strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.challenge-btn-modern {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.challenge-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+/* 合成区域 */
+.synthesis-section {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.synthesis-rules-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.synthesis-rules-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.rule-icon {
+  font-size: 18px;
+}
+
+.synthesis-area-modern {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.synthesis-slots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.slot-main, .slot-materials {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+}
+
+.slot-box {
+  width: 60px;
+  height: 60px;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #999;
+  transition: all 0.3s ease;
+}
+
+.slot-box.main {
+  border-color: #4ecdc4;
+  color: #4ecdc4;
+}
+
+.synthesis-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.result-box {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.result-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+}
+
+.synthesis-btn-modern {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.synthesis-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+/* VIP区域 */
+.vip-section {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.vip-status-card {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  color: white;
+  box-shadow: 0 8px 30px rgba(243, 156, 18, 0.3);
+}
+
+.vip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.vip-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.vip-status {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.vip-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.vip-days, .vip-benefits {
+  text-align: center;
+}
+
+.vip-days span, .vip-benefits span {
+  display: block;
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.vip-days strong, .vip-benefits strong {
+  font-size: 20px;
+}
+
+.claim-vip-btn {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.claim-vip-btn:hover {
+  background: white;
+  color: #f39c12;
+}
+
+.vip-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.vip-card-modern {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.vip-card-modern:hover {
+  transform: translateY(-4px);
+}
+
+.vip-card-modern.yearly {
+  border: 2px solid #f39c12;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.card-icon {
+  font-size: 24px;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.card-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f39c12;
+  margin-bottom: 4px;
+}
+
+.card-duration {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.card-badge {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  background: #ff6b6b;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.purchase-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.purchase-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* 抽取区域 */
+.gacha-section {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.gacha-balance-card {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+}
+
+.balance-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.balance-amount {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.gacha-machines {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.gacha-machine {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.gacha-machine:hover {
+  transform: translateY(-4px);
+}
+
+.machine-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.machine-icon {
+  font-size: 32px;
+}
+
+.machine-header h4 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.machine-cost {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.machine-badge {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  background: #4ecdc4;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.gacha-btn-modern {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gacha-btn-modern.single {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.gacha-btn-modern.ten {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  color: white;
+}
+
+.gacha-btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 产出区域 */
+.production-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.production-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.overview-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.overview-icon {
+  font-size: 32px;
+}
+
+.overview-title {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.overview-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.production-list {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.production-list h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.production-item-modern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.production-doll {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doll-emoji {
+  font-size: 32px;
+}
+
+.doll-info .doll-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.doll-info .doll-level {
+  font-size: 12px;
+  color: #667eea;
+}
+
+.production-output {
+  text-align: right;
+}
+
+.output-amount {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4ecdc4;
+}
+
+.output-remaining {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 错误提示 */
+.error-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(220, 53, 69, 0.95);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-toast button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 加载状态 */
+.loading-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: white;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .doll-center-modern {
+    padding: 0 12px 70px;
+  }
+  
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .dolls-grid-modern {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  
+  .boss-card-modern,
+  .synthesis-area-modern,
+  .vip-status-card,
+  .gacha-balance-card {
+    padding: 20px;
+  }
+  
+  .gacha-machines {
+    grid-template-columns: 1fr;
+  }
+  
+  .production-overview {
+    grid-template-columns: 1fr;
+  }
+}
