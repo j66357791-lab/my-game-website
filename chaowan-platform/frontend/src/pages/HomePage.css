@@ -1,0 +1,418 @@
+/* src/pages/HomePage.css - 根据《幻灵潮玩》设计策划案V2.1更新 */
+.home-page {
+  padding: 12px;
+  padding-bottom: 86px;
+  background: #f5f5f5;
+}
+
+/* 下拉刷新 */
+.pull-refresh {
+  text-align: center;
+  padding: 12px;
+  color: #667eea;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.pull-refresh:hover {
+  color: #764ba2;
+}
+
+/* 错误消息 */
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid #c62828;
+}
+
+.close-error {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== 顶部数据展示卡片 ===== */
+.top-stats-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: white;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stats-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.stats-number {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.stats-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* ===== 活动轮播图卡片 ===== */
+.activity-carousel-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.carousel-container {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.carousel-item:nth-child(2) {
+  background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+}
+
+.carousel-item:nth-child(3) {
+  background: linear-gradient(135deg, #f368e0 0%, #ee5a24 100%);
+}
+
+.activity-image {
+  font-size: 48px;
+  margin-right: 20px;
+}
+
+.activity-content {
+  flex: 1;
+  color: white;
+}
+
+.activity-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.activity-desc {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.carousel-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dots .dot.active {
+  width: 20px;
+  border-radius: 4px;
+  background: #667eea;
+}
+
+/* ===== 今日产出概览卡片 ===== */
+.today-output-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.output-header h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.output-stats {
+  display: flex;
+  justify-content: space-around;
+}
+
+.output-item {
+  text-align: center;
+}
+
+.output-number {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 4px;
+}
+
+.output-label {
+  font-size: 12px;
+  color: #666;
+}
+
+/* ===== 快速入口卡片 ===== */
+.quick-access-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.access-header h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.access-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.access-item {
+  background: #f8f9fa;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.access-item:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.access-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.access-name {
+  font-size: 12px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* ===== 实时公告卡片 ===== */
+.announcements-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.announcements-header h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.announcements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.announcement-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.announcement-item:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.announcement-item.boss {
+  border-left: 4px solid #ff6b6b;
+}
+
+.announcement-item.synthesis {
+  border-left: 4px solid #28a745;
+}
+
+.announcement-item.vip {
+  border-left: 4px solid #667eea;
+}
+
+.announcement-icon {
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.announcement-content {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 调试信息 */
+.debug-info {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  font-size: 12px;
+}
+
+.debug-info h4 {
+  margin: 0 0 8px 0;
+  color: #495057;
+}
+
+.debug-info p {
+  margin: 4px 0;
+  color: #6c757d;
+  word-break: break-all;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .home-page {
+    padding: 8px;
+  }
+  
+  .top-stats-card {
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .stats-number {
+    font-size: 18px;
+  }
+  
+  .carousel-container {
+    height: 100px;
+  }
+  
+  .activity-image {
+    font-size: 36px;
+    margin-right: 16px;
+  }
+  
+  .activity-title {
+    font-size: 16px;
+  }
+  
+  .activity-desc {
+    font-size: 12px;
+  }
+  
+  .access-grid {
+    gap: 8px;
+  }
+  
+  .access-item {
+    padding: 12px 6px;
+  }
+  
+  .access-icon {
+    font-size: 20px;
+  }
+  
+  .access-name {
+    font-size: 11px;
+  }
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.top-stats-card,
+.activity-carousel-card,
+.today-output-card,
+.quick-access-card,
+.announcements-card {
+  animation: slideIn 0.5s ease-out;
+}
+
+.top-stats-card { animation-delay: 0.1s; }
+.activity-carousel-card { animation-delay: 0.2s; }
+.today-output-card { animation-delay: 0.3s; }
+.quick-access-card { animation-delay: 0.4s; }
+.announcements-card { animation-delay: 0.5s; }
