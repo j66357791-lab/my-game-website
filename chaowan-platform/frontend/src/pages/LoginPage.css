@@ -1,0 +1,260 @@
+/* src/pages/LoginPage.css - 使用静态图片背景版 */
+
+/* ===== 全局CSS变量 ===== */
+:root {
+  --primary-color-start: #6a11cb;
+  --primary-color-end: #2575fc;
+  --text-color: #333;
+  --subtle-text-color: #666;
+  --border-color: #e1e5e9;
+  --error-bg-color: #f8d7da;
+  --error-text-color: #721c24;
+  --card-bg-color: rgba(255, 255, 255, 0.85);
+  --shadow-color: rgba(31, 38, 135, 0.2);
+}
+
+/* ===== 页面布局与静态图片背景 ===== */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  /* --- 新的静态图片背景样式 --- */
+  background-image: url('/images/login-bg.jpg'); /* 🔑 关键：你的图片路径 */
+  background-size: cover; /* 🔑 让图片覆盖整个屏幕，不变形 */
+  background-position: center; /* 🔑 让图片居中显示 */
+  background-repeat: no-repeat; /* 🔑 不让图片平铺 */
+  background-attachment: fixed; /* 🔑 让背景固定，不随内容滚动（可选，效果酷炫） */
+}
+
+/* --- 添加半透明遮罩层（强烈推荐！）--- */
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* 🔑 黑色遮罩，0.4是透明度，可根据图片亮度调整 */
+  z-index: 0; /* 确保遮罩在背景之上，内容之下 */
+}
+
+/* ===== 登录容器 (毛玻璃效果) ===== */
+.login-container {
+  background: var(--card-bg-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  z-index: 1; /* 确保登录框在遮罩层之上 */
+}
+
+/* ===== 表单切换动画 ===== */
+.form-container {
+  position: relative;
+  height: 450px; /* 根据实际表单高度调整 */
+  overflow: hidden;
+}
+
+.form-wrapper {
+  position: absolute;
+  width: 100%;
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+.form-wrapper.login {
+  transform: translateX(0);
+  opacity: 1;
+}
+.form-wrapper.register {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.form-wrapper.login.shift-out {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.form-wrapper.register.shift-in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* ===== 头部样式 ===== */
+.login-header h1 {
+  margin: 0 0 10px 0;
+  color: var(--text-color);
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-header p {
+  margin: 0 0 30px 0;
+  color: var(--subtle-text-color);
+  font-size: 16px;
+}
+
+/* ===== 表单样式 (使用Flexbox解决图标问题) ===== */
+.login-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--primary-color-start);
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+  background: white;
+}
+
+.input-icon {
+  padding: 0 0 0 15px;
+  color: #999;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* ===== 按钮样式 ===== */
+.login-btn, .register-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn:hover, .register-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(106, 17, 203, 0.3);
+}
+
+.login-btn:disabled, .register-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 微光扫过效果 */
+.login-btn::before, .register-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+.login-btn:hover::before, .register-btn:hover::before {
+  left: 100%;
+}
+
+/* 切换按钮 */
+.switch-mode-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color-start);
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+/* ===== 错误消息 ===== */
+.error-message {
+  background: var(--error-bg-color);
+  color: var(--error-text-color);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  border-left: 4px solid var(--error-text-color);
+}
+
+/* ===== 全局加载动画 ===== */
+.global-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== 移动端优化 ===== */
+@media (max-width: 480px) {
+  .login-page { padding: 10px; }
+  .login-container { padding: 30px 20px; }
+  .login-header h1 { font-size: 28px; }
+  .form-group input { font-size: 16px; } /* 防止iOS缩放 */
+}
