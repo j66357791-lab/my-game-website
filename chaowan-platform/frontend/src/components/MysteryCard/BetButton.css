@@ -1,0 +1,77 @@
+/* frontend/src/components/MysteryCard/BetButton.css - 移动端优化版 */
+.bet-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 
+    0 3px 12px rgba(79, 172, 254, 0.4),
+    0 0 0 0 rgba(79, 172, 254, 0.7);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.bet-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.bet-button:hover::before {
+  left: 100%;
+}
+
+.bet-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 5px 18px rgba(79, 172, 254, 0.6),
+    0 0 15px rgba(79, 172, 254, 0.3);
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+}
+
+.bet-button:active {
+  transform: translateY(-1px);
+}
+
+.bet-button:disabled {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.bet-button:disabled::before {
+  display: none;
+}
+
+/* 按钮光晕效果 */
+.bet-button.glow {
+  animation: buttonGlow 2s ease-in-out infinite;
+}
+
+@keyframes buttonGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 3px 12px rgba(79, 172, 254, 0.4),
+      0 0 8px rgba(79, 172, 254, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 3px 15px rgba(79, 172, 254, 0.6),
+      0 0 12px rgba(79, 172, 254, 0.5);
+  }
+}
