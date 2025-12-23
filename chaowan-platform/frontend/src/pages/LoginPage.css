@@ -1,0 +1,586 @@
+/* src/pages/LoginPage.css - 完整科幻机甲+音效版 */
+
+/* ===== CSS变量 (科幻机甲配色) ===== */
+:root {
+  --primary-color-start: #6a11cb;
+  --primary-color-end: #2575fc;
+  --cyber-cyan: #0ad9f0;
+  --neon-pink: #ff00ff;
+  --text-color: #ffffff;
+  --subtle-text-color: rgba(255, 255, 255, 0.7);
+  --border-color: rgba(106, 17, 203, 0.6);
+  --error-bg-color: rgba(248, 39, 39, 0.8);
+  --error-text-color: #fff;
+  --card-bg-color: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(31, 38, 135, 0.37);
+}
+
+/* ===== 页面布局与科幻背景 ===== */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background: 
+    radial-gradient(
+      ellipse at center, 
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.7) 100%
+    ),
+    /* 科幻网格背景 */
+    linear-gradient(var(--cyber-cyan) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cyber-cyan) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  background-color: #0a0e1a;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 40px 40px, 40px 40px; }
+}
+
+/* 动态扫描线 */
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--cyber-cyan), 
+    var(--neon-pink), 
+    transparent
+  );
+  animation: scanLine 3s linear infinite;
+  z-index: 1;
+  box-shadow: 0 0 10px var(--cyber-cyan);
+}
+
+@keyframes scanLine {
+  0% { top: 0; opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0.5; }
+}
+
+/* ===== 登录容器 (机甲毛玻璃) ===== */
+.login-container {
+  background: var(--card-bg-color);
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 
+    0 8px 32px 0 var(--shadow-color),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 30px rgba(37, 117, 252, 0.3),
+    0 0 60px rgba(106, 17, 203, 0.2);
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 35px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* 机甲角装饰 */
+.login-container::before,
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--cyber-cyan);
+  border-radius: 3px;
+}
+
+.login-container::before {
+  top: 10px;
+  left: 10px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.login-container::after {
+  bottom: 10px;
+  right: 10px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* ===== 表单切换动画 ===== */
+.form-container {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+}
+
+.form-wrapper {
+  position: absolute;
+  width: 100%;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+              opacity 0.6s ease;
+}
+
+.form-wrapper.login { transform: translateX(0); opacity: 1; }
+.form-wrapper.register { transform: translateX(100%); opacity: 0; }
+.form-wrapper.login.shift-out { transform: translateX(-100%); opacity: 0; }
+.form-wrapper.register.shift-in { transform: translateX(0); opacity: 1; }
+
+/* ===== 头部样式 ===== */
+.login-header h1 {
+  margin: 0 0 12px 0;
+  color: transparent;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, 
+    var(--primary-color-start) 0%, 
+    var(--cyber-cyan) 50%, 
+    var(--primary-color-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+  letter-spacing: 1.5px;
+}
+
+.login-header p {
+  margin: 0 0 35px 0;
+  color: var(--subtle-text-color);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* ===== 表单样式 ===== */
+.login-form { text-align: left; }
+
+.form-group { 
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--subtle-text-color);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* 输入框容器 */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 音效触发类：聚焦时播放 */
+.input-wrapper.focus-sound {
+  animation: gentleBounce 0.3s ease;
+}
+
+@keyframes gentleBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--cyber-cyan);
+  background: rgba(10, 217, 240, 0.05);
+  box-shadow: 
+    0 0 15px rgba(10, 217, 240, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+/* 扫描动画 */
+.input-wrapper:focus-within::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--cyber-cyan), 
+    var(--neon-pink), 
+    transparent
+  );
+  animation: inputScan 1.2s ease-out;
+}
+
+@keyframes inputScan {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.input-icon {
+  padding: 0 0 0 18px;
+  color: var(--subtle-text-color);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: var(--cyber-cyan);
+  animation: iconPulse 0.5s ease;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.form-group input {
+  width: 100%;
+  padding: 16px 18px;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
+  background: transparent;
+  color: var(--text-color);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.form-group input::placeholder { 
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* ===== 按钮样式 (带音效触发) ===== */
+.login-btn, .register-btn {
+  width: 100%;
+  padding: 17px;
+  background: linear-gradient(135deg, 
+    var(--primary-color-start) 0%, 
+    #1a2c5f 50%,
+    var(--primary-color-end) 100%
+  );
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-family: 'Orbitron', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 音效触发类：点击时播放 */
+.login-btn.click-sound,
+.register-btn.click-sound {
+  animation: buttonClick 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes buttonClick {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.92); }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.login-btn:hover, .register-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 25px rgba(106, 17, 203, 0.5),
+    0 0 35px rgba(37, 117, 252, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, 
+    #7a1cff 0%,
+    #2a5fff 50%,
+    var(--primary-color-end) 100%
+  );
+}
+
+.login-btn:active, .register-btn:active:not(:disabled) {
+  transform: translateY(-1px);
+  transition-duration: 0.1s;
+}
+
+/* 按钮流光效果 */
+.login-btn::after, .register-btn::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.8), 
+    transparent
+  );
+  animation: buttonShine 3s infinite;
+}
+
+@keyframes buttonShine {
+  0% { left: -100%; }
+  20% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* 按钮加载状态 */
+.login-btn:disabled, .register-btn:disabled {
+  background: #333;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  border-color: #444;
+}
+
+/* 切换按钮 */
+.switch-mode-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--cyber-cyan);
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 25px;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.switch-mode-btn:hover {
+  background: rgba(10, 217, 240, 0.1);
+  border-color: var(--cyber-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(10, 217, 240, 0.2);
+}
+
+.switch-mode-btn:active {
+  animation: gentleBounce 0.3s ease;
+}
+
+/* ===== 错误消息 ===== */
+.error-message {
+  background: linear-gradient(135deg, 
+    var(--error-bg-color) 0%, 
+    rgba(200, 30, 30, 0.9) 100%
+  );
+  color: var(--error-text-color);
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  font-size: 14px;
+  text-align: center;
+  border-left: 4px solid rgba(255, 255, 255, 0.5);
+  animation: errorPulse 2s infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes errorPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(248, 39, 39, 0.5); }
+  50% { box-shadow: 0 0 15px rgba(248, 39, 39, 0.8); }
+}
+
+/* ===== 科幻加载动画 ===== */
+.global-loader-v2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 10, 30, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.loader-logo {
+  font-size: 52px;
+  margin-bottom: 20px;
+  color: var(--cyber-cyan);
+  text-shadow: 
+    0 0 10px var(--cyber-cyan),
+    0 0 20px var(--cyber-cyan);
+  animation: logoGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+  from { 
+    filter: drop-shadow(0 0 5px var(--cyber-cyan));
+    transform: scale(1);
+  }
+  to { 
+    filter: drop-shadow(0 0 20px var(--neon-pink));
+    transform: scale(1.05);
+  }
+}
+
+.loader-text {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* 数字进度条 */
+.loader-progress {
+  width: 250px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin: 25px auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.loader-progress::before {
+  content: 'LOADING SYSTEM...';
+  position: absolute;
+  top: -25px;
+  left: 0;
+  font-size: 11px;
+  color: var(--cyber-cyan);
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+.loader-progress::after {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--cyber-cyan), 
+    var(--primary-color-start)
+  );
+  border-radius: 2px;
+  animation: loadingBar 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes loadingBar {
+  0% { 
+    transform: translateX(-100%); 
+    width: 30%;
+  }
+  50% { width: 60%; }
+  100% { 
+    transform: translateX(250%); 
+    width: 30%;
+  }
+}
+
+/* 二进制数字雨 */
+.loader-binary {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  opacity: 0.3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.binary-digit {
+  position: absolute;
+  color: var(--cyber-cyan);
+  font-family: monospace;
+  font-size: 14px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to { transform: translateY(100px); }
+}
+
+/* ===== 移动端优化 ===== */
+@media (max-width: 480px) {
+  .login-page { 
+    padding: 15px;
+    animation: none;
+  }
+  
+  .login-container { 
+    padding: 30px 25px;
+    border-radius: 14px;
+  }
+  
+  .login-header h1 { 
+    font-size: 30px;
+    letter-spacing: 1px;
+  }
+  
+  .form-group input { 
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  
+  .login-btn, .register-btn {
+    padding: 16px;
+    font-size: 15px;
+  }
+  
+  .loader-text {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+  
+  .loader-progress {
+    width: 200px;
+  }
+}
+
+/* ===== 音效相关辅助动画 ===== */
+@keyframes quickVibrate {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.vibrate-sound {
+  animation: quickVibrate 0.15s ease 2;
+}
+
+/* 成功反馈 */
+.success-feedback {
+  animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes successPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
