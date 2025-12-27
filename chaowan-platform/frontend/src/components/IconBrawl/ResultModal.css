@@ -1,0 +1,121 @@
+/* frontend/src/components/IconBrawl/ResultModal.css */
+.result-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.result-modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  animation: modalPop 0.6s ease-out;
+}
+
+@keyframes modalPop {
+  0% { 
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.result-header h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+}
+
+.result-summary {
+  margin-bottom: 20px;
+}
+
+.result-amount {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.result-amount.win {
+  color: #4CAF50;
+  text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.result-amount.lose {
+  color: #f44336;
+  text-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+.result-details {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #666;
+}
+
+.result-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.result-icon {
+  font-size: 4rem;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.result-info p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.result-footer {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.result-btn {
+  flex: 1;
+  padding: 15px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.result-btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.result-btn.secondary {
+  background: #e9ecef;
+  color: #333;
+}
+
+.result-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
