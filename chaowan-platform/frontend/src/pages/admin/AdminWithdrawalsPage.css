@@ -1,0 +1,378 @@
+.admin-withdrawals-page {
+  padding: 15px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.header-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.pending-count {
+  background: #ffc107;
+  color: #856404;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.tab-btn:hover:not(.active) {
+  background: #f8f9fa;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+}
+
+.batch-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.batch-selection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.batch-selection input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.batch-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.batch-approve-btn {
+  padding: 8px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.batch-reject-btn {
+  padding: 8px 12px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.withdrawals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.withdrawal-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 4px solid #6c757d;
+  position: relative;
+}
+
+.withdrawal-card.status-pending {
+  border-left-color: #ffc107;
+}
+
+.withdrawal-card.status-approved {
+  border-left-color: #28a745;
+}
+
+.withdrawal-card.status-rejected {
+  border-left-color: #dc3545;
+}
+
+.selection-checkbox {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.selection-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.withdrawal-card.status-pending {
+  padding-left: 45px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.user-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.user-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.amount-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.card-details {
+  margin-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.detail-row .label {
+  color: #666;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.detail-row .value {
+  color: #333;
+  text-align: right;
+  word-break: break-all;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.approve-btn {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reject-btn {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 13px;
+  color: #666;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .admin-withdrawals-page {
+    padding: 10px;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .admin-header h1 {
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .batch-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .batch-buttons {
+    justify-content: center;
+  }
+  
+  .filter-tabs {
+    gap: 5px;
+  }
+  
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .amount-info {
+    align-items: flex-start;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .detail-row .label {
+    min-width: auto;
+  }
+  
+  .detail-row .value {
+    text-align: left;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+  }
+  
+  .card-actions button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,733 @@
+/* src/pages/AdminDashboardPage.css */
+.admin-dashboard {
+  padding: 16px;
+  padding-bottom: 86px;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.dashboard-header p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ==================== 导航标签 ==================== */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding: 0 4px;
+}
+
+.admin-tabs button {
+  padding: 10px 16px;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-tabs button:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+.admin-tabs button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== 内容区域 ==================== */
+.dashboard-content {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 指标卡片 ==================== */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.metric-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: bold;
+}
+
+.metric-info p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+/* ==================== 系统状态 ==================== */
+.system-status {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.system-status h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.status-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.status-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.status-value.good {
+  color: #4CAF50;
+}
+
+/* ==================== 最近活动 ==================== */
+.recent-activities {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.recent-activities h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.activity-item:hover {
+  background: #e9ecef;
+}
+
+.activity-info strong {
+  color: #333;
+  margin-right: 8px;
+}
+
+.activity-info span {
+  color: #666;
+  font-size: 14px;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ==================== 管理操作 ==================== */
+.admin-actions {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-actions h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== 用户管理 ==================== */
+.users-management {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.users-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.users-header button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.users-header button:hover {
+  transform: translateY(-1px);
+}
+
+.users-table {
+  overflow-x: auto;
+}
+
+.users-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.users-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  position: sticky;
+  top: 0;
+}
+
+.users-table tr:hover {
+  background: #f8f9fa;
+}
+
+.users-table button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 8px;
+  transition: background 0.3s ease;
+}
+
+.users-table button:hover {
+  background: #0056b3;
+}
+
+.users-table button:last-child {
+  background: #dc3545;
+}
+
+.users-table button:last-child:hover {
+  background: #c82333;
+}
+
+/* ==================== 积分管理 ==================== */
+.points-management {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.points-management h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.points-adjustment {
+  margin-bottom: 20px;
+}
+
+.points-adjustment h4 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.adjustment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adjustment-form select,
+.adjustment-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.adjustment-form button {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.adjustment-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* ==================== 交易管理 ==================== */
+.transactions-management {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.transactions-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.transactions-header button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.transactions-header button:hover {
+  transform: translateY(-1px);
+}
+
+.transactions-table {
+  overflow-x: auto;
+}
+
+.transactions-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.transactions-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  position: sticky;
+  top: 0;
+}
+
+.transactions-table tr:hover {
+  background: #f8f9fa;
+}
+
+.transactions-table .positive {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.transactions-table .negative {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* ==================== 数据分析 ==================== */
+.analytics-content {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.analytics-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.analytics-card h4 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.level-distribution,
+.points-distribution,
+.transaction-types {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.level-item,
+.points-item,
+.type-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.level-item span:first-child,
+.points-item span:first-child,
+.type-item span:first-child {
+  color: #666;
+}
+
+.level-item span:last-child,
+.points-item span:last-child,
+.type-item span:last-child {
+  font-weight: 600;
+  color: #333;
+}
+
+.type-item span:last-child {
+  color: #007bff;
+}
+
+/* ==================== 弹窗样式 ==================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-content input,
+.modal-content select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-actions button[type="submit"] {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.modal-actions button[type="submit"]:hover {
+  transform: translateY(-1px);
+}
+
+.modal-actions button[type="button"] {
+  background: #6c757d;
+  color: white;
+}
+
+.modal-actions button[type="button"]:hover {
+  background: #5a6268;
+}
+
+/* ==================== 加载状态 ==================== */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* ==================== 响应式设计 ==================== */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 12px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .users-table,
+  .transactions-table {
+    font-size: 12px;
+  }
+
+  .users-table th,
+  .users-table td,
+  .transactions-table th,
+  .transactions-table td {
+    padding: 8px;
+  }
+
+  .modal-content {
+    margin: 20px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h2 {
+    font-size: 20px;
+  }
+
+  .metric-card {
+    padding: 12px;
+  }
+
+  .metric-icon {
+    font-size: 20px;
+    width: 32px;
+  }
+
+  .metric-info h3 {
+    font-size: 18px;
+  }
+
+  .admin-tabs button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* 商城管理 Tab 样式 */
+.shop-management { padding: 10px; }
+.shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-primary { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+
+.section { background: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.section h4 { margin: 0 0 12px 0; color: #333; font-size: 16px; border-left: 4px solid #ff5000; padding-left: 8px; }
+
+.admin-list { display: flex; flex-direction: column; gap: 12px; }
+.list-item { display: flex; gap: 12px; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 8px; }
+.list-item img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; }
+.list-item .info { flex: 1; }
+.list-item .name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.list-item .meta { font-size: 12px; color: #666; display: flex; gap: 8px; align-items: center; }
+.list-item .tag { background: #e0f7fa; color: #0097a7; padding: 2px 4px; border-radius: 2px; font-size: 10px; }
+.list-item .actions { display: flex; gap: 8px; }
+.list-item .actions button { padding: 4px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.btn-ship { border-color: #ff5000 !important; color: #ff5000 !important; }
+.btn-ship:hover { background: #fff0f0; }
+.btn-delete { border-color: #dc3545 !important; color: #dc3545 !important; }
+.btn-delete:hover { background: #f8d7da; }
+
+.sku-form-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.sku-form-row input { flex: 1; min-width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
