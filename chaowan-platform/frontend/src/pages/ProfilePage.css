@@ -1,0 +1,397 @@
+/* src/pages/ProfilePage.css - 整合提现样式版 */
+
+/* ====== 通用布局 ====== */
+.profile-page-mobile {
+  min-height: 100vh;
+  background: #f5f5f5;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 998;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #667eea;
+  cursor: pointer;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.user-avatar-small {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+/* ====== 标签导航 ====== */
+.tab-navigation {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  padding: 0 8px;
+  z-index: 997;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 12px 0;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+}
+
+.tab-item.active {
+  border-bottom-color: #667eea;
+  color: #667eea;
+}
+
+.tab-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.main-content-mobile {
+  padding: 130px 16px 16px;
+  min-height: 100vh;
+}
+
+/* ====== 卡片通用 ====== */
+.content-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.info-card, .settings-card, .mail-section, .wallet-cards, .history-section, .stats-dashboard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-label { color: #666; font-size: 14px; }
+.info-value { color: #333; font-weight: 600; font-size: 14px; }
+
+/* ====== 邮件样式 ====== */
+.mail-item {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.mail-item.unread {
+  background: #f0f8ff;
+  border-left: 4px solid #667eea;
+}
+
+.mail-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.mail-title { font-weight: 600; font-size: 14px; }
+.mail-time { font-size: 12px; color: #999; }
+.mail-content { font-size: 13px; color: #555; margin: 5px 0; }
+.mail-rewards { font-size: 12px; color: #e67e22; font-weight: 600; margin-bottom: 5px; }
+.claim-btn { background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+
+/* ====== 钱包样式 ====== */
+.wallet-cards { display: flex; flex-direction: column; gap: 10px; }
+
+.balance-card {
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.balance-card.points { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.balance-card.starcoin { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.balance-card.cash { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+
+.balance-card h4 { margin: 0; font-size: 14px; opacity: 0.9; }
+.balance-card .amount { margin: 0; font-size: 24px; font-weight: bold; }
+.card-action {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wallet-actions { display: flex; gap: 10px; margin-bottom: 16px; }
+.action-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.action-btn.recharge { background: #28a745; }
+.action-btn.withdraw { background: #dc3545; }
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+.history-desc { font-size: 13px; font-weight: 600; color: #333; margin: 0 0 3px 0; }
+.history-date { font-size: 11px; color: #999; margin: 0; }
+.history-amount { font-size: 13px; font-weight: bold; }
+
+/* ====== 游戏统计样式 ====== */
+.game-stats-controls {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.game-type-selector button, .period-selector button {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.game-type-selector button.active, .period-selector button.active {
+  background: #667eea; color: white; border-color: #667eea;
+}
+.stat-card {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.stat-card h4 { margin: 0 0 8px; color: #666; }
+.stat-card p { margin: 0; font-size: 20px; font-weight: bold; }
+.profit-win { color: #28a745; }
+.profit-loss { color: #dc3545; }
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+.detail-row .win { color: #28a745; }
+.detail-row .lose { color: #dc3545; }
+
+/* ====== 设置与弹窗通用 ====== */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; color: #666; font-size: 13px; }
+.form-group input {
+  width: 100%; padding: 10px; border: 1px solid #ddd;
+  border-radius: 6px; box-sizing: border-box;
+}
+.save-btn {
+  width: 100%; padding: 12px; background: #667eea;
+  color: white; border: none; border-radius: 6px;
+  font-weight: 600; cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white; padding: 20px; border-radius: 12px;
+  width: 80%; max-width: 400px;
+}
+.modal-content input {
+  width: 100%; padding: 10px; margin-bottom: 10px;
+  border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;
+}
+.tips { color: #dc3545; font-size: 12px; margin-bottom: 10px; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button {
+  flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+}
+.modal-actions button:first-child { background: #f8f9fa; }
+.modal-actions button:last-child { background: #667eea; color: white; }
+
+/* ====== 提现弹窗特定样式 (从原有文件移植) ====== */
+.withdraw-content {
+  width: 100%; max-width: 400px; max-height: 90vh;
+  overflow-y: auto; padding: 20px;
+}
+.withdraw-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.withdraw-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #666; }
+
+.withdraw-user-info {
+  background: #f8f9fa; border-radius: 6px; padding: 12px;
+  margin-bottom: 16px;
+}
+.user-info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.user-info-row:last-child { margin-bottom: 0; }
+.info-label { font-size: 12px; color: #666; }
+.info-value.balance { font-size: 14px; font-weight: bold; color: #28a745; }
+
+.withdraw-process {
+  background: #e8f5e8; border-radius: 6px; padding: 16px;
+  margin-bottom: 16px;
+}
+.withdraw-process h4 {
+  margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #28a745;
+}
+.process-steps { display: flex; flex-direction: column; gap: 8px; }
+.process-step { display: flex; align-items: center; gap: 8px; }
+.step-number {
+  width: 20px; height: 20px; background: #28a745; color: white;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 10px; font-weight: bold;
+}
+.step-text { font-size: 12px; color: #333; }
+
+.alipay-section { margin-bottom: 16px; }
+.alipay-section h4 { margin: 0 0 8px 0; font-size: 12px; font-weight: 600; }
+.alipay-bound {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 6px;
+}
+.alipay-icon { font-size: 16px; }
+.alipay-account { flex: 1; font-size: 12px; color: #155724; }
+.change-btn {
+  background: #28a745; color: white; border: none;
+  padding: 3px 6px; border-radius: 3px; font-size: 10px; cursor: pointer;
+}
+.alipay-unbound {
+  text-align: center; padding: 16px;
+  background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 6px;
+}
+.unbind-icon { font-size: 20px; margin-bottom: 6px; }
+.alipay-unbound p { margin: 6px 0; font-size: 12px; color: #721c24; }
+.bind-btn {
+  background: #dc3545; color: white; border: none;
+  padding: 6px 12px; border-radius: 4px; font-size: 10px; cursor: pointer;
+}
+
+.withdraw-amount-section h4 { margin: 0 0 8px 0; font-size: 12px; font-weight: 600; }
+.amount-grid { display: grid; gap: 8px; }
+.amount-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.amount-btn {
+  padding: 10px; background: #28a745; color: white; border: none;
+  border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.amount-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.withdraw-history-section { margin-top: 16px; border-top: 1px solid #eee; padding-top: 16px; }
+.section-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+}
+.section-header h4 { margin: 0; font-size: 12px; font-weight: 600; }
+.view-more-btn {
+  background: none; border: none; color: #667eea;
+  font-size: 10px; cursor: pointer;
+}
+
+.withdraw-history-list { max-height: 150px; overflow-y: auto; }
+.withdraw-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px; background: #f8f9fa; border-radius: 4px; margin-bottom: 4px;
+}
+.withdraw-info p { margin: 1px 0; font-size: 10px; }
+.withdraw-amount { font-weight: 600; }
+.withdraw-account { color: #666; }
+.withdraw-status {
+  font-size: 10px; font-weight: 600;
+}
+.withdraw-status.success { color: #28a745; }
+.withdraw-status.pending { color: #ffc107; }
+.withdraw-status.rejected { color: #dc3545; }
+.empty-withdraw { text-align: center; padding: 16px; color: #666; font-size: 10px; }
+
+/* ==================== 退出账号样式 ==================== */
+.settings-footer {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #c82333;
+}
