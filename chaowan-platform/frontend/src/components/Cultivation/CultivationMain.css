@@ -1,0 +1,16 @@
+/* frontend/src/components/Cultivation/CultivationMain.css */
+.cultivation-main {
+  padding: 20px;
+  text-align: center;
+}
+
+.cultivation-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 如果你不需要样式，这个文件留空也没问题，只要文件存在就行 */
