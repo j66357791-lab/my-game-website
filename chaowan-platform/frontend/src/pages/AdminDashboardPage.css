@@ -1,0 +1,422 @@
+/* src/pages/AdminDashboardPage.css - 清理重复版 */
+.admin-dashboard {
+  padding: 16px;
+  padding-bottom: 86px;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.dashboard-header p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ==================== 导航标签 ==================== */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding: 0 4px;
+}
+
+.admin-tabs button {
+  padding: 10px 16px;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-tabs button:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+.admin-tabs button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== 内容区域 ==================== */
+.dashboard-content {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 指标卡片 ==================== */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.metric-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: bold;
+}
+
+.metric-info p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+/* ==================== 弹窗样式 ==================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-content input,
+.modal-content select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-actions button[type="submit"] {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.modal-actions button[type="submit"]:hover {
+  transform: translateY(-1px);
+}
+
+.modal-actions button[type="button"] {
+  background: #6c757d;
+  color: white;
+}
+
+.modal-actions button[type="button"]:hover {
+  background: #5a6268;
+}
+
+/* ==================== 加载状态 ==================== */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* ==================== 商城管理 Tab 样式 ==================== */
+.shop-management { padding: 10px; }
+.shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-primary { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+
+.section { background: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.section h4 { margin: 0 0 12px 0; color: #333; font-size: 16px; border-left: 4px solid #ff5000; padding-left: 8px; }
+
+.admin-list { display: flex; flex-direction: column; gap: 12px; }
+.list-item { display: flex; gap: 12px; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 8px; }
+.list-item img { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; }
+.list-item .info { flex: 1; }
+.list-item .name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.list-item .meta { font-size: 12px; color: #666; display: flex; gap: 8px; align-items: center; }
+.list-item .tag { background: #e0f7fa; color: #0097a7; padding: 2px 4px; border-radius: 2px; font-size: 10px; }
+.list-item .actions { display: flex; gap: 8px; }
+.list-item .actions button { padding: 4px 8px; border: 1px solid #ddd; background: white; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.btn-ship { border-color: #ff5000 !important; color: #ff5000 !important; }
+.btn-ship:hover { background: #fff0f0; }
+.btn-delete { border-color: #dc3545 !important; color: #dc3545 !important; }
+.btn-delete:hover { background: #f8d7da; }
+
+/* ==================== SKU 表单优化 ==================== */
+.sku-form-row-wrapper {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #eee;
+}
+.sku-row-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 8px;
+}
+.sku-inputs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.sku-inputs input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+}
+.input-with-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.input-with-label label {
+  font-size: 10px;
+  color: #999;
+  margin-bottom: 2px;
+}
+.input-with-label input {
+  padding: 6px;
+}
+.btn-delete-sku {
+  width: 100%;
+  padding: 6px;
+  background: #fff0f0;
+  color: #dc3545;
+  border: 1px solid #f8d7da;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.btn-delete-sku:hover {
+  background: #f8d7da;
+}
+
+/* ==================== 发货弹窗样式 ==================== */
+.ship-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+}
+.tracking-input {
+  margin-left: 26px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ==================== 管理员后台订单筛选与搜索样式 ==================== */
+.order-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.order-toolbar .filter-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.order-toolbar .filter-tabs button {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.order-toolbar .filter-tabs button.active {
+  background: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+.order-toolbar .search-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.order-toolbar .btn-search {
+  padding: 8px 16px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ==================== 状态标签样式 ==================== */
+.status-tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-tag.paid {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+.status-tag.shipped {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-tag.completed {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+/* ==================== 物流信息样式 ==================== */
+.logistics-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.logistics-icon {
+  font-size: 16px;
+}
+
+.tracking-no {
+  color: #1890ff;
+  font-weight: 500;
+}
