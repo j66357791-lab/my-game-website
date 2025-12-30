@@ -1,0 +1,5 @@
+.cultivation-intro-container { text-align: center; padding: 40px; background: linear-gradient(135deg, #2c3e50, #000); color: white; min-height: 80vh; }
+.gender-cards { display: flex; justify-content: center; gap: 20px; margin-top: 40px; }
+.gender-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; cursor: pointer; width: 120px; border: 1px solid rgba(255,255,255,0.2); }
+.gender-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+.avatar { font-size: 48px; margin-bottom: 10px; }
