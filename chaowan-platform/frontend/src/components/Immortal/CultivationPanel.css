@@ -1,0 +1,154 @@
+/* frontend/src/components/Immortal/CultivationPanel.css */
+.cultivation-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.panel-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.pool-level {
+  font-size: 12px;
+  color: #3498db;
+  background: rgba(52, 152, 219, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.spirit-display {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.spirit-icon {
+  font-size: 40px;
+  filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.5));
+  animation: float-spirit 3s ease-in-out infinite;
+}
+
+@keyframes float-spirit {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.spirit-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.spirit-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #3498db;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+}
+
+.spirit-label {
+  font-size: 10px;
+  color: #7f8c8d;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.production-info {
+  width: 100%;
+  margin-bottom: 20px;
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #bdc3c7;
+  margin-bottom: 5px;
+}
+.info-row:last-child { margin-bottom: 0; }
+.highlight { color: #f1c40f; font-weight: bold; }
+
+.action-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.collect-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #27ae60, #2ecc71);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+  transition: transform 0.1s;
+}
+.collect-btn:active { transform: scale(0.98); }
+
+.upgrade-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(230, 126, 34, 0.2);
+  border: 1px solid rgba(230, 126, 34, 0.4);
+  border-radius: 8px;
+  color: #e67e22;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.upgrade-btn:hover { background: rgba(230, 126, 34, 0.3); }
+
+.btn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.cost-tag {
+  font-size: 12px;
+  background: rgba(230, 126, 34, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.btn-desc {
+  font-size: 10px;
+  color: #95a5a6;
+  text-align: left;
+  width: 100%;
+}
